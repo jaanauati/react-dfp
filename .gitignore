@@ -1,0 +1,35 @@
+# Git ignore for NGS projects
+
+# Ignore hidden folders #
+# This takes care of .tmp, .sass-cache, and many others #
+.*/
+
+# Ignore OS generated files #
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Ignore packages #
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Ignore all log files
+*.log
+
+dist
+node_modules
+bower_components
+.tmp
+
+# ignore test coverage results
+coverage
+
+# Ignore Compass Cache
+.sass-cache

@@ -1,0 +1,20 @@
+default:
+  - 'build'
+
+build:
+  - 'clean'
+  - 'browserify'
+
+dist:
+  - 'build'
+  - 'test'
+  - 'uglify'
+  - 'copy:dist'
+  
+dev:
+  - 'build'
+  - 'browserSync'
+  - 'watch'
+
+test:
+  - 'karma:unit'
