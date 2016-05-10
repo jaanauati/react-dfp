@@ -38,7 +38,8 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       Object.keys(registeredSlots).forEach(function defineSlots(slotId) {
         googletag.cmd.push(function defineSlot() {
           const slot = registeredSlots[slotId];
-          slot.gptSlot = googletag.defineSlot(`${slot.dfpNetworkId}/${slot.path}`, slot.sizes, slot.elementId);
+          slot.gptSlot = googletag.defineSlot(`${slot.dfpNetworkId}/${slot.adUnit}`,
+                                              slot.sizes, slot.elementId);
           if (slot.targetingArguments) {
             for (let k of Object.keys(slot.targetingArguments)) {
               slot.gptSlot.setTargeting(k, slot.targetingArguments[k]);
@@ -71,13 +72,13 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     }
   },
 
-  registerSlot({dfpNetworkId, path, sizes, targetingArguments, elementId, slotShouldRefresh}) {
+  registerSlot({dfpNetworkId, adUnit, sizes, targetingArguments, elementId, slotShouldRefresh}) {
     if (!registeredSlots.hasOwnProperty(elementId)) {
-      registeredSlots[elementId] = {elementId, sizes, dfpNetworkId, path, targetingArguments, slotShouldRefresh};
+      registeredSlots[elementId] = {elementId, sizes, dfpNetworkId, adUnit, targetingArguments, slotShouldRefresh};
     }
   },
 
-  unregisterSlot({dfpNetworkId, path, sizes, elementId, slotShouldRefresh}) {
+  unregisterSlot({dfpNetworkId, adUnit, sizes, elementId, slotShouldRefresh}) {
     delete registeredSlots[elementId];
   },
 

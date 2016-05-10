@@ -8,16 +8,23 @@ export const AdSlot = React.createClass({
 
   propTypes: {
     dfpNetworkId: React.PropTypes.string.isRequired,
-    path: React.PropTypes.string.isRequired,
-    elementId: React.PropTypes.string.isRequired,
+    adUnit: React.PropTypes.string.isRequired,
     sizes: React.PropTypes.arrayOf(
       React.PropTypes.arrayOf(React.PropTypes.number)
     ).isRequired,
     targetingArguments: React.PropTypes.object,
     onSlotRender: React.PropTypes.func,
     shouldRefresh: React.PropTypes.func,
+    elementId: React.PropTypes.string,
   },
-
+  
+  getDefaultProps() {
+    let seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;
+    return {
+      elementId: `adSlot-${seconds}`,
+    };
+  },
+  
   componentDidMount() {
     const slotData = Object.assign({slotShouldRefresh: this.slotShouldRefresh}, this.props);
     DFPManager.registerSlot(slotData);
@@ -44,8 +51,8 @@ export const AdSlot = React.createClass({
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      const {dfpNetworkId, path, elementId, sizes} = this.props;
-      r = this.props.shouldRefresh({dfpNetworkId, path, elementId, sizes});
+      const {dfpNetworkId, adUnit, elementId, sizes} = this.props;
+      r = this.props.shouldRefresh({dfpNetworkId, adUnit, elementId, sizes});
     }
     return r;
   },
