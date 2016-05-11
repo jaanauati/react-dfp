@@ -30,7 +30,8 @@ export const DFPManager = Object.assign(new EventEmitter(), {
           this.emit('slotRenderEnded', {slotId, event});
         });
 
-        for (let k of Object.keys(targetingArguments)) {
+        for (const i in Object.keys(targetingArguments)) {
+          const k = targetingArguments[i];
           pubadsService.setTargeting(k, targetingArguments[k]);
         }
       });
@@ -41,7 +42,8 @@ export const DFPManager = Object.assign(new EventEmitter(), {
           slot.gptSlot = googletag.defineSlot(`${slot.dfpNetworkId}/${slot.adUnit}`,
                                               slot.sizes, slot.slotId);
           if (slot.targetingArguments) {
-            for (let k of Object.keys(slot.targetingArguments)) {
+            for (const i in Object.keys(slot.targetingArguments)) {
+              const k = slot.targetingArguments[i];
               slot.gptSlot.setTargeting(k, slot.targetingArguments[k]);
             }
           }
@@ -52,7 +54,8 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       googletag.cmd.push(function displaySlots() {
         googletag.pubads().enableSingleRequest();
         googletag.enableServices();
-        for (let slotId of Object.keys(registeredSlots)) {
+        for (const i in Object.keys(registeredSlots)) {
+          const slotId = registeredSlots[i];
           googletag.display(slotId);
         }
       });
