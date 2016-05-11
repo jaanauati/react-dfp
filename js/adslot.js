@@ -15,35 +15,35 @@ export const AdSlot = React.createClass({
     targetingArguments: React.PropTypes.object,
     onSlotRender: React.PropTypes.func,
     shouldRefresh: React.PropTypes.func,
-    elementId: React.PropTypes.string,
+    slotId: React.PropTypes.string,
   },
   
   getDefaultProps() {
     let seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;
     return {
-      elementId: `adSlot-${seconds}`,
+      slotId: `adSlot-${seconds}`,
     };
   },
   
   componentDidMount() {
     const slotData = Object.assign({slotShouldRefresh: this.slotShouldRefresh}, this.props);
     DFPManager.registerSlot(slotData);
-    DFPManager.onSlotRenderEnded(this.slotRenderEnded);
+    DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
   },
 
   render() {
     return (
-      <div className="adunitContainer"> <div id={this.props.elementId} className="adBox" /> </div>
+      <div className="adunitContainer"> <div id={this.props.slotId} className="adBox" /> </div>
     );
   },
 
   componentWillUmount() {
     DFPManager.unregisterSlot(this.props);
-    DFPManager.offSlotRenderEnded(this.slotRenderEnded);
+    DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
   },
 
   slotRenderEnded(eventData) {
-    if (eventData.slotId === this.props.elementId) {
+    if (eventData.slotId === this.props.slotId) {
       this.props.onSlotRender(eventData);
     }
   },
@@ -51,8 +51,8 @@ export const AdSlot = React.createClass({
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      const {dfpNetworkId, adUnit, elementId, sizes} = this.props;
-      r = this.props.shouldRefresh({dfpNetworkId, adUnit, elementId, sizes});
+      const {dfpNetworkId, adUnit, slotId, sizes} = this.props;
+      r = this.props.shouldRefresh({dfpNetworkId, adUnit, slotId, sizes});
     }
     return r;
   },

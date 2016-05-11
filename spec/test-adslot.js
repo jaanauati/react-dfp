@@ -8,7 +8,7 @@ describe('AdSlot', function adSlot() {
   beforeEach(function beforeEach() {
     this.component = TestUtils.renderIntoDocument(
       <AdSlot dfpNetworkId={1000} path={"foo/bar/baz"}
-              elementId={'testElement'} sizes={[[728, 90]]}/>
+              slotId={'testElement'} sizes={[[728, 90]]}/>
     );
   });
 

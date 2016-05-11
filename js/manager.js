@@ -39,7 +39,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
         googletag.cmd.push(function defineSlot() {
           const slot = registeredSlots[slotId];
           slot.gptSlot = googletag.defineSlot(`${slot.dfpNetworkId}/${slot.adUnit}`,
-                                              slot.sizes, slot.elementId);
+                                              slot.sizes, slot.slotId);
           if (slot.targetingArguments) {
             for (let k of Object.keys(slot.targetingArguments)) {
               slot.gptSlot.setTargeting(k, slot.targetingArguments[k]);
@@ -72,21 +72,21 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     }
   },
 
-  registerSlot({dfpNetworkId, adUnit, sizes, targetingArguments, elementId, slotShouldRefresh}) {
-    if (!registeredSlots.hasOwnProperty(elementId)) {
-      registeredSlots[elementId] = {elementId, sizes, dfpNetworkId, adUnit, targetingArguments, slotShouldRefresh};
+  registerSlot({dfpNetworkId, adUnit, sizes, targetingArguments, slotId, slotShouldRefresh}) {
+    if (!registeredSlots.hasOwnProperty(slotId)) {
+      registeredSlots[slotId] = {slotId, sizes, dfpNetworkId, adUnit, targetingArguments, slotShouldRefresh};
     }
   },
 
-  unregisterSlot({dfpNetworkId, adUnit, sizes, elementId, slotShouldRefresh}) {
-    delete registeredSlots[elementId];
+  unregisterSlot({dfpNetworkId, adUnit, sizes, slotId, slotShouldRefresh}) {
+    delete registeredSlots[slotId];
   },
 
-  onSlotRenderEnded(cb) {
+  attachSlotRenderEnded(cb) {
     this.on('slotRenderEnded', cb);
   },
 
-  offSlotRenderEnded(cb) {
+  detachSlotRenderEnded(cb) {
     this.off('slotRenderEnded', cb);
   },
 
