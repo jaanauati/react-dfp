@@ -1,5 +1,6 @@
 # React DFP
-Inspired on jquery.dfp, thi
+Inspired on jquery.dfp :-)... gpt/dfp components for react.
+
 ## Install:
 ```
 npm install --save-dev react-dfp
