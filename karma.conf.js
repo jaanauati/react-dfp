@@ -4,11 +4,11 @@ module.exports = function(config) {
     frameworks: ['browserify', 'jasmine'],
     files: [
       'spec/*.js',
-      'js/*.js',
+      'lib/*.js',
     ],
     preprocessors: {
       'spec/*.js': [ 'browserify'],
-      'js/*.js': [ 'browserify'],
+      'lib/*.js': [ 'browserify'],
     },
     browserify: {
       configure: function browserify(bundle) {

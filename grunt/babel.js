@@ -1,10 +1,15 @@
 module.exports = {
     dist: {
-        files: {
-            'build/app.js': [ 'js/*.{jsx,js}' ]
-        },
+        files: [{
+          expand: true,
+          cwd: 'js',
+          src: ['*.js'],
+          dest: 'lib',
+          ext: '.js'
+        }],
         options: {
-            sourceMap: true
+            sourceMap: false,
+            presets: ['babel-preset-es2015', 'react']
         }
     }
 };

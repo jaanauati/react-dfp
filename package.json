@@ -1,18 +1,36 @@
 {
   "name": "react-dfp",
-  "version": "0.0.0",
+  "version": "0.3.0",
   "author": {
     "name": "Jonatan Alexis Anauati",
     "email": "barakawins@gmail.com"
   },
+  "bugs": {
+    "mail": "barakawins@gmail.com",
+    "url": "http://github.com/jaanauati/react-dfp/issues"
+  },
+  "keywords": [
+    "react",
+    "gpt",
+    "dfp",
+    "google dfp",
+    "advertising",
+    "react-component"
+  ],
+  "main": "lib/index.js",
+  "peerDependencies": {
+    "react": ">=0.14.0",
+    "react-dom": ">=0.14.0"
+  },
   "devDependencies": {
     "array.from": "^1.0.1",
-    "autoprefixer-core": "^5.2.1",
     "babel": "^6.5.2",
-    "babel-eslint": "^3.1.26",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-polyfill": "^6.7.4",
     "babel-preset-airbnb": "^1.1.1",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
     "babelify": "^7.3.0",
     "brfs": "^1.4.2",
     "browser-sync": "^1.8.3",
@@ -20,28 +38,17 @@
     "browserify-istanbul": "^0.2.1",
     "browserify-shim": "^3.8.0",
     "chai": "^2.2.0",
-    "enzyme": "^2.2.0",
     "escope": "^3.3.0",
-    "eslint": "^1.10.3",
-    "eslint-config-airbnb": "0.0.7",
-    "eslint-plugin-react": "^3.16.1",
+    "eslint": "^2.10.0",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-react": "^5.1.1",
     "estraverse": "^4.2.0",
     "grunt": "0.4.x",
-    "grunt-babel": "^5.0.0",
-    "grunt-browser-sync": "^1.5.3",
-    "grunt-browserify": "^3.3.0",
+    "grunt-babel": "^6.0.0",
     "grunt-contrib-clean": "^0.4.1",
-    "grunt-contrib-compass": "~0.6.0",
-    "grunt-contrib-concat": "~0.1.3",
-    "grunt-contrib-copy": "^0.4.1",
-    "grunt-contrib-csslint": "^0.2.0",
-    "grunt-contrib-uglify": "^0.2.7",
-    "grunt-contrib-watch": "^0.4.4",
-    "grunt-eslint": "^13.0.0",
+    "grunt-eslint": "^18.1.0",
     "grunt-karma": "^0.9.0",
     "grunt-mocha": "~0.4.10",
-    "grunt-postcss": "^0.5.5",
-    "grunt-scss-lint": "^0.1.12",
     "jasmine-core": "^2.4.1",
     "karma": "^0.12.31",
     "karma-babel-preprocessor": "^6.0.1",
@@ -68,5 +75,16 @@
   },
   "engines": {
     "node": "<=6.0.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/jaanauati/react-dfp/raw/master/LICENSE"
+    }
+  ],
+  "babel": {
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
   }
 }

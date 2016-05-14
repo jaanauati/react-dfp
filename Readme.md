@@ -41,13 +41,20 @@ DFPManager.load();
 #### Public methods
 | Property           | Type          | Example     | Description |
 | ------------------ | ------------- | ----------- | -------     |
-| load               | ```fcn() ```| ```DFPManager.init(); ```  | Fetch gpt api (by calling init()) and render the ad slots in the page. |
+| load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ``` DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
 | targetingArguments |               |             |             |
+| getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
 
 #### For Internal Usage Only
 | Property           | Type          | Example     | Description |
 | ------------------ | ------------- | ----------- | -------     |
-| init               | ```fcn() => Promise ```| ```DFPManager.init(); ```| Fetch the gpt scripts from network. Returns a promise that resolves when the gpt api is ready for usage. |
+| init               | ```fcn() => Promise ```| ```DFPManager.init(); ```| Initializes the dfp manager (fetches the gpt scripts from network). Returns a promise that resolves when the gpt api is ready for usage. |
 | attachSlotRenderEnded  | ``` fcn( fcn({slotId, event}) ) ``` | ``` DFPManager.attachSlotRenderEnded((id, event) => {console.log(event.size); }) ``` | Attaches a callback that will be called when an ad slot is rendered (or refreshed). slotId is the id of slot. event is the gpt event data. |
 | detachSlotRenderEnded | ``` fcn(callback) ``` | ``` DFPManager.detachSlotRenderEnded(myCallback) ``` | Detaches the callback. |
+
+## Wanna help?
+I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.
+
+## Complains.
+Pull requests are welcome 🍻.

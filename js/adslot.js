@@ -11,48 +11,89 @@ export const AdSlot = React.createClass({
     adUnit: React.PropTypes.string.isRequired,
     sizes: React.PropTypes.arrayOf(
       React.PropTypes.arrayOf(React.PropTypes.number)
-    ).isRequired,
+    ),
+    renderOutOfThePage: React.PropTypes.bool,
+    sizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
+    fetchNow: React.PropTypes.bool,
     targetingArguments: React.PropTypes.object,
     onSlotRender: React.PropTypes.func,
     shouldRefresh: React.PropTypes.func,
     slotId: React.PropTypes.string,
   },
   
+  
   getDefaultProps() {
-    let seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;
     return {
-      slotId: `adSlot-${seconds}`,
+      fetchNow: false,
     };
   },
   
-  componentDidMount() {
-    const slotData = Object.assign({slotShouldRefresh: this.slotShouldRefresh}, this.props);
-    DFPManager.registerSlot(slotData);
+  generateSlotId() {
+    let slotId = this.props.slotId;
+    if (slotId === undefined) {
+      let seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;  
+      slotId = `adSlot-${seconds}`;
+    }
+    return slotId
+  },
+  
+  getSlotId() {
+    return this.props.slotId || this.state.slotId;
+  },
+
+  registerSlot() {
+    DFPManager.registerSlot({ ...this.props, ...this.state, slotShouldRefresh: this.slotShouldRefresh });
+    if (this.props.fetchNow === true) {
+      DFPManager.load(this.getSlotId());
+    }
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
+  },
+  
+  unregisterSlot() {
+    DFPManager.unregisterSlot({ ...this.props, ...this.state });
+    DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
+  },
+
+  getInitialState() {
+    return { ...this.props, slotId: this.generateSlotId() };
+  },
+  
+  componentDidMount() {
+    this.registerSlot();
   },
 
   render() {
     return (
-      <div className="adunitContainer"> <div id={this.props.slotId} className="adBox" /> </div>
+      <div className="adunitContainer"> <div id={this.getSlotId()} className="adBox" /> </div>
     );
   },
 
   componentWillUmount() {
-    DFPManager.unregisterSlot(this.props);
-    DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
+    this.unregisterSlot();
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.hasOwnProperty('objectId')) {
+      let state = this.state;
+      state.slotId = this.generateSlotId();
+      this.unregisterSlot();
+      this.setState(state);
+      this.registerSlot();
+    }
   },
 
   slotRenderEnded(eventData) {
-    if (eventData.slotId === this.props.slotId) {
-      this.props.onSlotRender(eventData);
+    if (eventData.slotId === this.getSlotId()) {
+      if (this.props.onSlotRender !== undefined) { 
+        this.props.onSlotRender(eventData);
+      }
     }
   },
 
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      const {dfpNetworkId, adUnit, slotId, sizes} = this.props;
-      r = this.props.shouldRefresh({dfpNetworkId, adUnit, slotId, sizes});
+      r = this.props.shouldRefresh({...this.props, slotId: this.getSlotId()});
     }
     return r;
   },

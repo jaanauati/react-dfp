@@ -1,20 +1,10 @@
 default:
-  - 'build'
-
-build:
-  - 'clean'
-  - 'browserify'
+  - 'dist'
 
 dist:
-  - 'build'
-  - 'test'
-  - 'uglify'
-  - 'copy:dist'
+  - 'clean'
+  - 'babel:dist'
   
-dev:
-  - 'build'
-  - 'browserSync'
-  - 'watch'
-
 test:
+  - 'dist'
   - 'karma:unit'

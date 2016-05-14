@@ -1,6 +1,12 @@
 {
     "extends": "airbnb",
     "plugins": [
-        "react"
-    ]
+      "react"
+    ],
+    "globals": {
+      "googletag": true
+    },
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
 }
