@@ -12,14 +12,50 @@ npm install --save-dev react-dfp
 ```
    import {AdSlot} from 'react-dfp';
    ...
-   <AdSlot dfpNetworkId={9999} path={"foo/bar/baz"} sizes={[ [900, 90], [728, 90]]}/>
+   <AdSlot dfpNetworkId={9999} path={"foo/bar/baz"} sizes={[ [900, 90], [728, 90]]} />
    
-   <AdSlot dfpNetworkId={9999} path={"foo/bar/baz"} sizes={[ [300, 250], [300, 600]]}/>
+   <AdSlot dfpNetworkId={9999} path={"foo/bar/baz"} sizes={[ [300, 250], [300, 600]]} />
 ```
 2) Render ads:
 ```
 import {DFPManager} from 'react-dfp';
 ...
+DFPManager.load();
+```
+
+3) Example:
+```
+import React from 'react';
+import ReactDom from 'react-dom';
+
+import {AdSlot, DFPManager} from 'react-dfp';
+
+window.DFPManager = DFPManager;
+
+window.loadSecondaryAd = function() {
+    ReactDom.render(<AdSlot sizes={[[300, 250]]}
+                         dfpNetworkId='9999'
+                         adUnit='ng.home/homepage'
+                         />,
+                    document.querySelectorAll(".ad-container-2")[0]);
+};
+
+ReactDom.render( <AdSlot sizes={[[728,90], [300, 250]]}
+                         dfpNetworkId='9999'
+                         adUnit='ng.home/homepage' 
+                         targetingArguments={ {'customKw': 'test'} }
+                         sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
+                                         {viewport: [900, 768], sizes:[[300, 250]] }] }
+                         onSlotRender={window.loadSecondaryAd}
+                         /* never refresh this adSlot */
+                         shouldRefresh={ ()=> false)} }
+                         />,
+                document.querySelectorAll(".ad-container")[0]);
+DFPManager.setTargetingArguments({'key': 'oh'});
+
+// refresh ads every 15 seconds
+window.setInterval(function refreshAds() { DFPManager.refresh(); }, 15000);
+
 DFPManager.load();
 ```
 
