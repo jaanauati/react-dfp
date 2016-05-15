@@ -101,7 +101,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     } else {
       googletag.cmd.push(() => {
         let slotsToRefresh = Object.keys(registeredSlots).map((k) => registeredSlots[k]);
-        slotsToRefresh.filter((slotData) => slotData.slotShouldRefresh());
+        slotsToRefresh = slotsToRefresh.filter((slotData) => slotData.slotShouldRefresh());
         slotsToRefresh = slotsToRefresh.map((slotData) => slotData.gptSlot);
         googletag.pubads().refresh(slotsToRefresh);
       });
