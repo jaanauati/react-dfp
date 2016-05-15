@@ -30,15 +30,13 @@ import ReactDom from 'react-dom';
 
 import {AdSlot, DFPManager} from 'react-dfp';
 
-window.DFPManager = DFPManager;
-
-window.loadSecondaryAd = function() {
+function loadSecondaryAd() {
     ReactDom.render(<AdSlot sizes={[[300, 250]]}
                          dfpNetworkId='9999'
                          adUnit='ng.home/homepage'
                          />,
                     document.querySelectorAll(".ad-container-2")[0]);
-};
+}
 
 ReactDom.render( <AdSlot sizes={[[728,90], [300, 250]]}
                          dfpNetworkId='9999'
@@ -46,9 +44,9 @@ ReactDom.render( <AdSlot sizes={[[728,90], [300, 250]]}
                          targetingArguments={ {'customKw': 'test'} }
                          sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
                                          {viewport: [900, 768], sizes:[[300, 250]] }] }
-                         onSlotRender={window.loadSecondaryAd}
+                         onSlotRender={loadSecondaryAd}
                          /* never refresh this adSlot */
-                         shouldRefresh={ ()=> false)} }
+                         shouldRefresh={ ()=> false }
                          />,
                 document.querySelectorAll(".ad-container")[0]);
 DFPManager.setTargetingArguments({'key': 'oh'});
