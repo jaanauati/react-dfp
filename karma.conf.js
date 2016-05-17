@@ -1,14 +1,14 @@
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['browserify', 'jasmine'],
+    frameworks: ['jasmine', 'browserify'],
     files: [
-      'spec/*.js',
       'lib/*.js',
+      'spec/*.js'
     ],
     preprocessors: {
-      'spec/*.js': [ 'browserify'],
-      'lib/*.js': [ 'browserify'],
+      'lib/*.js': [ 'browserify' ],
+      'spec/*.js': [ 'browserify' ],
     },
     browserify: {
       configure: function browserify(bundle) {
@@ -20,12 +20,12 @@ module.exports = function(config) {
     client: {
       captureConsole: true,
     },
-    reporters: ['progress'],
-    port: 9876,
+    reporters: ['mocha'],
+    port: 9877,
     colors: true,
-    logLevel: config.LOG_INFO,
     autoWatch: false,
-    browsers: ['PhantomJS'],
+    browsers: ['jsdom'],
     singleRun: true,
+    browserNoActivityTimeout: 2000
   });
 };

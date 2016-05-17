@@ -4,7 +4,11 @@
       "react"
     ],
     "globals": {
-      "googletag": true
+      "googletag": true,
+      "describe": true,
+      "expect": true,
+      "it": true,
+      "beforeEach": true
     },
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true
