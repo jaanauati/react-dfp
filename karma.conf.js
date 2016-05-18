@@ -11,6 +11,7 @@ module.exports = function(config) {
       'spec/*.js': [ 'browserify' ],
     },
     browserify: {
+      debug: true,
       configure: function browserify(bundle) {
         bundle.once('prebundle', function prebundle() {
           bundle.transform('babelify', { presets: ['es2015', 'react'] });
