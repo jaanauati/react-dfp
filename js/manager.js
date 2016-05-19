@@ -141,7 +141,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
   },
 
   detachSlotRenderEnded(cb) {
-    this.off('slotRenderEnded', cb);
+    this.removeListener('slotRenderEnded', cb);
   },
 
 });

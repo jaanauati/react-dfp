@@ -68,7 +68,7 @@ export const AdSlot = React.createClass({
     );
   },
 
-  componentWillUmount() {
+  componentWillUnmount() {
     this.unregisterSlot();
   },
 
