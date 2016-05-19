@@ -16,7 +16,16 @@ export const DFPManager = Object.assign(new EventEmitter(), {
   getTargetingArguments() {
     return { ...globalTargetingArguments };
   },
-  
+
+  getSlotTargetingArguments(slotId) {
+    const slot = this.getRegisteredSlots()[slotId];
+    let ret = null;
+    if (slot !== undefined && slot.targetingArguments !== undefined) {
+      ret = { ...slot.targetingArguments };
+    }
+    return ret;
+  },
+
   init() {
     if (managerAlreadyInitialized === false) {
       managerAlreadyInitialized = true;
@@ -69,10 +78,11 @@ export const DFPManager = Object.assign(new EventEmitter(), {
             gptSlot = googletag.defineSlot(adUnit, slot.sizes, currentSlotId);
           }
           slot.gptSlot = gptSlot;
-          if (slot.targetingArguments) {
-            Object.keys(slot.targetingArguments).forEach((varName) => {
-              if (slot.targetingArguments.hasOwnProperty(varName)) {
-                slot.gptSlot.setTargeting(varName, slot.targetingArguments[varName]);
+          const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
+          if (slotTargetingArguments !== null) {
+            Object.keys(slotTargetingArguments).forEach((varName) => {
+              if (slotTargetingArguments.hasOwnProperty(varName)) {
+                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
               }
             });
           }
@@ -100,16 +110,22 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     loadAlreadyCalled = true;
   },
 
+  getRefreshableSlots() {
+    const slotsToRefresh = Object.keys(registeredSlots).map(
+      (k) => registeredSlots[k]
+    );
+    return slotsToRefresh.filter((slotData) => slotData.slotShouldRefresh());
+  },
+  
   refresh() {
     if (loadAlreadyCalled === false) {
       this.load();
     } else {
       this.getGoogletag().then((googletag) => {
         googletag.cmd.push(() => {
-          let slotsToRefresh = Object.keys(registeredSlots).map((k) => registeredSlots[k]);
-          slotsToRefresh = slotsToRefresh.filter((slotData) => slotData.slotShouldRefresh());
-          slotsToRefresh = slotsToRefresh.map((slotData) => slotData.gptSlot);
-          googletag.pubads().refresh(slotsToRefresh);
+          googletag.pubads().refresh(
+            this.getRefreshableSlots().map((slotData) => slotData.gptSlot)
+          );
         });
       });
     }
