@@ -64,7 +64,7 @@
     "react": "^15.0.2",
     "react-addons-test-utils": "^15.0.2",
     "react-dom": "^15.0.2",
-    "sinon": "^1.12.2",
+    "sinon": "^1.17.4",
     "sinon-chai": "^2.6.0",
     "time-grunt": "^0.2.10",
     "watchify": "^2.4.0"
