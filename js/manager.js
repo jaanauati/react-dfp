@@ -36,7 +36,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
             const slotId = event.slot.getSlotElementId();
             this.emit('slotRenderEnded', { slotId, event });
           });
-          const targetingArguments = this.getGlobalTargetingArguments();
+          const targetingArguments = this.getTargetingArguments();
           Object.keys(targetingArguments).forEach((varName) => {
             if (targetingArguments.hasOwnProperty(varName)) {
               pubadsService.setTargeting(varName, targetingArguments[varName]);
@@ -114,7 +114,12 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     const slotsToRefresh = Object.keys(registeredSlots).map(
       (k) => registeredSlots[k]
     );
-    return slotsToRefresh.filter((slotData) => slotData.slotShouldRefresh());
+    return slotsToRefresh.reduce( (val, slot) => { 
+      if (slot.slotShouldRefresh() === true) {
+        val[slot.slotId] = slot; 
+      }
+      return val; 
+    }, {});
   },
   
   refresh() {
@@ -122,9 +127,10 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       this.load();
     } else {
       this.getGoogletag().then((googletag) => {
+        const slotsToRefresh = this.getRefreshableSlots();
         googletag.cmd.push(() => {
           googletag.pubads().refresh(
-            this.getRefreshableSlots().map((slotData) => slotData.gptSlot)
+            Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot)
           );
         });
       });

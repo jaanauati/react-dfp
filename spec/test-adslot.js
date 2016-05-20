@@ -62,7 +62,9 @@ describe('AdSlot', () => {
       TestUtils.renderIntoDocument(
         <AdSlot { ...compProps} />
       );
-      expect(DFPManager.getRefreshableSlots()[0]).to.contain.all.keys(compProps);
+
+      expect(DFPManager.getRefreshableSlots()).to.contain.all.keys([compProps.slotId]);
+      expect(DFPManager.getRefreshableSlots()[compProps.slotId]).to.contain.all.keys(compProps);
     });
 
     it('Registers a non refreshable AdSlot', () => {
@@ -77,7 +79,7 @@ describe('AdSlot', () => {
       TestUtils.renderIntoDocument(
         <AdSlot { ...compProps} />
       );
-      expect(DFPManager.getRefreshableSlots().length).to.equal(0);
+      expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
 
     it('Registers an AdSlot with custom targeting arguments', () => {

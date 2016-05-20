@@ -88,8 +88,8 @@ DFPManager.load();
 | attachSlotRenderEnded  | ``` fcn( fcn({slotId, event}) ) ``` | ``` DFPManager.attachSlotRenderEnded((id, event) => {console.log(event.size); }) ``` | Attaches a callback that will be called when an ad slot is rendered (or refreshed). slotId is the id of slot. event is the gpt event data. |
 | detachSlotRenderEnded | ``` fcn(callback) ``` | ``` DFPManager.detachSlotRenderEnded(myCallback) ``` | Detaches the callback. |
 | getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the global targeting arguments. |
-| getRegisteredSlots | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getRegisteredSlots()) ``` | Returns an object whose attributes are the registered slots. Example: {slotId: {data}, .... }|
-| getRefreshableSlots | ``` fcn() => [] ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns the list of slots that can be refreshed. |
+| getRegisteredSlots | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getRegisteredSlots()) ``` | Returns an object whose attributes are the registered slots. Example: {slotId: { data }, .... }|
+| getRefreshableSlots | ``` fcn() => { slotId:{ slot }, ... } ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns an object whose properties are slots that can be refreshed (see property ```shouldRefresh``` ). |
 | getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |
   
 
