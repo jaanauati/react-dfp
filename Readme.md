@@ -87,6 +87,10 @@ DFPManager.load();
 | init               | ```fcn() => Promise ```| ```DFPManager.init(); ```| Initializes the dfp manager (fetches the gpt scripts from network). Returns a promise that resolves when the gpt api is ready for usage. |
 | attachSlotRenderEnded  | ``` fcn( fcn({slotId, event}) ) ``` | ``` DFPManager.attachSlotRenderEnded((id, event) => {console.log(event.size); }) ``` | Attaches a callback that will be called when an ad slot is rendered (or refreshed). slotId is the id of slot. event is the gpt event data. |
 | detachSlotRenderEnded | ``` fcn(callback) ``` | ``` DFPManager.detachSlotRenderEnded(myCallback) ``` | Detaches the callback. |
+| getRegisteredSlots | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getRegisteredSlots()) ``` | Returns an object whose attributes are the registered slots. Example: ``` { slotId: { data }, .... }```|
+| getRefreshableSlots | ``` fcn() => { slotId:{ slot }, ... } ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns an object whose properties are slots that can be refreshed (see property ```shouldRefresh``` ). |
+| getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the targeting arguments (configured through ```DFPManager.setTargetingArguments()```) |
+| getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |  
 
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.
