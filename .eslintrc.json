@@ -11,9 +11,12 @@
       "beforeEach": true,
       "afterEach": true
     },
-    "parserOptions":{
+    "parserOptions": {
       "ecmaFeatures": {
         "experimentalObjectRestSpread": true
       }
+    },
+    "rules": {
+      "react/prefer-es6-class": 0
     }
 }
