@@ -114,14 +114,15 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     const slotsToRefresh = Object.keys(registeredSlots).map(
       (k) => registeredSlots[k]
     );
-    return slotsToRefresh.reduce( (val, slot) => { 
+    const slots = {};
+    return slotsToRefresh.reduce((last, slot) => {
       if (slot.slotShouldRefresh() === true) {
-        val[slot.slotId] = slot; 
+        slots[slot.slotId] = slot;
       }
-      return val; 
-    }, {});
+      return slots;
+    }, slots);
   },
-  
+
   refresh() {
     if (loadAlreadyCalled === false) {
       this.load();
@@ -153,11 +154,11 @@ export const DFPManager = Object.assign(new EventEmitter(), {
   unregisterSlot({ slotId }) {
     delete registeredSlots[slotId];
   },
-  
+
   getRegisteredSlots() {
     return registeredSlots;
   },
-  
+
   attachSlotRenderEnded(cb) {
     this.on('slotRenderEnded', cb);
   },
