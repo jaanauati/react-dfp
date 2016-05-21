@@ -20,7 +20,7 @@ describe('DFPManager', () => {
   describe('Creation of ad slots ', () => {
     beforeEach(function beforeEach() {
       this.slotProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement',
         sizes: [[728, 90]],
