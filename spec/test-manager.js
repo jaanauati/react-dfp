@@ -1,23 +1,23 @@
 import { expect } from 'chai';
 import { DFPManager } from '../lib';
 
-describe('DFPManager', function adSlot() {
-
-  describe('Targeting arguments', function dfpManagerInteraction() {
+describe('DFPManager', () => {
+  describe('Targeting arguments', () => {
     beforeEach(function beforeEach() {
-      this.argsList1 = {'k': 'yeah'};
-      this.argsList2 = {'k': 'yeah'};
+      this.argsList1 = { k: 'yeah' };
+      this.argsList2 = { k: 'yeah' };
       DFPManager.setTargetingArguments(this.argsList1);
       DFPManager.setTargetingArguments(this.argsList2);
     });
 
     it('Registers global targeting arguments', function registersAdSlot() {
-      expect(DFPManager.getTargetingArguments()).to.contain.keys({ ...this.argsList1, ...this.argsList2});
+      expect(DFPManager.getTargetingArguments()).to.contain.keys(
+        { ...this.argsList1, ...this.argsList2 }
+      );
     });
-
   });
 
-  describe('Creation of ad slots ', function dfpManagerInteraction() {
+  describe('Creation of ad slots ', () => {
     beforeEach(function beforeEach() {
       this.slotProps = {
         dfpNetworkId: 1000,
