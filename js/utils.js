@@ -21,17 +21,3 @@ export function loadGPTScript() {
   });
 }
 
-let docIsReady = null;
-export function onDocumentReady() {
-  if (docIsReady === null) {
-    docIsReady = new Promise((resolve) => {
-      if (document.readyState !== 'loading') {
-        resolve();
-      } else {
-        document.addEventListener('DOMContentLoaded', () => resolve());
-      }
-    });
-  }
-  return docIsReady;
-}
-
