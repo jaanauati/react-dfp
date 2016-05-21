@@ -1,5 +1,6 @@
 # React DFP
-Inspired on jquery.dfp :-)... gpt/dfp components for react.
+Gpt/dfp components that you can easily use in your isomorphic react apps. This package is inspired in the awesome library [jquery.dfp](https://github.com/coop182/jquery.dfp.js), and aims to provide its same ease of usage but, of course, taking into consideration the react concepts & lifecycle features.
+
 
 ## Install:
 ```

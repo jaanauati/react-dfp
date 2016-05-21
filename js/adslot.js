@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {DFPManager} from './manager';
+import { DFPManager } from './manager';
 
 
 export const AdSlot = React.createClass({
@@ -20,61 +20,24 @@ export const AdSlot = React.createClass({
     shouldRefresh: React.PropTypes.func,
     slotId: React.PropTypes.string,
   },
-  
-  
+
   getDefaultProps() {
     return {
       fetchNow: false,
     };
   },
-  
-  generateSlotId() {
-    let slotId = this.props.slotId;
-    if (slotId === undefined) {
-      let seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;  
-      slotId = `adSlot-${seconds}`;
-    }
-    return slotId
-  },
-  
-  getSlotId() {
-    return this.props.slotId || this.state.slotId;
-  },
-
-  registerSlot() {
-    DFPManager.registerSlot({ ...this.props, ...this.state, slotShouldRefresh: this.slotShouldRefresh });
-    if (this.props.fetchNow === true) {
-      DFPManager.load(this.getSlotId());
-    }
-    DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
-  },
-  
-  unregisterSlot() {
-    DFPManager.unregisterSlot({ ...this.props, ...this.state });
-    DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
-  },
 
   getInitialState() {
     return { ...this.props, slotId: this.generateSlotId() };
   },
-  
+
   componentDidMount() {
     this.registerSlot();
   },
 
-  render() {
-    return (
-      <div className="adunitContainer"> <div id={this.getSlotId()} className="adBox" /> </div>
-    );
-  },
-
-  componentWillUnmount() {
-    this.unregisterSlot();
-  },
-
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.hasOwnProperty('objectId')) {
-      let state = this.state;
+      const state = this.state;
       state.slotId = this.generateSlotId();
       this.unregisterSlot();
       this.setState(state);
@@ -82,9 +45,40 @@ export const AdSlot = React.createClass({
     }
   },
 
+  componentWillUnmount() {
+    this.unregisterSlot();
+  },
+
+  getSlotId() {
+    return this.props.slotId || this.state.slotId;
+  },
+
+  generateSlotId() {
+    let slotId = this.props.slotId;
+    if (slotId === undefined) {
+      const seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;
+      slotId = `adSlot-${seconds}`;
+    }
+    return slotId;
+  },
+
+  registerSlot() {
+    DFPManager.registerSlot({ ...this.props, ...this.state,
+                              slotShouldRefresh: this.slotShouldRefresh });
+    if (this.props.fetchNow === true) {
+      DFPManager.load(this.getSlotId());
+    }
+    DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
+  },
+
+  unregisterSlot() {
+    DFPManager.unregisterSlot({ ...this.props, ...this.state });
+    DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
+  },
+
   slotRenderEnded(eventData) {
     if (eventData.slotId === this.getSlotId()) {
-      if (this.props.onSlotRender !== undefined) { 
+      if (this.props.onSlotRender !== undefined) {
         this.props.onSlotRender(eventData);
       }
     }
@@ -93,8 +87,15 @@ export const AdSlot = React.createClass({
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      r = this.props.shouldRefresh({...this.props, slotId: this.getSlotId()});
+      r = this.props.shouldRefresh({ ...this.props, slotId: this.getSlotId() });
     }
     return r;
   },
+
+  render() {
+    return (
+      <div className="adunitContainer"> <div id={this.getSlotId()} className="adBox" /> </div>
+    );
+  },
+
 });
