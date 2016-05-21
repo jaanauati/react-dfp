@@ -2,6 +2,7 @@ default:
   - 'dist'
 
 dist:
+  - 'eslint'
   - 'clean'
   - 'babel:dist'
   
