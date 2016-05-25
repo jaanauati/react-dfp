@@ -14,7 +14,7 @@ export const AdSlotsManager = React.createClass({
   },
 
   childContextTypes: {
-    dfpNetworkId: React.PropTypes.string.isRequired,
+    dfpNetworkId: React.PropTypes.string,
     dfpAdUnit: React.PropTypes.string,
     dfpSizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
     dfpTargetingArguments: React.PropTypes.object,
