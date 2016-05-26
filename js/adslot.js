@@ -88,9 +88,9 @@ export const AdSlot = React.createClass({
   },
 
   registerSlot() {
-    DFPManager.registerSlot({ ...this.props, ...this.state,
-                              slotShouldRefresh: this.slotShouldRefresh,
-                              ...this.mapContextToAdSlotProps() });
+    DFPManager.registerSlot({ ...this.mapContextToAdSlotProps(),
+                              ...this.props, ...this.state,
+                              slotShouldRefresh: this.slotShouldRefresh });
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
     }
@@ -98,8 +98,8 @@ export const AdSlot = React.createClass({
   },
 
   unregisterSlot() {
-    DFPManager.unregisterSlot({ ...this.props, ...this.state,
-                                ...this.mapContextToAdSlotProps() });
+    DFPManager.unregisterSlot({ ...this.mapContextToAdSlotProps(),
+                                ...this.props, ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
   },
 
@@ -114,8 +114,8 @@ export const AdSlot = React.createClass({
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      r = this.props.shouldRefresh({ ...this.props, slotId: this.getSlotId(),
-                                     ...this.mapContextToAdSlotProps() });
+      r = this.props.shouldRefresh({ ...this.mapContextToAdSlotProps(),
+                                     ...this.props, slotId: this.getSlotId() });
     }
     return r;
   },
