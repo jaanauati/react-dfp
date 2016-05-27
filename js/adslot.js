@@ -21,6 +21,13 @@ export const AdSlot = React.createClass({
     slotId: React.PropTypes.string,
   },
 
+  contextTypes: {
+    dfpNetworkId: React.PropTypes.string,
+    dfpAdUnit: React.PropTypes.string,
+    dfpSizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
+    dfpTargetingArguments: React.PropTypes.object,
+  },
+
   getDefaultProps() {
     return {
       fetchNow: false,
@@ -28,7 +35,7 @@ export const AdSlot = React.createClass({
   },
 
   getInitialState() {
-    return { ...this.props, slotId: this.generateSlotId() };
+    return { slotId: this.generateSlotId() };
   },
 
   componentDidMount() {
@@ -62,8 +69,27 @@ export const AdSlot = React.createClass({
     return slotId;
   },
 
+  mapContextToAdSlotProps() {
+    const context = this.context;
+    const mappedProps = {};
+    if (context.dfpNetworkId !== undefined) {
+      mappedProps.dfpNetworkId = context.dfpNetworkId;
+    }
+    if (context.dfpAdUnit !== undefined) {
+      mappedProps.adUnit = context.dfpAdUnit;
+    }
+    if (context.dfpSizeMapping !== undefined) {
+      mappedProps.sizeMapping = context.dfpSizeMapping;
+    }
+    if (context.dfpTargetingArguments !== undefined) {
+      mappedProps.targetingArguments = context.dfpTargetingArguments;
+    }
+    return mappedProps;
+  },
+
   registerSlot() {
-    DFPManager.registerSlot({ ...this.props, ...this.state,
+    DFPManager.registerSlot({ ...this.mapContextToAdSlotProps(),
+                              ...this.props, ...this.state,
                               slotShouldRefresh: this.slotShouldRefresh });
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
@@ -72,7 +98,8 @@ export const AdSlot = React.createClass({
   },
 
   unregisterSlot() {
-    DFPManager.unregisterSlot({ ...this.props, ...this.state });
+    DFPManager.unregisterSlot({ ...this.mapContextToAdSlotProps(),
+                                ...this.props, ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
   },
 
@@ -87,7 +114,8 @@ export const AdSlot = React.createClass({
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      r = this.props.shouldRefresh({ ...this.props, slotId: this.getSlotId() });
+      r = this.props.shouldRefresh({ ...this.mapContextToAdSlotProps(),
+                                     ...this.props, slotId: this.getSlotId() });
     }
     return r;
   },

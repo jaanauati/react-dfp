@@ -1,4 +1,3 @@
-import { DFPManager } from './manager';
-import { AdSlot } from './adslot';
-
-export { DFPManager, AdSlot };
+export { DFPManager } from './manager';
+export { AdSlot } from './adslot';
+export { DFPSlotsProvider } from './dfpslotsprovider';
