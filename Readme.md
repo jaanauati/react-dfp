@@ -11,7 +11,7 @@ npm install --save-dev react-dfp
 
 1) Create the adslots:
 ```
-   import {DFPSlotsProvider, AdSlot} from 'react-dfp';
+   import { DFPSlotsProvider, AdSlot } from 'react-dfp';
    
    <DFPSlotsProvider dfpNetworkId={'9999'} adUnit={"foo/bar/baz"} ... >
      ...
@@ -24,7 +24,7 @@ npm install --save-dev react-dfp
 ```
 2) (*Optional*) Render or refresh the ads:
 ```
-import {DFPManager} from 'react-dfp';
+import { DFPManager } from 'react-dfp';
 ...
 /* If you are using ``` <DFPSlotsProvider> ``` the following call won't be required,  
  * unless you has set the property ``` autoLoad={false} ```.
@@ -39,10 +39,10 @@ DFPManager.refresh();
 ```
 import React from 'react';
 import ReactDom from 'react-dom';
-import {DFPSlotsProvider, AdSlot} from 'react-dfp';
+import { DFPSlotsProvider, AdSlot } from 'react-dfp';
 
 ReactDom.render( 
-  <AdSlotsManager dfpNetworkId='9999' targetingArguments={ {'customKw': 'test'} }
+  <DFPSlotsProvider dfpNetworkId='9999' targetingArguments={ {'customKw': 'test'} }
                 sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
                                 {viewport: [900, 768], sizes:[[300, 250]] }] }>
     <div className="desktop-ads">
@@ -52,7 +52,7 @@ ReactDom.render(
       <AdSlot sizes={[[320,50], [300, 50]]} adUnit='homepage/mobile' />
     </div>
     ...
-  </AdSlotsManager>,
+  </DFPSlotsProvider>,
 document.querySelectorAll(".ad-container")[0]);
 ```
 
