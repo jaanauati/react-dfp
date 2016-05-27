@@ -34,7 +34,8 @@ DFPManager.load();
 DFPManager.refresh();
 ```
 
-3) Examples :
+3) Examples:
+
 3.1) Example 1: Basic:
 ```
 import React from 'react';
@@ -56,7 +57,7 @@ ReactDom.render(
 document.querySelectorAll(".ad-container")[0]);
 ```
 
-3.2) Example 2: (manually) loading and refreshing.
+3.2) Example 2: (manually) load and refresh ads.
 ```
 import React from 'react';
 import ReactDom from 'react-dom';
