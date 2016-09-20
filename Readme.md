@@ -57,7 +57,7 @@ ReactDom.render(
 document.querySelectorAll(".ad-container")[0]);
 ```
 
-3.2) Example 2: (manually) load and refresh ads.
+3.2) Example 2: (manually) oad and refresh ads.
 ```
 import React from 'react';
 import ReactDom from 'react-dom';
@@ -123,7 +123,7 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ``` DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
-| targetingArguments |               |             |             |
+| targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to enable globaly (you can use this for custom targeting) |
 | getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
 
 #### For Internal Usage Only
