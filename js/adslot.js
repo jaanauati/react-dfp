@@ -7,8 +7,8 @@ export const AdSlot = React.createClass({
   displayName: 'AdSlot',
 
   propTypes: {
-    dfpNetworkId: React.PropTypes.string.isRequired,
-    adUnit: React.PropTypes.string.isRequired,
+    dfpNetworkId: React.PropTypes.string,
+    adUnit: React.PropTypes.string,
     sizes: React.PropTypes.arrayOf(
       React.PropTypes.arrayOf(React.PropTypes.number)
     ),

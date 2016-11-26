@@ -14,7 +14,7 @@ describe('AdSlot', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
         <AdSlot
-          dfpNetworkId={1000}
+          dfpNetworkId="1000"
           adUnit={'foo/bar/baz'}
           slotId={'testElement'}
           sizes={[[728, 90]]}
@@ -37,7 +37,7 @@ describe('AdSlot', () => {
 
     it('Registers an AdSlot', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement1',
         sizes: [[728, 90]],
@@ -53,7 +53,7 @@ describe('AdSlot', () => {
 
     it('Registers a refreshable AdSlot', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement2',
         sizes: [[728, 90]],
@@ -69,7 +69,7 @@ describe('AdSlot', () => {
 
     it('Registers a non refreshable AdSlot', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement3',
         sizes: [[728, 90]],
@@ -84,7 +84,7 @@ describe('AdSlot', () => {
 
     it('Registers an AdSlot with custom targeting arguments', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement4',
         sizes: [[728, 90]],
@@ -100,7 +100,7 @@ describe('AdSlot', () => {
 
     it('Registers an AdSlot without custom targeting arguments', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement5',
         sizes: [[728, 90]],
@@ -115,7 +115,7 @@ describe('AdSlot', () => {
 
     it('Unregisters an AdSlot', () => {
       const compProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         slotId: 'testElement6',
         sizes: [[728, 90]],
