@@ -10,7 +10,10 @@ export const AdSlot = React.createClass({
     dfpNetworkId: React.PropTypes.string,
     adUnit: React.PropTypes.string,
     sizes: React.PropTypes.arrayOf(
-      React.PropTypes.arrayOf(React.PropTypes.number)
+      React.PropTypes.oneOfType([
+        React.PropTypes.arrayOf(React.PropTypes.number),
+        React.PropTypes.string,
+      ])
     ),
     renderOutOfThePage: React.PropTypes.bool,
     sizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -51,7 +54,6 @@ export const AdSlot = React.createClass({
       this.registerSlot();
     }
   },
-
   componentWillUnmount() {
     this.unregisterSlot();
   },

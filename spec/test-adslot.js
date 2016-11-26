@@ -10,16 +10,16 @@ import { AdSlot, DFPManager } from '../lib';
 
 describe('AdSlot', () => {
   describe('Component markup', () => {
+    const compProps = {
+      dfpNetworkId: '1000',
+      adUnit: 'foo/bar/baz',
+      slotId: 'testElement',
+      sizes: [[728, 90], 'fluid'],
+    };
+
     let component;
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(
-        <AdSlot
-          dfpNetworkId="1000"
-          adUnit={'foo/bar/baz'}
-          slotId={'testElement'}
-          sizes={[[728, 90]]}
-        />
-      );
+      component = TestUtils.renderIntoDocument(<AdSlot { ...compProps } />);
     });
 
     it('renders an adBox with the given elementId', () => {
