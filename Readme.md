@@ -109,7 +109,7 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | dfpNetworkId       | string (required)  |  ``` "1122" ```      | DFP Account id. |
 | adUnit             | string (required)  |  ``` "homepage" ```   | The adunit you want to target to this box. |
-| sizes              | array (required)   |  ```[ [300, 250], [300, 600] ] ``` | list of sizes that this box support ([width, height]). You can configure 1 or more sizes.|
+| sizes              | array (required)   |  ```[ [300, 250], [300, 600], 'fluid' ] ``` | list of sizes that this box support. Sizes can be specified by eigther and array like [width, height] or with strings ("dfp named sizes") like 'fluid'. You can configure 1 or more sizes.|
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } | Set the size mappings to be applied to the adSlot. |
 | targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to this box (you can use for custom targeting) |
 | onSlotRender       | fcn. (optional) | ``` function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the adSlot is rendered. The first argument passes the gpt event data (googletag.events.SlotRenderEndedEvent). |
