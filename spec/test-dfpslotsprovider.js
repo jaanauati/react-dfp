@@ -60,7 +60,7 @@ describe('DFPSlotsProvider', () => {
 
     it('Registers a refreshable AdSlot', () => {
       const providerProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
 
@@ -83,7 +83,7 @@ describe('DFPSlotsProvider', () => {
 
     it('Registers a non refreshable AdSlot', () => {
       const providerProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
 
@@ -103,7 +103,7 @@ describe('DFPSlotsProvider', () => {
 
     it('Registers an AdSlot with custom targeting arguments', () => {
       const providerProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
         targetingArguments: { team: 'river plate', player: 'pisculichi' },
       };
@@ -122,7 +122,7 @@ describe('DFPSlotsProvider', () => {
 
     it('Registers an AdSlot without custom targeting arguments', () => {
       const providerProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
       const compProps = {
@@ -141,7 +141,7 @@ describe('DFPSlotsProvider', () => {
 
     it('Unregisters an AdSlot', () => {
       const providerProps = {
-        dfpNetworkId: 1000,
+        dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
       const compProps = {
