@@ -19,7 +19,7 @@ describe('AdSlot', () => {
 
     let component;
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<AdSlot { ...compProps } />);
+      component = TestUtils.renderIntoDocument(<AdSlot {...compProps} />);
     });
 
     it('renders an adBox with the given elementId', () => {
@@ -44,7 +44,7 @@ describe('AdSlot', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
@@ -60,7 +60,7 @@ describe('AdSlot', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
 
       expect(DFPManager.getRefreshableSlots()).to.contain.all.keys([compProps.slotId]);
@@ -77,7 +77,7 @@ describe('AdSlot', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
@@ -92,7 +92,7 @@ describe('AdSlot', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId))
         .to.contain.all.keys(compProps.targetingArguments);
@@ -107,7 +107,7 @@ describe('AdSlot', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId)).to.equal(null);
     });
@@ -122,7 +122,7 @@ describe('AdSlot', () => {
       };
 
       const component = TestUtils.renderIntoDocument(
-        <AdSlot { ...compProps} />
+        <AdSlot {...compProps} />
       );
 
       ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);

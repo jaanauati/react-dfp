@@ -59,15 +59,26 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     let availableSlots = {};
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
-      if (slot !== undefined && slot.loaded !== true) {
+      if (slot !== undefined) {
         availableSlots[slotId] = slot;
       }
     } else {
       availableSlots = registeredSlots;
     }
+
+    availableSlots = Object.keys(availableSlots)
+      .filter(id => !availableSlots[id].loading)
+      .reduce(
+        (result, id) => Object.assign(
+          result,
+          { [id]: Object.assign(availableSlots[id], { loading: true }) }
+        ),
+        {}
+      );
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loaded = true;
+        availableSlots[currentSlotId].loading = false;
         googletag.cmd.push(() => {
           const slot = availableSlots[currentSlotId];
           let gptSlot;
@@ -144,6 +155,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       registeredSlots[slotId] = { slotId, sizes, renderOutOfThePage,
                                   dfpNetworkId, adUnit, targetingArguments,
                                   sizeMapping, slotShouldRefresh, loaded: false,
+                                  loading: false,
                                 };
     }
     if (loadAlreadyCalled === true) {
