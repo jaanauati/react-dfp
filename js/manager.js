@@ -77,7 +77,6 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       );
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
-        availableSlots[currentSlotId].loaded = true;
         availableSlots[currentSlotId].loading = false;
         googletag.cmd.push(() => {
           const slot = availableSlots[currentSlotId];
@@ -154,8 +153,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
     if (!registeredSlots.hasOwnProperty(slotId)) {
       registeredSlots[slotId] = { slotId, sizes, renderOutOfThePage,
                                   dfpNetworkId, adUnit, targetingArguments,
-                                  sizeMapping, slotShouldRefresh, loaded: false,
-                                  loading: false,
+                                  sizeMapping, slotShouldRefresh, loading: false,
                                 };
     }
     if (loadAlreadyCalled === true) {
