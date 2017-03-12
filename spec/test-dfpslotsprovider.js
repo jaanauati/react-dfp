@@ -18,7 +18,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       component = TestUtils.renderIntoDocument(
-        <DFPSlotsProvider DFPSlotsProvider { ...providerProps }>
+        <DFPSlotsProvider DFPSlotsProvider {...providerProps}>
           <AdSlot slotId={'testElement'} />
         </DFPSlotsProvider>
       );
@@ -49,8 +49,8 @@ describe('DFPSlotsProvider', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider DFPSlotsProvider { ...providerProps } >
-          <AdSlot { ...compProps } />
+        <DFPSlotsProvider DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
 
@@ -70,8 +70,8 @@ describe('DFPSlotsProvider', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider { ...providerProps }>
-          <AdSlot { ...compProps} />
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
 
@@ -94,8 +94,8 @@ describe('DFPSlotsProvider', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider { ...providerProps } >
-          <AdSlot { ...compProps } />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
@@ -112,8 +112,8 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider { ...providerProps } >
-          <AdSlot { ...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId))
@@ -131,8 +131,8 @@ describe('DFPSlotsProvider', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider { ...providerProps } >
-          <AdSlot { ...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId)).to.equal(null);
@@ -150,8 +150,8 @@ describe('DFPSlotsProvider', () => {
       };
 
       const component = TestUtils.renderIntoDocument(
-        <DFPSlotsProvider { ...providerProps } >
-          <AdSlot { ...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
         </DFPSlotsProvider>
       );
 
