@@ -140,5 +140,5 @@ DFPManager.load();
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.
 
-## Complains.
+## Complaints.
 Pull requests are welcome 🍻.
