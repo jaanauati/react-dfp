@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/jaanauati/react-dfp.git"
   },
-  "tasks": {
+  "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test"
   },
   "bugs": {
