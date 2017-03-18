@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://github.com/jaanauati/react-dfp.git"
   },
+  "tasks": {
+    "test": "./node_modules/grunt-cli/bin/grunt test"
+  },
   "bugs": {
     "mail": "barakawins@gmail.com",
     "url": "https://github.com/jaanauati/react-dfp/issues/"
@@ -53,6 +56,7 @@
     "estraverse": "^4.2.0",
     "grunt": "0.4.x",
     "grunt-babel": "^6.0.0",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^0.4.1",
     "grunt-eslint": "^18.1.0",
     "grunt-karma": "^1.0.0",
