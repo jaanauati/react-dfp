@@ -1,4 +1,5 @@
-# React DFP
+# React DFP  [![Build Status](https://travis-ci.org/jaanauati/react-dfp.svg?branch=master)](https://travis-ci.org/jaanauati/react-dfp)
+
 Gpt/dfp components that you can easily use in your isomorphic react apps. This package is inspired in the awesome library [jquery.dfp](https://github.com/coop182/jquery.dfp.js), and aims to provide its same ease of usage but, of course, taking into consideration the react concepts & lifecycle features.
 
 
@@ -12,7 +13,7 @@ npm install --save-dev react-dfp
 1) Create the adslots:
 ```
    import { DFPSlotsProvider, AdSlot } from 'react-dfp';
-   
+
    <DFPSlotsProvider dfpNetworkId={'9999'} adUnit={"foo/bar/baz"} ... >
      ...
       <AdSlot sizes={[ [900, 90], [728, 90]]} />
@@ -42,7 +43,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { DFPSlotsProvider, AdSlot } from 'react-dfp';
 
-ReactDom.render( 
+ReactDom.render(
   <DFPSlotsProvider dfpNetworkId='9999' targetingArguments={ {'customKw': 'test'} }
                 sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
                                 {viewport: [900, 768], sizes:[[300, 250]] }] }>
@@ -74,7 +75,7 @@ function loadSecondaryAd() {
 
 ReactDom.render( <AdSlot sizes={[[728,90], [300, 250]]}
                          dfpNetworkId='9999'
-                         adUnit='homepage/1' 
+                         adUnit='homepage/1'
                          targetingArguments={ {'customKw': 'test'} }
                          sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
                                          {viewport: [900, 768], sizes:[[300, 250]] }] }
