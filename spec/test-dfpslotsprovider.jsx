@@ -2,29 +2,30 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { AdSlot, DFPManager } from '../lib';
+import { DFPSlotsProvider, AdSlot, DFPManager } from '../lib';
 
-describe('AdSlot', () => {
+describe('DFPSlotsProvider', () => {
   describe('Component markup', () => {
-    const compProps = {
-      dfpNetworkId: '1000',
-      adUnit: 'foo/bar/baz',
-      slotId: 'testElement',
-      sizes: [[728, 90], 'fluid'],
-    };
-
     let component;
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(<AdSlot {...compProps} />);
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      component = TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
     });
 
     it('renders an adBox with the given elementId', () => {
-      const box = TestUtils.findRenderedDOMComponentWithClass(component,
-                                                              'adBox');
+      const box = TestUtils.findRenderedDOMComponentWithClass(component, 'adBox');
       expect(box.id).to.equal('testElement');
     });
   });
@@ -36,93 +37,121 @@ describe('AdSlot', () => {
     });
 
     it('Registers an AdSlot', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
         slotId: 'testElement1',
         sizes: [[728, 90]],
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
-      sinon.assert.calledWithMatch(DFPManager.registerSlot, compProps);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
     });
 
     it('Registers a refreshable AdSlot', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
         slotId: 'testElement2',
         sizes: [[728, 90]],
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
 
       expect(DFPManager.getRefreshableSlots()).to.contain.all.keys([compProps.slotId]);
-      expect(DFPManager.getRefreshableSlots()[compProps.slotId]).to.contain.all.keys(compProps);
+      expect(DFPManager.getRefreshableSlots()[compProps.slotId]).to.contain.all.keys(
+        { ...providerProps, ...compProps },
+      );
     });
 
     it('Registers a non refreshable AdSlot', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
         slotId: 'testElement3',
         sizes: [[728, 90]],
         shouldRefresh: () => false,
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
 
     it('Registers an AdSlot with custom targeting arguments', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
-        slotId: 'testElement4',
-        sizes: [[728, 90]],
         targetingArguments: { team: 'river plate', player: 'pisculichi' },
       };
-
+      const compProps = {
+        slotId: 'testElement4',
+        sizes: [[728, 90]],
+      };
       TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId))
-        .to.contain.all.keys(compProps.targetingArguments);
+        .to.contain.all.keys(providerProps.targetingArguments);
     });
 
     it('Registers an AdSlot without custom targeting arguments', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+      const compProps = {
         slotId: 'testElement5',
         sizes: [[728, 90]],
       };
 
       TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId)).to.equal(null);
     });
 
 
     it('Unregisters an AdSlot', () => {
-      const compProps = {
+      const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+      const compProps = {
         slotId: 'testElement6',
         sizes: [[728, 90]],
       };
 
       const component = TestUtils.renderIntoDocument(
-        <AdSlot {...compProps} />
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
       );
 
       ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);

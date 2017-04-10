@@ -20,4 +20,3 @@ export function loadGPTScript() {
     doloadGPTScript(resolve, reject);
   });
 }
-
