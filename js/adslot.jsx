@@ -38,12 +38,9 @@ export class AdSlot extends React.Component {
 
   constructor(props) {
     super(props);
-    this.getSlotId = this.getSlotId.bind(this);
     this.generateSlotId = this.generateSlotId.bind(this);
+    this.getSlotId = this.getSlotId.bind(this);
     this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
-    this.registerSlot = this.registerSlot.bind(this);
-    this.unregisterSlot = this.unregisterSlot.beinf(this);
-    this.slotRenderEnded = this.slotRenderEnded.bind(this);
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
     this.state = {
       slotId: this.generateSlotId(),
