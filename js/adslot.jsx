@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DFPManager } from './manager';
 
+let dynamicAdCount = 0;
+
 export class AdSlot extends React.Component {
 
   static propTypes = {
@@ -40,8 +42,9 @@ export class AdSlot extends React.Component {
     this.getSlotId = this.getSlotId.bind(this);
     this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
+    this.slotRenderEnded = this.slotRenderEnded.bind(this);
     this.state = {
-      slotId: this.generateSlotId(),
+      slotId: this.props.slotId || this.generateSlotId(),
     };
   }
 
@@ -68,11 +71,8 @@ export class AdSlot extends React.Component {
   }
 
   generateSlotId() {
-    let slotId = this.props.slotId;
-    if (slotId === undefined) {
-      const seconds = ((Date.now && Date.now()) || new Date().getTime()) / 1000;
-      slotId = `adSlot-${seconds}`;
-    }
+    const slotId = `adSlot-${dynamicAdCount}`;
+    dynamicAdCount += 1;
     return slotId;
   }
 
@@ -132,7 +132,7 @@ export class AdSlot extends React.Component {
 
   render() {
     return (
-      <div className="adunitContainer"> <div id={this.getSlotId()} className="adBox" /> </div>
+      <div className="adunitContainer"> <div id={this.state.slotId} className="adBox" /> </div>
     );
   }
 }
