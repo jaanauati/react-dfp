@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DFPManager } from './manager';
 
-let dynamicAdCount = 0;
-
 export class AdSlot extends React.Component {
 
   static propTypes = {
@@ -72,11 +70,8 @@ export class AdSlot extends React.Component {
   generateSlotId() {
     let slotId = this.props.slotId;
     if (slotId === undefined) {
-      slotId = `adSlot-${dynamicAdCount}`;
-      this.setState({
-        slotId: `adSlot-${dynamicAdCount}`,
-      });
-      dynamicAdCount += 1;
+      const seconds = ((Date.now && Date.now()) || new Date().getTime()) / 1000;
+      slotId = `adSlot-${seconds}`;
     }
     return slotId;
   }
