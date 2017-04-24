@@ -107,9 +107,7 @@ export const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         googletag.pubads().enableSingleRequest();
         googletag.enableServices();
         Object.keys(availableSlots).forEach((theSlotId) => {
-          if (availableSlots[theSlotId]) {
-            googletag.display(theSlotId);
-          }
+          googletag.display(theSlotId);
         });
       });
     });
