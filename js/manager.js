@@ -38,9 +38,7 @@ export const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           });
           const targetingArguments = this.getTargetingArguments();
           Object.keys(targetingArguments).forEach((varName) => {
-            if (targetingArguments[varName]) {
-              pubadsService.setTargeting(varName, targetingArguments[varName]);
-            }
+            pubadsService.setTargeting(varName, targetingArguments[varName]);
           });
         });
       });
