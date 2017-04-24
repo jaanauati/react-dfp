@@ -4,11 +4,11 @@ module.exports = function karmaConfig(config) {
     frameworks: ['jasmine', 'browserify'],
     files: [
       'lib/*.js',
-      'spec/*.jsx',
+      'spec/*.js',
     ],
     preprocessors: {
       'lib/*.js': ['browserify'],
-      'spec/*.jsx': ['browserify'],
+      'spec/*.js': ['browserify'],
     },
     browserify: {
       debug: true,
