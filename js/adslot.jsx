@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { DFPManager } from './manager';
+import DFPManager from './manager';
 
 let dynamicAdCount = 0;
 
