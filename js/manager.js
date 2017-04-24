@@ -89,9 +89,7 @@ export const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
           if (slotTargetingArguments !== null) {
             Object.keys(slotTargetingArguments).forEach((varName) => {
-              if (slotTargetingArguments[varName]) {
-                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
-              }
+              slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
             });
           }
           slot.gptSlot.addService(googletag.pubads());
