@@ -71,9 +71,8 @@ export class AdSlot extends React.Component {
   }
 
   generateSlotId() {
-    const slotId = `adSlot-${dynamicAdCount}`;
     dynamicAdCount += 1;
-    return slotId;
+    return `adSlot-${dynamicAdCount}`;
   }
 
   mapContextToAdSlotProps() {
