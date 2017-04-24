@@ -106,7 +106,8 @@ export class AdSlot extends React.Component {
   }
 
   unregisterSlot() {
-    DFPManager.unregisterSlot({ ...this.mapContextToAdSlotProps(),
+    DFPManager.unregisterSlot({
+      ...this.mapContextToAdSlotProps(),
       ...this.props,
       ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
