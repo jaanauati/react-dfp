@@ -94,7 +94,8 @@ export class AdSlot extends React.Component {
   }
 
   registerSlot() {
-    DFPManager.registerSlot({ ...this.mapContextToAdSlotProps(),
+    DFPManager.registerSlot({
+      ...this.mapContextToAdSlotProps(),
       ...this.props,
       ...this.state,
       slotShouldRefresh: this.slotShouldRefresh });
