@@ -8,7 +8,7 @@ let pubadsService = null;
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 
-export const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
+const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
   },
