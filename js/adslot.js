@@ -53,7 +53,7 @@ export class AdSlot extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.objectId) {
+    if (Object.prototype.hasOwnProperty.call(nextProps, 'objectId')) {
       const state = this.state;
       state.slotId = this.generateSlotId();
       this.unregisterSlot();
