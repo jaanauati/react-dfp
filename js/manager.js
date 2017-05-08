@@ -1,5 +1,5 @@
-import * as Utils from './utils';
 import { EventEmitter } from 'events';
+import * as Utils from './utils';
 
 let loadAlreadyCalled = false;
 let googleGPTScriptLoadPromise = null;
@@ -8,7 +8,7 @@ let pubadsService = null;
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 
-export const DFPManager = Object.assign(new EventEmitter(), {
+const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
   },
@@ -38,9 +38,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
           });
           const targetingArguments = this.getTargetingArguments();
           Object.keys(targetingArguments).forEach((varName) => {
-            if (targetingArguments.hasOwnProperty(varName)) {
-              pubadsService.setTargeting(varName, targetingArguments[varName]);
-            }
+            pubadsService.setTargeting(varName, targetingArguments[varName]);
           });
         });
       });
@@ -71,9 +69,9 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       .reduce(
         (result, id) => Object.assign(
           result,
-          { [id]: Object.assign(availableSlots[id], { loading: true }) }
+          { [id]: Object.assign(availableSlots[id], { loading: true }) },
         ),
-        {}
+        {},
       );
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
@@ -91,9 +89,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
           const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
           if (slotTargetingArguments !== null) {
             Object.keys(slotTargetingArguments).forEach((varName) => {
-              if (slotTargetingArguments.hasOwnProperty(varName)) {
-                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
-              }
+              slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
             });
           }
           slot.gptSlot.addService(googletag.pubads());
@@ -110,10 +106,8 @@ export const DFPManager = Object.assign(new EventEmitter(), {
       googletag.cmd.push(() => {
         googletag.pubads().enableSingleRequest();
         googletag.enableServices();
-        Object.keys(availableSlots).forEach((_slotId) => {
-          if (availableSlots.hasOwnProperty(_slotId)) {
-            googletag.display(_slotId);
-          }
+        Object.keys(availableSlots).forEach((theSlotId) => {
+          googletag.display(theSlotId);
         });
       });
     });
@@ -121,9 +115,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
   },
 
   getRefreshableSlots() {
-    const slotsToRefresh = Object.keys(registeredSlots).map(
-      (k) => registeredSlots[k]
-    );
+    const slotsToRefresh = Object.keys(registeredSlots).map(k => registeredSlots[k]);
     const slots = {};
     return slotsToRefresh.reduce((last, slot) => {
       if (slot.slotShouldRefresh() === true) {
@@ -141,7 +133,7 @@ export const DFPManager = Object.assign(new EventEmitter(), {
         const slotsToRefresh = this.getRefreshableSlots();
         googletag.cmd.push(() => {
           googletag.pubads().refresh(
-            Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot)
+            Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot),
           );
         });
       });
@@ -150,11 +142,18 @@ export const DFPManager = Object.assign(new EventEmitter(), {
 
   registerSlot({ dfpNetworkId, adUnit, sizes, renderOutOfThePage, sizeMapping,
                  targetingArguments, slotId, slotShouldRefresh }) {
-    if (!registeredSlots.hasOwnProperty(slotId)) {
-      registeredSlots[slotId] = { slotId, sizes, renderOutOfThePage,
-                                  dfpNetworkId, adUnit, targetingArguments,
-                                  sizeMapping, slotShouldRefresh, loading: false,
-                                };
+    if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
+      registeredSlots[slotId] = {
+        slotId,
+        sizes,
+        renderOutOfThePage,
+        dfpNetworkId,
+        adUnit,
+        targetingArguments,
+        sizeMapping,
+        slotShouldRefresh,
+        loading: false,
+      };
     }
     if (loadAlreadyCalled === true) {
       this.load(slotId);
@@ -178,3 +177,5 @@ export const DFPManager = Object.assign(new EventEmitter(), {
   },
 
 });
+
+export default DFPManager;

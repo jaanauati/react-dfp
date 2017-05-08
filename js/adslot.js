@@ -1,75 +1,78 @@
-
 import React from 'react';
-import { DFPManager } from './manager';
+import PropTypes from 'prop-types';
+import DFPManager from './manager';
 
+let dynamicAdCount = 0;
 
-export const AdSlot = React.createClass({
-  displayName: 'AdSlot',
+export class AdSlot extends React.Component {
 
-  propTypes: {
-    dfpNetworkId: React.PropTypes.string,
-    adUnit: React.PropTypes.string,
-    sizes: React.PropTypes.arrayOf(
-      React.PropTypes.oneOfType([
-        React.PropTypes.arrayOf(React.PropTypes.number),
-        React.PropTypes.string,
-      ])
+  static propTypes = {
+    dfpNetworkId: PropTypes.string,
+    adUnit: PropTypes.string,
+    sizes: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.number),
+        PropTypes.string,
+      ]),
     ),
-    renderOutOfThePage: React.PropTypes.bool,
-    sizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
-    fetchNow: React.PropTypes.bool,
-    targetingArguments: React.PropTypes.object,
-    onSlotRender: React.PropTypes.func,
-    shouldRefresh: React.PropTypes.func,
-    slotId: React.PropTypes.string,
-  },
+    renderOutOfThePage: PropTypes.bool,
+    sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    fetchNow: PropTypes.bool,
+    targetingArguments: PropTypes.object,
+    onSlotRender: PropTypes.func,
+    shouldRefresh: PropTypes.func,
+    slotId: PropTypes.string,
+    objectId: PropTypes.string,
+  };
 
-  contextTypes: {
-    dfpNetworkId: React.PropTypes.string,
-    dfpAdUnit: React.PropTypes.string,
-    dfpSizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
-    dfpTargetingArguments: React.PropTypes.object,
-  },
+  static contextTypes = {
+    dfpNetworkId: PropTypes.string,
+    dfpAdUnit: PropTypes.string,
+    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
+    dfpTargetingArguments: PropTypes.object,
+  };
 
-  getDefaultProps() {
-    return {
-      fetchNow: false,
+  static defaultProps = {
+    fetchNow: false,
+  };
+
+  constructor(props) {
+    super(props);
+    this.generateSlotId = this.generateSlotId.bind(this);
+    this.getSlotId = this.getSlotId.bind(this);
+    this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
+    this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
+    this.slotRenderEnded = this.slotRenderEnded.bind(this);
+    this.state = {
+      slotId: this.props.slotId || this.generateSlotId(),
     };
-  },
-
-  getInitialState() {
-    return { slotId: this.generateSlotId() };
-  },
+  }
 
   componentDidMount() {
     this.registerSlot();
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.hasOwnProperty('objectId')) {
+    if (Object.prototype.hasOwnProperty.call(nextProps, 'objectId')) {
       const state = this.state;
       state.slotId = this.generateSlotId();
       this.unregisterSlot();
       this.setState(state);
       this.registerSlot();
     }
-  },
+  }
+
   componentWillUnmount() {
     this.unregisterSlot();
-  },
+  }
 
   getSlotId() {
     return this.props.slotId || this.state.slotId;
-  },
+  }
 
   generateSlotId() {
-    let slotId = this.props.slotId;
-    if (slotId === undefined) {
-      const seconds = (Date.now && Date.now() || new Date().getTime()) / 1000;
-      slotId = `adSlot-${seconds}`;
-    }
-    return slotId;
-  },
+    return `adSlot-${dynamicAdCount++}`;
+  }
 
   mapContextToAdSlotProps() {
     const context = this.context;
@@ -87,23 +90,27 @@ export const AdSlot = React.createClass({
       mappedProps.targetingArguments = context.dfpTargetingArguments;
     }
     return mappedProps;
-  },
+  }
 
   registerSlot() {
-    DFPManager.registerSlot({ ...this.mapContextToAdSlotProps(),
-                              ...this.props, ...this.state,
-                              slotShouldRefresh: this.slotShouldRefresh });
+    DFPManager.registerSlot({
+      ...this.mapContextToAdSlotProps(),
+      ...this.props,
+      ...this.state,
+      slotShouldRefresh: this.slotShouldRefresh });
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
     }
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
-  },
+  }
 
   unregisterSlot() {
-    DFPManager.unregisterSlot({ ...this.mapContextToAdSlotProps(),
-                                ...this.props, ...this.state });
+    DFPManager.unregisterSlot({
+      ...this.mapContextToAdSlotProps(),
+      ...this.props,
+      ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
-  },
+  }
 
   slotRenderEnded(eventData) {
     if (eventData.slotId === this.getSlotId()) {
@@ -111,21 +118,23 @@ export const AdSlot = React.createClass({
         this.props.onSlotRender(eventData);
       }
     }
-  },
+  }
 
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
       r = this.props.shouldRefresh({ ...this.mapContextToAdSlotProps(),
-                                     ...this.props, slotId: this.getSlotId() });
+        ...this.props,
+        slotId: this.getSlotId() });
     }
     return r;
-  },
+  }
 
   render() {
     return (
-      <div className="adunitContainer"> <div id={this.getSlotId()} className="adBox" /> </div>
+      <div className="adunitContainer"> <div id={this.state.slotId} className="adBox" /> </div>
     );
-  },
+  }
+}
 
-});
+export default AdSlot;

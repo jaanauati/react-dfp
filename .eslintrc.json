@@ -1,22 +1,31 @@
 {
-    "extends": "airbnb",
-    "plugins": [
-      "react"
-    ],
-    "globals": {
-      "googletag": true,
-      "describe": true,
-      "expect": true,
-      "it": true,
-      "beforeEach": true,
-      "afterEach": true
-    },
-    "parserOptions": {
-      "ecmaFeatures": {
-        "experimentalObjectRestSpread": true
-      }
-    },
-    "rules": {
-      "react/prefer-es6-class": 0
+  "extends": "airbnb",
+  "plugins": [
+    "react"
+  ],
+  "globals": {
+    "googletag": true,
+    "describe": true,
+    "expect": true,
+    "it": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "window": true,
+    "document": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
     }
+  },
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "react/no-unused-prop-types": 0,
+    "react/require-default-props": 0,
+    "react/forbid-prop-types": 0,
+    "import/prefer-default-export": 0,
+    "class-methods-use-this": 0,
+    "no-plusplus": 0
+  }
 }
