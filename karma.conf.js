@@ -1,19 +1,19 @@
-module.exports = function(config) {
+module.exports = function karmaConfig(config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', 'browserify'],
     files: [
       'lib/*.js',
-      'spec/*.js'
+      'spec/*.js',
     ],
     preprocessors: {
-      'lib/*.js': [ 'browserify' ],
-      'spec/*.js': [ 'browserify' ],
+      'lib/*.js': ['browserify'],
+      'spec/*.js': ['browserify'],
     },
     browserify: {
       debug: true,
       configure: function browserify(bundle) {
-        bundle.once('prebundle', function prebundle() {
+        bundle.once('prebundle', () => {
           bundle.transform('babelify', { presets: ['es2015', 'react'] });
         });
       },
@@ -27,6 +27,6 @@ module.exports = function(config) {
     autoWatch: false,
     browsers: ['jsdom'],
     singleRun: true,
-    browserNoActivityTimeout: 2000
+    browserNoActivityTimeout: 2000,
   });
 };

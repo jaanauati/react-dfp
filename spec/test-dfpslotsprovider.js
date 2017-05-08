@@ -2,7 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
@@ -18,15 +18,14 @@ describe('DFPSlotsProvider', () => {
       };
 
       component = TestUtils.renderIntoDocument(
-        <DFPSlotsProvider DFPSlotsProvider {...providerProps}>
+        <DFPSlotsProvider {...providerProps}>
           <AdSlot slotId={'testElement'} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
     });
 
     it('renders an adBox with the given elementId', () => {
-      const box = TestUtils.findRenderedDOMComponentWithClass(component,
-                                                              'adBox');
+      const box = TestUtils.findRenderedDOMComponentWithClass(component, 'adBox');
       expect(box.id).to.equal('testElement');
     });
   });
@@ -49,9 +48,9 @@ describe('DFPSlotsProvider', () => {
       };
 
       TestUtils.renderIntoDocument(
-        <DFPSlotsProvider DFPSlotsProvider {...providerProps}>
+        <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
@@ -72,12 +71,12 @@ describe('DFPSlotsProvider', () => {
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
 
       expect(DFPManager.getRefreshableSlots()).to.contain.all.keys([compProps.slotId]);
       expect(DFPManager.getRefreshableSlots()[compProps.slotId]).to.contain.all.keys(
-        { ...providerProps, ...compProps }
+        { ...providerProps, ...compProps },
       );
     });
 
@@ -96,7 +95,7 @@ describe('DFPSlotsProvider', () => {
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
@@ -114,7 +113,7 @@ describe('DFPSlotsProvider', () => {
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId))
         .to.contain.all.keys(providerProps.targetingArguments);
@@ -133,7 +132,7 @@ describe('DFPSlotsProvider', () => {
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId)).to.equal(null);
     });
@@ -152,7 +151,7 @@ describe('DFPSlotsProvider', () => {
       const component = TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
-        </DFPSlotsProvider>
+        </DFPSlotsProvider>,
       );
 
       ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);

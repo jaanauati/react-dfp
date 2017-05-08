@@ -1,30 +1,28 @@
 import React from 'react';
-import { DFPManager } from './manager';
+import PropTypes from 'prop-types';
+import DFPManager from './manager';
 
-export const DFPSlotsProvider = React.createClass({
-  displayName: 'DFPSlotsProvider',
+export default class DFPSlotsProvider extends React.Component {
 
-  propTypes: {
-    children: React.PropTypes.element.isRequired,
-    autoLoad: React.PropTypes.bool,
-    dfpNetworkId: React.PropTypes.string.isRequired,
-    adUnit: React.PropTypes.string,
-    sizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
-    targetingArguments: React.PropTypes.object,
-  },
+  static propTypes = {
+    children: PropTypes.element.isRequired,
+    autoLoad: PropTypes.bool,
+    dfpNetworkId: PropTypes.string.isRequired,
+    adUnit: PropTypes.string,
+    sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    targetingArguments: PropTypes.object,
+  };
 
-  childContextTypes: {
-    dfpNetworkId: React.PropTypes.string,
-    dfpAdUnit: React.PropTypes.string,
-    dfpSizeMapping: React.PropTypes.arrayOf(React.PropTypes.object),
-    dfpTargetingArguments: React.PropTypes.object,
-  },
+  static childContextTypes = {
+    dfpNetworkId: PropTypes.string,
+    dfpAdUnit: PropTypes.string,
+    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
+    dfpTargetingArguments: PropTypes.object,
+  };
 
-  getDefaultProps() {
-    return {
-      autoLoad: true,
-    };
-  },
+  static defaultProps = {
+    autoLoad: true,
+  };
 
   getChildContext() {
     return {
@@ -33,15 +31,15 @@ export const DFPSlotsProvider = React.createClass({
       dfpSizeMapping: this.props.sizeMapping,
       dfpTargetingArguments: this.props.targetingArguments,
     };
-  },
+  }
 
   componentDidMount() {
     if (this.props.autoLoad) {
       DFPManager.load();
     }
-  },
+  }
 
   render() {
     return <div> {this.props.children} </div>;
-  },
-});
+  }
+}
