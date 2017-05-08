@@ -13,18 +13,25 @@ describe('AdSlot', () => {
     const compProps = {
       dfpNetworkId: '1000',
       adUnit: 'foo/bar/baz',
-      slotId: 'testElement',
       sizes: [[728, 90], 'fluid'],
     };
+    const compTwoProps = {
+      ...compProps,
+      slotId: 'testElement',
+    };
 
-    let component;
-    beforeEach(() => {
-      component = ReactTestUtils.renderIntoDocument(<AdSlot {...compProps} />);
-    });
-
-    it('renders an adBox with the given elementId', () => {
+    it('renders an AdSlot with the given elementId', () => {
+      const component = ReactTestUtils.renderIntoDocument(<AdSlot {...compTwoProps} />);
       const box = ReactTestUtils.findRenderedDOMComponentWithClass(component, 'adBox');
       expect(box.id).to.equal('testElement');
+    });
+
+    it('renders two AdSlots and verify that those get different ids', () => {
+      let componentOne = ReactTestUtils.renderIntoDocument(<AdSlot {...compProps} />);
+      let componentTwo = ReactTestUtils.renderIntoDocument(<AdSlot {...compProps} />);
+      componentOne = ReactTestUtils.findRenderedDOMComponentWithClass(componentOne, 'adBox');
+      componentTwo = ReactTestUtils.findRenderedDOMComponentWithClass(componentTwo, 'adBox');
+      expect(componentOne.id).to.not.equal(componentTwo.id);
     });
   });
 
