@@ -11,6 +11,14 @@ const globalTargetingArguments = {};
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
+    this.getGoogletag().then((googletag) => {
+      googletag.cmd.push(() => {
+        pubadsService = googletag.pubads();
+        Object.keys(globalTargetingArguments).forEach((varName) => {
+          pubadsService.setTargeting(varName, globalTargetingArguments[varName]);
+        });
+      });
+    });
   },
 
   getTargetingArguments() {
