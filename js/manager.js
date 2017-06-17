@@ -4,7 +4,6 @@ import * as Utils from './utils';
 let loadAlreadyCalled = false;
 let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
-let pubadsService = null;
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 
@@ -13,7 +12,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     Object.assign(globalTargetingArguments, data);
     this.getGoogletag().then((googletag) => {
       googletag.cmd.push(() => {
-        pubadsService = googletag.pubads();
+        const pubadsService = googletag.pubads();
         Object.keys(globalTargetingArguments).forEach((varName) => {
           pubadsService.setTargeting(varName, globalTargetingArguments[varName]);
         });
@@ -39,7 +38,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       managerAlreadyInitialized = true;
       this.getGoogletag().then((googletag) => {
         googletag.cmd.push(() => {
-          pubadsService = googletag.pubads();
+          const pubadsService = googletag.pubads();
           pubadsService.addEventListener('slotRenderEnded', (event) => {
             const slotId = event.slot.getSlotElementId();
             this.emit('slotRenderEnded', { slotId, event });
