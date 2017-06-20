@@ -164,6 +164,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
+  setNewAdUnit(slots, newAdUnit) {
+    if (managerAlreadyInitialized === true) {
+      Object.keys(slots).forEach((currentSlotId) => {
+        registeredSlots[currentSlotId].adUnit = newAdUnit;
+      });
+    }
+  },
+
   registerSlot({ dfpNetworkId, adUnit, sizes, renderOutOfThePage, sizeMapping,
                  targetingArguments, slotId, slotShouldRefresh }) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
