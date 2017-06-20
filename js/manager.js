@@ -153,7 +153,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     if (managerAlreadyInitialized === true) {
       loadAlreadyCalled = false;
       this.getGoogletag().then((googletag) => {
-        if(slotsToDestroy !== undefined) {
+        if (slotsToDestroy !== undefined) {
           googletag.destroySlots(
             Object.keys(slotsToDestroy).map(slotId => slotsToDestroy[slotId].gptSlot),
           );
