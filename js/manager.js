@@ -6,6 +6,7 @@ let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
+const collapseEmptyDivs = true;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
@@ -76,12 +77,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     availableSlots = Object.keys(availableSlots)
       .filter(id => !availableSlots[id].loading)
       .reduce(
-        (result, id) => Object.assign(
-          result,
-          { [id]: Object.assign(availableSlots[id], { loading: true }) },
-        ),
-        {},
-      );
+      (result, id) => Object.assign(
+        result, {
+          [id]: Object.assign(availableSlots[id], { loading: true }),
+        },
+      ), {},
+    );
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
@@ -114,6 +115,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
       googletag.cmd.push(() => {
         googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs(collapseEmptyDivs);
         googletag.enableServices();
         Object.keys(availableSlots).forEach((theSlotId) => {
           googletag.display(theSlotId);
@@ -149,8 +151,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
-  registerSlot({ dfpNetworkId, adUnit, sizes, renderOutOfThePage, sizeMapping,
-                 targetingArguments, slotId, slotShouldRefresh }) {
+  registerSlot({
+        dfpNetworkId,
+    adUnit,
+    sizes,
+    renderOutOfThePage,
+    sizeMapping,
+    targetingArguments,
+    slotId,
+    slotShouldRefresh,
+    }) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
       registeredSlots[slotId] = {
         slotId,
