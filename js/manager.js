@@ -6,7 +6,7 @@ let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
-const collapseEmptyDivs = true;
+let collapseEmptyDivs = null;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
@@ -86,6 +86,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
+
+        // set collapseEmptyDivs if it hasn't been set yet
+        if (collapseEmptyDivs === null) {
+          collapseEmptyDivs = availableSlots[currentSlotId].collapseEmptyDivs;
+        }
+
         googletag.cmd.push(() => {
           const slot = availableSlots[currentSlotId];
           let gptSlot;

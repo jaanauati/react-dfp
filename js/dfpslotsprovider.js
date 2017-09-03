@@ -19,6 +19,7 @@ export default class DFPSlotsProvider extends React.Component {
     dfpAdUnit: PropTypes.string,
     dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
     dfpTargetingArguments: PropTypes.object,
+    collapseEmptyDivs: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -32,6 +33,7 @@ export default class DFPSlotsProvider extends React.Component {
       dfpAdUnit: this.props.adUnit,
       dfpSizeMapping: this.props.sizeMapping,
       dfpTargetingArguments: this.props.targetingArguments,
+      collapseEmptyDivs: this.props.collapseEmptyDivs,
     };
   }
 
