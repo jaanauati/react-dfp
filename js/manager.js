@@ -6,7 +6,6 @@ let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
-let collapseEmptyDivs = null;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setTargetingArguments(data) {
@@ -65,6 +64,8 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   load(slotId) {
     this.init();
     let availableSlots = {};
+    let collapseEmptyDivs = null;
+
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
       if (slot !== undefined) {
