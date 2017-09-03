@@ -61,10 +61,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     return googleGPTScriptLoadPromise;
   },
 
+  setCollapseEmptyDivs(collapse) {
+    this.collapseEmptyDivs = collapse;
+  },
+
   load(slotId) {
     this.init();
     let availableSlots = {};
-    let collapseEmptyDivs = null;
+
+    // set collapseEmptyDivs with default of true
+    this.collapseEmptyDivs = this.collapseEmptyDivs !== false;
 
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
@@ -87,11 +93,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
-
-        // set collapseEmptyDivs if it hasn't been set yet
-        if (collapseEmptyDivs === null) {
-          collapseEmptyDivs = availableSlots[currentSlotId].collapseEmptyDivs;
-        }
 
         googletag.cmd.push(() => {
           const slot = availableSlots[currentSlotId];
@@ -122,7 +123,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
       googletag.cmd.push(() => {
         googletag.pubads().enableSingleRequest();
-        googletag.pubads().collapseEmptyDivs(collapseEmptyDivs);
+        googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
         googletag.enableServices();
         Object.keys(availableSlots).forEach((theSlotId) => {
           googletag.display(theSlotId);
@@ -160,14 +161,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   registerSlot({
         dfpNetworkId,
-    adUnit,
-    sizes,
-    renderOutOfThePage,
-    collapseEmptyDivs,
-    sizeMapping,
-    targetingArguments,
-    slotId,
-    slotShouldRefresh,
+        adUnit,
+        sizes,
+        renderOutOfThePage,
+        collapseEmptyDivs,
+        sizeMapping,
+        targetingArguments,
+        slotId,
+        slotShouldRefresh,
     }) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
       registeredSlots[slotId] = {
