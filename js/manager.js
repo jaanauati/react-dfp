@@ -69,9 +69,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     this.init();
     let availableSlots = {};
 
-    // set collapseEmptyDivs with default of true
-    this.collapseEmptyDivs = this.collapseEmptyDivs !== false;
-
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
       if (slot !== undefined) {
@@ -123,7 +120,11 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
       googletag.cmd.push(() => {
         googletag.pubads().enableSingleRequest();
-        googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
+
+        if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
+          googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
+        }
+
         googletag.enableServices();
         Object.keys(availableSlots).forEach((theSlotId) => {
           googletag.display(theSlotId);
