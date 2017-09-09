@@ -103,6 +103,7 @@ DFPManager.load();
 | adUnit             | string  |  ``` "homepage" ```   | The adunit you want to target the boxes (children / contained boxes). |
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } ``` | Set the size mappings to be applied to the nested ad slots. |
 | targetingArguments | object | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to the boxes (you can use for custom targeting) |
+| collapseEmptyDivs | boolean | ```{ false }``` | Enables collapsing of slot divs when there is no ad content to display. |
 
 ### AdSlot
 
@@ -126,6 +127,7 @@ DFPManager.load();
 | refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
 | targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to enable globaly (you can use this for custom targeting) |
 | getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
+| setCollapseEmptyDivs | ```fcn(boolean)``` | ```DFPManager.setCollapseEmptyDivs( true )``` | Enables collapsing of slot divs when there is no ad content to display. The method accepts one parameter that expects the following values: false: collapse after ads are fetched; true: collapse divs  before ads are fetched; null/undefined: do not collapse divs. |
 
 #### For Internal Usage Only
 | Property           | Type          | Example     | Description |

@@ -12,7 +12,7 @@ describe('DFPManager', () => {
 
     it('Registers global targeting arguments', function registersAdSlot() {
       expect(DFPManager.getTargetingArguments()).to.contain.keys(
-        { ...this.argsList1, ...this.argsList2 }
+        { ...this.argsList1, ...this.argsList2 },
       );
     });
   });
