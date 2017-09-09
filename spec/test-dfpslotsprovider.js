@@ -34,6 +34,7 @@ describe('DFPSlotsProvider', () => {
     beforeEach(() => {
       DFPManager.registerSlot = sinon.spy(DFPManager, 'registerSlot');
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
+      DFPManager.setCollapseEmptyDivs = sinon.spy(DFPManager, 'setCollapseEmptyDivs');
     });
 
     it('Registers an AdSlot', () => {
@@ -148,12 +149,14 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
+
       const component = TestUtils.renderIntoDocument(
-        <DFPSlotsProvider {...providerProps} >
+        <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
       );
 
+      // eslint-disable-next-line react/no-find-dom-node
       ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
 
       sinon.assert.calledOnce(DFPManager.unregisterSlot);
@@ -161,9 +164,53 @@ describe('DFPSlotsProvider', () => {
                                    { slotId: compProps.slotId });
     });
 
+    it('collapseEmptyDivs is disabled by default', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      sinon.assert.calledOnce(DFPManager.setCollapseEmptyDivs);
+      sinon.assert.calledWith(DFPManager.setCollapseEmptyDivs, null);
+    });
+
+    it('enable collapseEmptyDivs and set parameter to false', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        collapseEmptyDivs: false,
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      sinon.assert.calledOnce(DFPManager.setCollapseEmptyDivs);
+      sinon.assert.calledWith(DFPManager.setCollapseEmptyDivs, false);
+    });
+
     afterEach(() => {
       DFPManager.registerSlot.restore();
       DFPManager.unregisterSlot.restore();
+      DFPManager.setCollapseEmptyDivs.restore();
       Object.keys(DFPManager.getRegisteredSlots()).forEach((slotId) => {
         DFPManager.unregisterSlot({ slotId });
       });

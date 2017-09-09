@@ -26,6 +26,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   static defaultProps = {
     autoLoad: true,
+    collapseEmptyDivs: null,
   };
 
   getChildContext() {
@@ -46,6 +47,6 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   render() {
-    return <div > {this.props.children} </div>;
+    return <div> {this.props.children} </div>;
   }
 }
