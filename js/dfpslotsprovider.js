@@ -11,6 +11,10 @@ export default class DFPSlotsProvider extends React.Component {
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     targetingArguments: PropTypes.object,
+    collapseEmptyDivs: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object,
+    ]),
   };
 
   static childContextTypes = {
@@ -34,12 +38,14 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   componentDidMount() {
+    DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
+
     if (this.props.autoLoad) {
       DFPManager.load();
     }
   }
 
   render() {
-    return <div> {this.props.children} </div>;
+    return <div > {this.props.children} </div>;
   }
 }

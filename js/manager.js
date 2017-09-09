@@ -61,9 +61,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     return googleGPTScriptLoadPromise;
   },
 
+  setCollapseEmptyDivs(collapse) {
+    this.collapseEmptyDivs = collapse;
+  },
+
   load(slotId) {
     this.init();
     let availableSlots = {};
+
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
       if (slot !== undefined) {
@@ -76,15 +81,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     availableSlots = Object.keys(availableSlots)
       .filter(id => !availableSlots[id].loading)
       .reduce(
-        (result, id) => Object.assign(
-          result,
-          { [id]: Object.assign(availableSlots[id], { loading: true }) },
-        ),
-        {},
-      );
+      (result, id) => Object.assign(
+        result, {
+          [id]: Object.assign(availableSlots[id], { loading: true }),
+        },
+      ), {},
+    );
     this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
+
         googletag.cmd.push(() => {
           const slot = availableSlots[currentSlotId];
           let gptSlot;
@@ -114,6 +120,11 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
       googletag.cmd.push(() => {
         googletag.pubads().enableSingleRequest();
+
+        if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
+          googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
+        }
+
         googletag.enableServices();
         Object.keys(availableSlots).forEach((theSlotId) => {
           googletag.display(theSlotId);
@@ -149,8 +160,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
-  registerSlot({ dfpNetworkId, adUnit, sizes, renderOutOfThePage, sizeMapping,
-                 targetingArguments, slotId, slotShouldRefresh }) {
+  registerSlot({
+        dfpNetworkId,
+        adUnit,
+        sizes,
+        renderOutOfThePage,
+        sizeMapping,
+        targetingArguments,
+        slotId,
+        slotShouldRefresh,
+    }) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
       registeredSlots[slotId] = {
         slotId,
