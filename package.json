@@ -11,8 +11,8 @@
     "url": "https://github.com/jaanauati/react-dfp.git"
   },
   "scripts": {
-    "test": "./node_modules/grunt-cli/bin/grunt test",
-    "dist": "./node_modules/.bin/grunt dist"
+    "dist": "./node_modules/.bin/grunt dist",
+    "test": "./node_modules/.bin/grunt test"
   },
   "bugs": {
     "mail": "barakawins@gmail.com",
