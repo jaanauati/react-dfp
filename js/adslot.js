@@ -143,9 +143,13 @@ export class AdSlot extends React.Component {
 
   render() {
     const { slotId } = this.state;
+    const props = { className: 'adBox' };
+    if (slotId !== null) {
+      props.id = slotId;
+    }
     return (
       <div className="adunitContainer">
-        { (slotId !== null) ? <div id={this.state.slotId} className="adBox" /> : null }
+        <div {...props} />
       </div>
     );
   }
