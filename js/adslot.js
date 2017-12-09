@@ -38,13 +38,14 @@ export class AdSlot extends React.Component {
 
   constructor(props) {
     super(props);
+    this.doRegisterSlot = this.doRegisterSlot.bind(this);
     this.generateSlotId = this.generateSlotId.bind(this);
     this.getSlotId = this.getSlotId.bind(this);
     this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
     this.slotRenderEnded = this.slotRenderEnded.bind(this);
     this.state = {
-      slotId: this.props.slotId || this.generateSlotId(),
+      slotId: this.props.slotId || null,
     };
   }
 
@@ -92,7 +93,7 @@ export class AdSlot extends React.Component {
     return mappedProps;
   }
 
-  registerSlot() {
+  doRegisterSlot() {
     DFPManager.registerSlot({
       ...this.mapContextToAdSlotProps(),
       ...this.props,
@@ -102,6 +103,16 @@ export class AdSlot extends React.Component {
       DFPManager.load(this.getSlotId());
     }
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
+  }
+
+  registerSlot() {
+    if (this.state.slotId === null) {
+      this.setState({
+        slotId: this.generateSlotId(),
+      }, this.doRegisterSlot);
+    } else {
+      this.doRegisterSlot();
+    }
   }
 
   unregisterSlot() {
@@ -131,8 +142,15 @@ export class AdSlot extends React.Component {
   }
 
   render() {
+    const { slotId } = this.state;
+    const props = { className: 'adBox' };
+    if (slotId !== null) {
+      props.id = slotId;
+    }
     return (
-      <div className="adunitContainer"> <div id={this.state.slotId} className="adBox" /> </div>
+      <div className="adunitContainer">
+        <div {...props} />
+      </div>
     );
   }
 }
