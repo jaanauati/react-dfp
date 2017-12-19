@@ -15,6 +15,7 @@ export default class DFPSlotsProvider extends React.Component {
       PropTypes.bool,
       PropTypes.object,
     ]),
+    adSenseAttrs: PropTypes.object,
   };
 
   static childContextTypes = {
@@ -39,6 +40,7 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   componentDidMount() {
+    DFPManager.setAdSenseAttributes(this.props.adSenseAttrs);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
 
     if (this.props.autoLoad) {

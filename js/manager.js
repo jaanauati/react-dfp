@@ -6,8 +6,39 @@ let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
+const globalAdSenseAttributes = {};
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
+
+  getAdSenseAttribute(key) {
+    return globalAdSenseAttributes[key];
+  },
+
+  setAdSenseAttribute(key, value) {
+    this.setAdSenseAttributes({ [key]: value });
+  },
+
+
+  getAdSenseAttributes() {
+    return { ...globalAdSenseAttributes };
+  },
+
+  setAdSenseAttributes(attrs) {
+    Object.assign(globalAdSenseAttributes, attrs);
+    if (managerAlreadyInitialized === true) {
+      this.getGoogletag().then((googletag) => {
+        googletag.cmd.push(() => {
+          const pubadsService = googletag.pubads();
+          Object.keys(globalAdSenseAttributes).forEach(
+            (key) => {
+              pubadsService.set(key, globalTargetingArguments[key]);
+            },
+          );
+        });
+      });
+    }
+  },
+
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
     if (managerAlreadyInitialized === true) {
