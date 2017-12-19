@@ -1,0 +1,19 @@
+{
+  "name": "react-dfp-example-01",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "next": "latest",
+    "react": "^16.2.0",
+    "react-dfp": "^0.4.2",
+    "react-dom": "^16.2.0",
+    "react-syntax-highlighter": "^5.8.0"
+  },
+  "license": "ISC",
+  "devDependencies": {}
+}
