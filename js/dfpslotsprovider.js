@@ -10,6 +10,7 @@ export default class DFPSlotsProvider extends React.Component {
     dfpNetworkId: PropTypes.string.isRequired,
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     collapseEmptyDivs: PropTypes.oneOfType([
       PropTypes.bool,
