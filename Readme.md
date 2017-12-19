@@ -143,6 +143,7 @@ DFPManager.load();
 | getRefreshableSlots | ``` fcn() => { slotId:{ slot }, ... } ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns an object whose properties are slots that can be refreshed (see property ```shouldRefresh``` ). |
 | getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the targeting arguments (configured through ```DFPManager.setTargetingArguments()```) |
 | getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |  
+| getSlotAdSenseAttributes | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotAdSenseAttributes('slot-five')['the-key']); ``` | Returns an object that contains all the adSense attributes were previously set to the given slot (slotId). |
 
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.

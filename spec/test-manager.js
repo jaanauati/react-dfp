@@ -43,6 +43,10 @@ describe('DFPManager', () => {
         adUnit: 'foo/bar/baz',
         slotId: 'testElement',
         sizes: [[728, 90]],
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#000000',
+        },
         slotShouldRefresh: () => true,
       };
       DFPManager.registerSlot(this.slotProps);
@@ -54,6 +58,8 @@ describe('DFPManager', () => {
         .keys([this.slotProps.slotId]);
       expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
         .to.contain.all.keys(this.slotProps);
+      expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
+        .to.deep.include(this.slotProps);
     });
 
     afterEach(function afterEach() {
