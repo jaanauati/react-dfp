@@ -125,7 +125,11 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
-| targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to enable globaly (you can use this for custom targeting) |
+| setAdSenseAttributes | ``` fcn(object)``` | ``` DFPManager.setAdSenseAttributes({ "page_url": "www.site.com", "adsense_link_color": "#000000"}); ``` | Use this method to set AdSense attributes. |
+| setAdSenseAttribute | ``` fcn(key, value)``` | ``` DFPManager.setAdSenseAttributes("page_url", "www.site.com"); ``` | Use this method to set AdSense attributes. |
+| getAdSenseAttributes | ```fcn() => object``` | ``` DFPManager.getAdSenseAttributes(); ``` | This method returns an object with the global adSense attributes. |
+| getAdSenseAttribute | ```fcn(key) => value``` | ``` DFPManager.getAdSenseAttribute("page_url"); ``` | Returns the value of a custom adSense attribute. |
+| setTargetingArguments | ``` fcn(object)``` | ``` DFPManager.setTargetingArguments({ "keywords": "family", "content": "test" }); ``` | Use this function to pass custom targetting variables. |
 | getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
 | setCollapseEmptyDivs | ```fcn(boolean)``` | ```DFPManager.setCollapseEmptyDivs( true )``` | Enables collapsing of slot divs when there is no ad content to display. The method accepts one parameter that expects the following values: false: collapse after ads are fetched; true: collapse divs  before ads are fetched; null/undefined: do not collapse divs. |
 
