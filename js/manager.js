@@ -77,8 +77,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             this.emit('slotRenderEnded', { slotId, event });
           });
           const targetingArguments = this.getTargetingArguments();
+          // set global targetting arguments
           Object.keys(targetingArguments).forEach((varName) => {
             pubadsService.setTargeting(varName, targetingArguments[varName]);
+          });
+          // set global adSense attributes
+          const adSenseAttributes = this.getAdSenseAttributes();
+          Object.keys(adSenseAttributes).forEach((key) => {
+            pubadsService.set(key, adSenseAttributes[key]);
           });
         });
       });
