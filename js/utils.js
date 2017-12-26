@@ -20,14 +20,21 @@ export const loadGPTScript = () => {
   });
 }
 
-export const mapContextToAdSlotProps = (context, newProps) => {
+const contextMapping = {
+  dfpAdUnit: "adUnit",
+  dfpNetworkId: "dfpNetworkId",
+  dfpSizeMapping: "sizeMapping",
+  dfpTargetingArguments: "targetingArguments"
+};
+
+export const mapContextToAdSlotProps = (context, mappings = contextMapping, newProps = {}) => {
   const contextReducer = (acc, key) => {
     if (context.hasOwnProperty(key) && context[key] !== undefined) {
-      acc[key] = context[key];
+      acc[mappings[key]] = context[key];
     }
 
     return acc;
   };
 
-  return Object.keys(context).reduce(contextReducer, newProps || {});
+  return Object.keys(context).reduce(contextReducer, newProps);
 }; 
