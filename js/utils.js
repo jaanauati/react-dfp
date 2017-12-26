@@ -1,22 +1,33 @@
-function doloadGPTScript(resolve, reject) {
-  window.googletag = window.googletag || {};
-  window.googletag.cmd = window.googletag.cmd || [];
-
-  const scriptTag = document.createElement('script');
-  scriptTag.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
-  scriptTag.async = true;
-  scriptTag.type = 'text/javascript';
-  scriptTag.onerror = function scriptTagOnError(errs) {
-    reject(errs);
-  };
-  scriptTag.onload = function scriptTagOnLoad() {
-    resolve(window.googletag);
-  };
-  document.getElementsByTagName('head')[0].appendChild(scriptTag);
-}
-
-export function loadGPTScript() {
+export const loadGPTScript = () => {
   return new Promise((resolve, reject) => {
-    doloadGPTScript(resolve, reject);
+    window.googletag = window.googletag || {};
+    window.googletag.cmd = window.googletag.cmd || [];
+
+    const script = document.createElement('script');
+
+    script.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
+    script.async = true;
+    script.type = 'text/javascript';
+
+    script.onerror = err => reject(err);
+    script.onload = _ => resolve(window.googletag);
+
+    const [firstHead] = document.getElementsByTagName('head'); 
+    
+    if (firstHead) {
+      firstHead.appendChild(script);
+    }
   });
 }
+
+export const mapContextToAdSlotProps = (context, newProps) => {
+  const contextReducer = (acc, key) => {
+    if (context.hasOwnProperty(key) && context[key] !== undefined) {
+      acc[key] = context[key];
+    }
+
+    return acc;
+  };
+
+  return Object.keys(context).reduce(contextReducer, newProps || {});
+}; 

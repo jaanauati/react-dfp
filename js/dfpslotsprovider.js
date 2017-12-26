@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import DFPManager from './manager';
 
 export default class DFPSlotsProvider extends React.Component {
@@ -38,15 +39,15 @@ export default class DFPSlotsProvider extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
 
     if (this.props.autoLoad) {
-      DFPManager.load();
+      await DFPManager.load();
     }
   }
 
   render() {
-    return <div> {this.props.children} </div>;
+    return <div>{this.props.children}</div>;
   }
 }
