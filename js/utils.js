@@ -1,30 +1,29 @@
-export const loadGPTScript = () => {
-  return new Promise((resolve, reject) => {
-    window.googletag = window.googletag || {};
-    window.googletag.cmd = window.googletag.cmd || [];
+export const loadGPTScript = () => new Promise((resolve, reject) => {
+  window.googletag = window.googletag || {};
+  window.googletag.cmd = window.googletag.cmd || [];
 
-    const script = document.createElement('script');
+  const script = document.createElement('script');
 
-    script.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
-    script.async = true;
-    script.type = 'text/javascript';
+  script.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
+  script.async = true;
+  script.type = 'text/javascript';
 
-    script.onerror = err => reject(err);
-    script.onload = _ => resolve(window.googletag);
+  script.onerror = err => reject(err);
+  script.onload = () => resolve(window.googletag);
 
-    const [firstHead] = document.getElementsByTagName('head'); 
-    
-    if (firstHead) {
-      firstHead.appendChild(script);
-    }
-  });
-}
+  const [firstHead] = document.getElementsByTagName('head');
+  
+  if (firstHead) {
+    firstHead.appendChild(script);
+  }
+});
+
 
 const contextMapping = {
-  dfpAdUnit: "adUnit",
-  dfpNetworkId: "dfpNetworkId",
-  dfpSizeMapping: "sizeMapping",
-  dfpTargetingArguments: "targetingArguments"
+  dfpAdUnit: 'adUnit',
+  dfpNetworkId: 'dfpNetworkId',
+  dfpSizeMapping: 'sizeMapping',
+  dfpTargetingArguments: 'targetingArguments',
 };
 
 export const mapContextToAdSlotProps = (context, mappings = contextMapping, newProps = {}) => {
