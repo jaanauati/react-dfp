@@ -18,6 +18,7 @@ export class AdSlot extends React.Component {
     renderOutOfThePage: PropTypes.bool,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     fetchNow: PropTypes.bool,
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
     shouldRefresh: PropTypes.func,
@@ -98,7 +99,8 @@ export class AdSlot extends React.Component {
       ...this.mapContextToAdSlotProps(),
       ...this.props,
       ...this.state,
-      slotShouldRefresh: this.slotShouldRefresh });
+      slotShouldRefresh: this.slotShouldRefresh,
+    });
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
     }

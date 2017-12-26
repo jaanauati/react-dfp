@@ -10,11 +10,13 @@ export default class DFPSlotsProvider extends React.Component {
     dfpNetworkId: PropTypes.string.isRequired,
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     collapseEmptyDivs: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.object,
     ]),
+    adSenseAttrs: PropTypes.object,
   };
 
   static childContextTypes = {
@@ -39,6 +41,7 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   componentDidMount() {
+    DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
 
     if (this.props.autoLoad) {

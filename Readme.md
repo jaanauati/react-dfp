@@ -102,7 +102,8 @@ DFPManager.load();
 | dfpNetworkId       | string  |  ``` "1122" ```      | DFP Account id. |
 | adUnit             | string  |  ``` "homepage" ```   | The adunit you want to target the boxes (children / contained boxes). |
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } ``` | Set the size mappings to be applied to the nested ad slots. |
-| targetingArguments | object | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to the boxes (you can use for custom targeting) |
+| adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes that will be applied globaly (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
+| targetingArguments | object | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to set to all the ad slots (custom targeting variables) |
 | collapseEmptyDivs | boolean | ```{ false }``` | Enables collapsing of slot divs when there is no ad content to display. |
 
 ### AdSlot
@@ -113,6 +114,7 @@ DFPManager.load();
 | adUnit             | string (required)  |  ``` "homepage" ```   | The adunit you want to target to this box. |
 | sizes              | array (required)   |  ```[ [300, 250], [300, 600], 'fluid' ] ``` | list of sizes that this box support. Sizes can be specified by eigther and array like [width, height] or with strings ("dfp named sizes") like 'fluid'. You can configure 1 or more sizes.|
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] }``` | Set the size mappings to be applied to the adSlot. |
+| adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes to apply to the current ad slot (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
 | targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to this box (you can use for custom targeting) |
 | onSlotRender       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the adSlot is rendered. The first argument passes the gpt event data (googletag.events.SlotRenderEndedEvent). |
 | shouldRefresh      | fcn. (optional) (should return a boolean)| ``` function() { /* never refresh this ad */ return false; } ``` | Return a boolean that tells the dfp manager whether the ad slot can be refreshed or not. |
@@ -125,7 +127,11 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
-| targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to enable globaly (you can use this for custom targeting) |
+| setAdSenseAttributes | ``` fcn(object)``` | ``` DFPManager.setAdSenseAttributes({ "page_url": "www.site.com", "adsense_link_color": "#000000"}); ``` | Use this method to set AdSense attributes. |
+| setAdSenseAttribute | ``` fcn(key, value)``` | ``` DFPManager.setAdSenseAttributes("page_url", "www.site.com"); ``` | Use this method to set AdSense attributes. |
+| getAdSenseAttributes | ```fcn() => object``` | ``` DFPManager.getAdSenseAttributes(); ``` | This method returns an object with the global adSense attributes. |
+| getAdSenseAttribute | ```fcn(key) => value``` | ``` DFPManager.getAdSenseAttribute("page_url"); ``` | Returns the value of a custom adSense attribute. |
+| setTargetingArguments | ``` fcn(object)``` | ``` DFPManager.setTargetingArguments({ "keywords": "family", "content": "test" }); ``` | Use this function to pass custom targetting variables. |
 | getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
 | setCollapseEmptyDivs | ```fcn(boolean)``` | ```DFPManager.setCollapseEmptyDivs( true )``` | Enables collapsing of slot divs when there is no ad content to display. The method accepts one parameter that expects the following values: false: collapse after ads are fetched; true: collapse divs  before ads are fetched; null/undefined: do not collapse divs. |
 
@@ -139,6 +145,7 @@ DFPManager.load();
 | getRefreshableSlots | ``` fcn() => { slotId:{ slot }, ... } ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns an object whose properties are slots that can be refreshed (see property ```shouldRefresh``` ). |
 | getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the targeting arguments (configured through ```DFPManager.setTargetingArguments()```) |
 | getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |  
+| getSlotAdSenseAttributes | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotAdSenseAttributes('slot-five')['the-key']); ``` | Returns an object that contains all the adSense attributes were previously set to the given slot (slotId). |
 
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.

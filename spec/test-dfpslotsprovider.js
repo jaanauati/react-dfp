@@ -101,6 +101,66 @@ describe('DFPSlotsProvider', () => {
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
 
+    it('Registers global adSense attributes', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#0000FF',
+        },
+      };
+      const compProps = {
+        slotId: 'testElement4',
+        sizes: [[728, 90]],
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.getAdSenseAttributes())
+        .to.deep.equal(providerProps.adSenseAttributes);
+      expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
+        .to.deep.equal(null);
+    });
+
+    it('Registers an AdSlot with adSense attributes', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#0000FF',
+        },
+      };
+      const compProps = {
+        slotId: 'testElement4',
+        sizes: [[728, 90]],
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#000000',
+          adsense_channel_ids: '271828183+314159265',
+        },
+      };
+      const comp2Props = {
+        slotId: 'testElement4-2',
+        sizes: [[728, 90]],
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps} >
+          <AdSlot {...compProps} />
+          <AdSlot {...comp2Props} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.getAdSenseAttributes())
+        .to.deep.equal(providerProps.adSenseAttributes);
+      expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
+        .to.deep.equal(compProps.adSenseAttributes);
+      expect(DFPManager.getSlotAdSenseAttributes(comp2Props.slotId))
+        .to.deep.equal(null);
+    });
+
     it('Registers an AdSlot with custom targeting arguments', () => {
       const providerProps = {
         dfpNetworkId: '1000',

@@ -6,8 +6,39 @@ let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
+const globalAdSenseAttributes = {};
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
+
+  getAdSenseAttribute(key) {
+    return globalAdSenseAttributes[key];
+  },
+
+  setAdSenseAttribute(key, value) {
+    this.setAdSenseAttributes({ [key]: value });
+  },
+
+
+  getAdSenseAttributes() {
+    return { ...globalAdSenseAttributes };
+  },
+
+  setAdSenseAttributes(attrs) {
+    Object.assign(globalAdSenseAttributes, attrs);
+    if (managerAlreadyInitialized === true) {
+      this.getGoogletag().then((googletag) => {
+        googletag.cmd.push(() => {
+          const pubadsService = googletag.pubads();
+          Object.keys(globalAdSenseAttributes).forEach(
+            (key) => {
+              pubadsService.set(key, globalTargetingArguments[key]);
+            },
+          );
+        });
+      });
+    }
+  },
+
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
     if (managerAlreadyInitialized === true) {
@@ -26,13 +57,23 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     return { ...globalTargetingArguments };
   },
 
-  getSlotTargetingArguments(slotId) {
+  getSlotProperty(slotId, propName) {
     const slot = this.getRegisteredSlots()[slotId];
     let ret = null;
-    if (slot !== undefined && slot.targetingArguments !== undefined) {
-      ret = { ...slot.targetingArguments };
+    if (slot !== undefined) {
+      ret = slot[propName] || ret;
     }
     return ret;
+  },
+
+  getSlotTargetingArguments(slotId) {
+    const propValue = this.getSlotProperty(slotId, 'targetingArguments');
+    return propValue ? { ...propValue } : null;
+  },
+
+  getSlotAdSenseAttributes(slotId) {
+    const propValue = this.getSlotProperty(slotId, 'adSenseAttributes');
+    return propValue ? { ...propValue } : null;
   },
 
   init() {
@@ -46,8 +87,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             this.emit('slotRenderEnded', { slotId, event });
           });
           const targetingArguments = this.getTargetingArguments();
+          // set global targetting arguments
           Object.keys(targetingArguments).forEach((varName) => {
             pubadsService.setTargeting(varName, targetingArguments[varName]);
+          });
+          // set global adSense attributes
+          const adSenseAttributes = this.getAdSenseAttributes();
+          Object.keys(adSenseAttributes).forEach((key) => {
+            pubadsService.set(key, adSenseAttributes[key]);
           });
         });
       });
@@ -105,6 +152,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           if (slotTargetingArguments !== null) {
             Object.keys(slotTargetingArguments).forEach((varName) => {
               slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+            });
+          }
+          const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+          if (slotAdSenseAttributes !== null) {
+            Object.keys(slotAdSenseAttributes).forEach((varName) => {
+              slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
             });
           }
           slot.gptSlot.addService(googletag.pubads());
@@ -166,6 +219,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         sizes,
         renderOutOfThePage,
         sizeMapping,
+        adSenseAttributes,
         targetingArguments,
         slotId,
         slotShouldRefresh,
@@ -177,6 +231,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         renderOutOfThePage,
         dfpNetworkId,
         adUnit,
+        adSenseAttributes,
         targetingArguments,
         sizeMapping,
         slotShouldRefresh,
