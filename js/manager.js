@@ -23,37 +23,37 @@ class DfpManager {
 
   getAdSenseAttributes = () => this.adSenseAttributes;
 
-  setAdSenseAttributes = async values => {
+  setAdSenseAttributes = values => {
     this.adSenseAttributes = {
       ...this.adSenseAttributes,
       ...values,
     };
 
     if (this.isManagerInitialized) {
-      const googleTag = await this.getGoogletag();
-
-      googleTag.cmd.push(() => 
-        Object.keys(this.adSenseAttributes).forEach(
-          key => googletag.pubads().set(key, this.targetingArguments[key]),
-        ),
-      );
+      this.getGoogletag().then(googleTag => {
+        googleTag.cmd.push(() => 
+          Object.keys(this.adSenseAttributes).forEach(
+            key => googletag.pubads().set(key, this.targetingArguments[key]),
+          ),
+        );
+      });
     }
   };
 
-  setTargetingArguments = async values => {
+  setTargetingArguments = values => {
     this.targetingArguments = {
       ...this.targetingArguments,
       ...values,
     };
 
     if (this.isManagerInitialized) {
-      const googleTag = await this.getGoogletag();
+      this.getGoogletag().then(googleTag => {
+        googleTag.cmd.push(() => {
+          const pubAds = googleTag.pubAds();
 
-      googleTag.cmd.push(() => {
-        const pubAds = googleTag.pubAds();
-
-        Object.keys(this.targetingArguments)
-          .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+          Object.keys(this.targetingArguments)
+            .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+        });
       });
     }
   }
@@ -78,22 +78,22 @@ class DfpManager {
     return propValue ? { ...propValue } : null;
   };
 
-  init = async () => {
+  init = () => {
     if (this.isManagerInitialized === false) {
       this.isManagerInitialized = true;
 
-      const googleTag = await this.getGoogletag();
-
-      googleTag.cmd.push(() => {
-        const pubAds = googleTag.pubads();
-        
-        pubAds.addEventListener('slotRenderEnded', ev => this.eventEmitter.emit('slotRenderEnded', { slotId: ev.slot.getSlotElementId(), event: ev }));
-        
-        Object.keys(this.targetingArguments)
-          .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
-        
-        Object.keys(this.adSenseAttributes)
-          .forEach(key => pubAds.set(key, this.adSenseAttributes[key]));
+      this.getGoogletag().then(googleTag => {
+        googleTag.cmd.push(() => {
+          const pubAds = googleTag.pubads();
+          
+          pubAds.addEventListener('slotRenderEnded', ev => this.eventEmitter.emit('slotRenderEnded', { slotId: ev.slot.getSlotElementId(), event: ev }));
+          
+          Object.keys(this.targetingArguments)
+            .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+          
+          Object.keys(this.adSenseAttributes)
+            .forEach(key => pubAds.set(key, this.adSenseAttributes[key]));
+        });
       });
     }
   };
@@ -123,64 +123,65 @@ class DfpManager {
     );
   }
 
-  load = async slotId => {
-    await this.init();
+  load = slotId => {
+    this.init();
 
     const availableSlots = this.getAvailableSlots(slotId);
-    const googleTag = await this.getGoogletag();
+  
+    this.getGoogletag().then(googleTag => {
+      Object.keys(availableSlots).forEach((currentSlotId) => {
+        availableSlots[currentSlotId].loading = false;
 
-    Object.keys(availableSlots).forEach((currentSlotId) => {
-      availableSlots[currentSlotId].loading = false;
+        googleTag.cmd.push(() => {
+          const slot = availableSlots[currentSlotId];
+          const adUnit = `${slot.dfpNetworkId}/${slot.adUnit}`;
+          let gptSlot;
+              
+          if (slot.renderOutOfThePage) {
+            gptSlot = googleTag.defineOutOfPageSlot(adUnit, currentSlotId);
+          } else {
+            gptSlot = googleTag.defineSlot(adUnit, slot.sizes, currentSlotId);
+          }
+
+          slot.gptSlot = gptSlot;
+              
+          if (slot.gptSlot) { 
+            Object.keys(this.slotTargetingArguments)
+              .forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
+
+            slot.gptSlot.addService(googleTag.pubads());
+            
+            const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+          
+            if (slotAdSenseAttributes !== null) {
+              Object.keys(slotAdSenseAttributes)
+                .forEach(key => slot.gptSlot.set(key, slotAdSenseAttributes[key]));
+            }
+    
+            if (slot.sizeMapping) {
+              let smbuilder = googleTag.sizeMapping();
+    
+              slot.sizeMapping.forEach(({ viewport, sizes }) => {
+                smbuilder = smbuilder.addSize(viewport, sizes);
+              });
+    
+              slot.gptSlot.defineSizeMapping(smbuilder.build());
+            }
+          }
+        });
+      });
 
       googleTag.cmd.push(() => {
-        const slot = availableSlots[currentSlotId];
-        const adUnit = `${slot.dfpNetworkId}/${slot.adUnit}`;
-        let gptSlot;
-            
-        if (slot.renderOutOfThePage) {
-          gptSlot = googleTag.defineOutOfPageSlot(adUnit, currentSlotId);
-        } else {
-          gptSlot = googleTag.defineSlot(adUnit, slot.sizes, currentSlotId);
+        googleTag.pubads().enableSingleRequest();
+
+        if (this.collapseEmptyDivs !== undefined || this.collapseEmptyDivs !== null) {
+          googleTag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
         }
 
-        slot.gptSlot = gptSlot;
-            
-        if (slot.gptSlot) { 
-          Object.keys(this.slotTargetingArguments)
-            .forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
+        googleTag.enableServices();
 
-          slot.gptSlot.addService(googleTag.pubads());
-          
-          const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
-        
-          if (slotAdSenseAttributes !== null) {
-            Object.keys(slotAdSenseAttributes)
-              .forEach(key => slot.gptSlot.set(key, slotAdSenseAttributes[key]));
-          }
-  
-          if (slot.sizeMapping) {
-            let smbuilder = googleTag.sizeMapping();
-  
-            slot.sizeMapping.forEach(({ viewport, sizes }) => {
-              smbuilder = smbuilder.addSize(viewport, sizes);
-            });
-  
-            slot.gptSlot.defineSizeMapping(smbuilder.build());
-          }
-        }
+        Object.keys(availableSlots).forEach(id => googleTag.display(id));
       });
-    });
-
-    googleTag.cmd.push(() => {
-      googleTag.pubads().enableSingleRequest();
-
-      if (this.collapseEmptyDivs !== undefined || this.collapseEmptyDivs !== null) {
-        googleTag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
-      }
-
-      googleTag.enableServices();
-
-      Object.keys(availableSlots).forEach(id => googleTag.display(id));
     });
     
     this.isLoadAlreadyCalled = true;
@@ -221,21 +222,22 @@ class DfpManager {
     return slotsToRefresh.reduce(slotsReducer, {});
   };
 
-  refresh = async () => {
+  refresh = () => {
     if (this.isLoadAlreadyCalled === false) {
-      await this.load();
+      this.load();
     } else {
-      const googleTag = await this.getGoogletag(); 
-      const slotsToRefresh = this.getRefreshableSlots();
-      const pubAds = googleTag.pubAds();
-        
-      googleTag.cmd.push(() => 
-        pubAds().refresh(Object.keys(slotsToRefresh).map(key => slotsToRefresh[key].gptSlot)),
-      );
+      this.getGoogletag().then(googleTag => {
+        const slotsToRefresh = this.getRefreshableSlots();
+        const pubAds = googleTag.pubAds();
+          
+        googleTag.cmd.push(() => 
+          pubAds().refresh(Object.keys(slotsToRefresh).map(key => slotsToRefresh[key].gptSlot)),
+        );
+      });
     }
   };
 
-  registerSlot = async values => {
+  registerSlot = values => {
     const {
       dfpNetworkId,
       adUnit,
@@ -264,7 +266,7 @@ class DfpManager {
     }
 
     if (this.isLoadAlreadyCalled === true) {
-      await this.load(slotId);
+      this.load(slotId);
     }
   };
 }
