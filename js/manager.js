@@ -3,8 +3,8 @@ import * as Utils from './utils';
 
 class DfpManager {
   constructor() {
-    this._eventEmitter = new EventEmitter();
-    this._eventEmitter.setMaxListeners(0);
+    this.eventEmitter = new EventEmitter();
+    this.eventEmitter.setMaxListeners(0);
     
     this.registeredSlots = {};
     this.targetingArguments = {};
@@ -50,16 +50,15 @@ class DfpManager {
       googletag.cmd.push(() => {
         const pubAds = googletag.pubads();
         
-        pubAds.addEventListener('slotRenderEnded', ev => this._eventEmitter.emit('slotRenderEnded', { slotId: ev.slot.getSlotElementId(), event: ev }));
+        pubAds.addEventListener('slotRenderEnded', ev => this.eventEmitter.emit('slotRenderEnded', { slotId: ev.slot.getSlotElementId(), event: ev }));
         
-        Object.keys(this.targetingArguments).forEach(keys => pubAds.setTargeting(key, this.targetingArguments[key]));
+        Object.keys(this.targetingArguments).forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
       });
     }
   };
 
-  load = async slotId => {
+  getAvailableSlots = slotId => {
     let availableSlots = {};
-    await this.init();
 
     if (this.isLoadAlreadyCalled) {
       const slot = this.registeredSlots[slotId];
@@ -71,7 +70,7 @@ class DfpManager {
       availableSlots = this.registeredSlots;
     }
 
-    availableSlots = Object.keys(availableSlots)
+    return Object.keys(availableSlots)
       .filter(id => !availableSlots[id].loading)
       .reduce(
       (result, id) => 
@@ -81,7 +80,12 @@ class DfpManager {
         },
       ), {},
     );
+  }
 
+  load = async slotId => {
+    await this.init();
+
+    const availableSlots = this.getAvailableSlots(slotId);
     const googleTag = await this.getGoogletag();
 
     Object.keys(availableSlots).forEach((currentSlotId) => {
@@ -92,17 +96,16 @@ class DfpManager {
         const adUnit = `${slot.dfpNetworkId}/${slot.adUnit}`;
         let gptSlot;
             
-        if (slot.renderOutOfThePage === true) {
+        if (slot.renderOutOfThePage) {
           gptSlot = googleTag.defineOutOfPageSlot(adUnit, currentSlotId);
         } else {
           gptSlot = googleTag.defineSlot(adUnit, slot.sizes, currentSlotId);
         }
 
         slot.gptSlot = gptSlot;
-
-        Object.keys(this.slotTargetingArguments).forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
             
-        if (slot.gptSlot) {
+        if (slot.gptSlot) { 
+          Object.keys(this.slotTargetingArguments).forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
           slot.gptSlot.addService(googleTag.pubads());
         }
 
@@ -118,7 +121,7 @@ class DfpManager {
     googleTag.cmd.push(() => {
       googleTag.pubads().enableSingleRequest();
 
-      if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
+      if (this.collapseEmptyDivs !== undefined || this.collapseEmptyDivs !== null) {
         googleTag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
       }
 
@@ -142,9 +145,9 @@ class DfpManager {
 
   getTargetingArguments = () => ({ ...this.targetingArguments });
 
-  attachSlotRenderEnded = callback => this._eventEmitter.on('slotRenderEnded', callback);
+  attachSlotRenderEnded = callback => this.eventEmitter.on('slotRenderEnded', callback);
 
-  detachSlotRenderEnded = callback => this._eventEmitter.removeListener('slotRenderEnded', callback);
+  detachSlotRenderEnded = callback => this.eventEmitter.removeListener('slotRenderEnded', callback);
 
   getRegisteredSlots = () => this.registeredSlots;
 
