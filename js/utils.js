@@ -9,7 +9,8 @@ export const loadGPTScript = () => new Promise((resolve, reject) => {
   script.type = 'text/javascript';
 
   script.onerror = err => reject(err);
-  script.onload = () => resolve(window.googletag);
+
+  googletag.cmd.push(() => resolve(window.googletag));
 
   const [firstHead] = document.getElementsByTagName('head');
   
