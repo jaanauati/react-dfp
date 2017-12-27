@@ -57,17 +57,9 @@ export class AdSlot extends React.Component {
     this.unregisterSlot();
   }
 
-  render() {
-    return (
-      <div className="adunitContainer">
-        <div {...this.getAdProps()} />
-      </div>
-    );
-  }
-
   getAdProps = () => ({
-    className: "adBox",
-    id: this.state.slotId
+    className: 'adBox',
+    id: this.state.slotId,
   });
 
   getSlotId = () => this.props.slotId || this.state.slotId;
@@ -79,21 +71,23 @@ export class AdSlot extends React.Component {
       ...mapContextToAdSlotProps(this.context),
       ...this.props,
       ...this.state,
-      slotShouldRefresh: this.slotShouldRefresh
+      slotShouldRefresh: this.slotShouldRefresh,
     });
 
     if (this.props.fetchNow) {
       DFPManager.load(this.getSlotId());
     }
-    
+
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
   }
 
   registerSlot = () => {
     if (this.state.slotId === null) {
-      this.setState({ slotId: this.generateSlotId() });
+      this.setState({ 
+        slotId: this.generateSlotId(), 
+      });
     } 
-      
+
     this.doRegisterSlot();
   }
 
@@ -101,13 +95,13 @@ export class AdSlot extends React.Component {
     DFPManager.unregisterSlot({
       ...mapContextToAdSlotProps(this.context),
       ...this.props,
-      ...this.state 
+      ...this.state, 
     });
 
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
   }
 
-  slotRenderEnded = event => {
+  slotRenderEnded = (event) => {
     if (event.slotId === this.getSlotId() && this.props.onSlotRender !== undefined) {
       this.props.onSlotRender(event);
     }
@@ -118,11 +112,19 @@ export class AdSlot extends React.Component {
       return this.props.shouldRefresh({ 
         ...mapContextToAdSlotProps(this.context),
         ...this.props,
-        slotId: this.getSlotId() 
+        slotId: this.getSlotId(),
       });
     }
 
     return true;
+  };
+
+  render() {
+    return (
+      <div className={'adunitContainer'}>
+        <div {...this.getAdProps()} />
+      </div>
+    );
   }
 }
 

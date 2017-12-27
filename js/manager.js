@@ -17,7 +17,7 @@ class DfpManager {
   setTargetingArguments = async values => {
     this.targetingArguments = {
       ...this.targetingArguments,
-      ...values
+      ...values,
     };
 
     if (this.isManagerInitialized) {
@@ -26,7 +26,8 @@ class DfpManager {
       googleTag.cmd.push(() => {
         const pubAds = googleTag.pubAds();
 
-        Object.keys(this.targetingArguments).forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+        Object.keys(this.targetingArguments)
+          .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
       });
     }
   }
@@ -34,7 +35,9 @@ class DfpManager {
   getSlotTargetingArguments = slotId => {
     const slot = this.getRegisteredSlots()[slotId];
 
-    if (slot !== undefined && slot.targetingArguments !== undefined && slot.targetingArguments !== null && Object.keys(slot.targetingArguments).length > 0) {
+    if (slot !== undefined && slot.targetingArguments !== undefined && 
+      slot.targetingArguments !== null && Object.keys(slot.targetingArguments).length > 0
+    ) {
       return slot.targetingArguments;
     }
 
@@ -47,12 +50,13 @@ class DfpManager {
 
       const googleTag = await this.getGoogletag();
 
-      googletag.cmd.push(() => {
-        const pubAds = googletag.pubads();
+      googleTag.cmd.push(() => {
+        const pubAds = googleTag.pubads();
         
         pubAds.addEventListener('slotRenderEnded', ev => this.eventEmitter.emit('slotRenderEnded', { slotId: ev.slot.getSlotElementId(), event: ev }));
         
-        Object.keys(this.targetingArguments).forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+        Object.keys(this.targetingArguments)
+          .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
       });
     }
   };
@@ -105,14 +109,19 @@ class DfpManager {
         slot.gptSlot = gptSlot;
             
         if (slot.gptSlot) { 
-          Object.keys(this.slotTargetingArguments).forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
+          Object.keys(this.slotTargetingArguments)
+            .forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
+
           slot.gptSlot.addService(googleTag.pubads());
         }
 
         if (slot.sizeMapping) {
           let smbuilder = googleTag.sizeMapping();
 
-          slot.sizeMapping.forEach(({ viewport, sizes }) => smbuilder = smbuilder.addSize(viewport, sizes));
+          slot.sizeMapping.forEach(({ viewport, sizes }) => {
+            smbuilder = smbuilder.addSize(viewport, sizes);
+          });
+
           slot.gptSlot.defineSizeMapping(smbuilder.build());
         }
       });
@@ -127,7 +136,7 @@ class DfpManager {
 
       googleTag.enableServices();
 
-      Object.keys(availableSlots).forEach(slotId => googleTag.display(slotId));
+      Object.keys(availableSlots).forEach(id => googleTag.display(id));
     });
     
     this.isLoadAlreadyCalled = true;
@@ -141,13 +150,15 @@ class DfpManager {
     return this.googleTagPromise;
   }
 
-  setCollapseEmptyDivs = shouldCollapse => this.collapseEmptyDivs = shouldCollapse;
+  setCollapseEmptyDivs = shouldCollapse => {
+    this.collapseEmptyDivs = shouldCollapse;
+  }
 
-  getTargetingArguments = () => ({ ...this.targetingArguments });
+  getTargetingArguments = () => this.targetingArguments;
 
-  attachSlotRenderEnded = callback => this.eventEmitter.on('slotRenderEnded', callback);
+  attachSlotRenderEnded = cb => this.eventEmitter.on('slotRenderEnded', cb);
 
-  detachSlotRenderEnded = callback => this.eventEmitter.removeListener('slotRenderEnded', callback);
+  detachSlotRenderEnded = cb => this.eventEmitter.removeListener('slotRenderEnded', cb);
 
   getRegisteredSlots = () => this.registeredSlots;
 
@@ -174,7 +185,9 @@ class DfpManager {
       const slotsToRefresh = this.getRefreshableSlots();
       const pubAds = googleTag.pubAds();
         
-      googleTag.cmd.push(() => pubAds().refresh(Object.keys(slotsToRefresh).map(key => slotsToRefresh[key].gptSlot)));
+      googleTag.cmd.push(() => 
+        pubAds().refresh(Object.keys(slotsToRefresh).map(key => slotsToRefresh[key].gptSlot)),
+      );
     }
   };
 
