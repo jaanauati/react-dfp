@@ -19,6 +19,7 @@ export class AdSlot extends React.Component {
     renderOutOfThePage: PropTypes.bool,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     fetchNow: PropTypes.bool,
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
     shouldRefresh: PropTypes.func,

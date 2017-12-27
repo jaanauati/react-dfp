@@ -5,16 +5,18 @@ import DFPManager from './manager';
 
 export default class DFPSlotsProvider extends React.Component {
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.any.isRequired,
     autoLoad: PropTypes.bool,
     dfpNetworkId: PropTypes.string.isRequired,
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     collapseEmptyDivs: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.object,
     ]),
+    adSenseAttrs: PropTypes.object,
   };
 
   static childContextTypes = {
@@ -38,7 +40,8 @@ export default class DFPSlotsProvider extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {    
+    DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
 
     if (this.props.autoLoad) {
@@ -47,6 +50,6 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   render() {
-    return React.Children.only(this.props.children);
+    return this.props.children;
   }
 }

@@ -7,12 +7,38 @@ class DfpManager {
     this.eventEmitter.setMaxListeners(0);
     
     this.registeredSlots = {};
+    this.adSenseAttributes = {};
     this.targetingArguments = {};
     this.collapseEmptyDivs = false;
     this.isLoadAlreadyCalled = false;
     this.isManagerInitialized = false;
     this.googleTagPromise = Utils.loadGPTScript();
   }
+
+  getAdSenseAttribute = key => this.adSenseAttributes[key];
+
+  setAdSenseAttribute = (key, value) => {
+    this.setAdSenseAttributes({ [key]: value });
+  };
+
+  getAdSenseAttributes = () => this.adSenseAttributes;
+
+  setAdSenseAttributes = async values => {
+    this.adSenseAttributes = {
+      ...this.adSenseAttributes,
+      ...values,
+    };
+
+    if (this.isManagerInitialized) {
+      const googleTag = await this.getGoogletag();
+
+      googleTag.cmd.push(() => 
+        Object.keys(this.adSenseAttributes).forEach(
+          key => googletag.pubads().set(key, this.targetingArguments[key]),
+        ),
+      );
+    }
+  };
 
   setTargetingArguments = async values => {
     this.targetingArguments = {
@@ -32,16 +58,24 @@ class DfpManager {
     }
   }
 
-  getSlotTargetingArguments = slotId => {
+  getSlotProperty = (slotId, propName) => {
     const slot = this.getRegisteredSlots()[slotId];
-
-    if (slot !== undefined && slot.targetingArguments !== undefined && 
-      slot.targetingArguments !== null && Object.keys(slot.targetingArguments).length > 0
-    ) {
-      return slot.targetingArguments;
+    
+    if (slot !== undefined) {
+      return slot[propName] || null;
     }
 
     return null;
+  };
+
+  getSlotTargetingArguments = slotId => {
+    const propValue = this.getSlotProperty(slotId, 'targetingArguments');
+    return propValue ? { ...propValue } : null;
+  };
+
+  getSlotAdSenseAttributes = slotId => {
+    const propValue = this.getSlotProperty(slotId, 'adSenseAttributes');
+    return propValue ? { ...propValue } : null;
   };
 
   init = async () => {
@@ -57,6 +91,9 @@ class DfpManager {
         
         Object.keys(this.targetingArguments)
           .forEach(key => pubAds.setTargeting(key, this.targetingArguments[key]));
+        
+        Object.keys(this.adSenseAttributes)
+          .forEach(key => pubAds.set(key, this.adSenseAttributes[key]));
       });
     }
   };
@@ -113,16 +150,23 @@ class DfpManager {
             .forEach(key => slot.gptSlot.setTargeting(key, this.slotTargetingArguments[key]));
 
           slot.gptSlot.addService(googleTag.pubads());
-        }
-
-        if (slot.sizeMapping) {
-          let smbuilder = googleTag.sizeMapping();
-
-          slot.sizeMapping.forEach(({ viewport, sizes }) => {
-            smbuilder = smbuilder.addSize(viewport, sizes);
-          });
-
-          slot.gptSlot.defineSizeMapping(smbuilder.build());
+          
+          const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+        
+          if (slotAdSenseAttributes !== null) {
+            Object.keys(slotAdSenseAttributes)
+              .forEach(key => slot.gptSlot.set(key, slotAdSenseAttributes[key]));
+          }
+  
+          if (slot.sizeMapping) {
+            let smbuilder = googleTag.sizeMapping();
+  
+            slot.sizeMapping.forEach(({ viewport, sizes }) => {
+              smbuilder = smbuilder.addSize(viewport, sizes);
+            });
+  
+            slot.gptSlot.defineSizeMapping(smbuilder.build());
+          }
         }
       });
     });
@@ -195,6 +239,7 @@ class DfpManager {
     const {
       dfpNetworkId,
       adUnit,
+      adSenseAttributes,
       sizes,
       renderOutOfThePage,
       sizeMapping,
@@ -210,6 +255,7 @@ class DfpManager {
         renderOutOfThePage,
         dfpNetworkId,
         adUnit,
+        adSenseAttributes,
         targetingArguments,
         sizeMapping,
         slotShouldRefresh,
