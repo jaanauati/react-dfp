@@ -3,14 +3,13 @@ export const loadGPTScript = () => new Promise((resolve, reject) => {
   window.googletag.cmd = window.googletag.cmd || [];
 
   const script = document.createElement('script');
-
   script.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
   script.async = true;
   script.type = 'text/javascript';
 
   script.onerror = err => reject(err);
 
-  googletag.cmd.push(() => resolve(window.googletag));
+  window.googletag.cmd.push(() => resolve(window.googletag));
 
   const [firstHead] = document.getElementsByTagName('head');
   
@@ -18,7 +17,6 @@ export const loadGPTScript = () => new Promise((resolve, reject) => {
     firstHead.appendChild(script);
   }
 });
-
 
 const contextMapping = {
   dfpAdUnit: 'adUnit',

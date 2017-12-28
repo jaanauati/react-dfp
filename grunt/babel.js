@@ -10,10 +10,7 @@ module.exports = {
     options: {
       sourceMap: false,
       presets: ['babel-preset-es2015', 'react'],
-      plugins: ['transform-class-properties', ['transform-runtime', {
-        polyfill: false,
-        regenerator: true,
-      }]],
+      plugins: ['transform-class-properties'],
     },
   },
 };
