@@ -23,31 +23,30 @@ class DfpManager {
 
   getAdSenseAttributes = () => this.adSenseAttributes;
 
-  setAdSenseAttributes = values => {
+  setAdSenseAttributes = (values) => {
     this.adSenseAttributes = {
       ...this.adSenseAttributes,
       ...values,
     };
 
     if (this.isManagerInitialized) {
-      this.getGoogletag().then(googleTag => {
+      this.getGoogletag().then((googleTag) => {
         googleTag.cmd.push(() => 
-          Object.keys(this.adSenseAttributes).forEach(
-            key => googletag.pubads().set(key, this.targetingArguments[key]),
-          ),
+          Object.keys(this.adSenseAttributes)
+            .forEach(key => googletag.pubads().set(key, this.targetingArguments[key])),
         );
       });
     }
   };
 
-  setTargetingArguments = values => {
+  setTargetingArguments = (values) => {
     this.targetingArguments = {
       ...this.targetingArguments,
       ...values,
     };
 
     if (this.isManagerInitialized) {
-      this.getGoogletag().then(googleTag => {
+      this.getGoogletag().then((googleTag) => {
         googleTag.cmd.push(() => {
           const pubAds = googleTag.pubAds();
 
@@ -68,12 +67,12 @@ class DfpManager {
     return null;
   };
 
-  getSlotTargetingArguments = slotId => {
+  getSlotTargetingArguments = (slotId) => {
     const propValue = this.getSlotProperty(slotId, 'targetingArguments');
     return propValue ? { ...propValue } : null;
   };
 
-  getSlotAdSenseAttributes = slotId => {
+  getSlotAdSenseAttributes = (slotId) => {
     const propValue = this.getSlotProperty(slotId, 'adSenseAttributes');
     return propValue ? { ...propValue } : null;
   };
@@ -82,7 +81,7 @@ class DfpManager {
     if (this.isManagerInitialized === false) {
       this.isManagerInitialized = true;
 
-      this.getGoogletag().then(googleTag => {
+      this.getGoogletag().then((googleTag) => {
         googleTag.cmd.push(() => {
           const pubAds = googleTag.pubads();
           
@@ -98,7 +97,7 @@ class DfpManager {
     }
   };
 
-  getAvailableSlots = slotId => {
+  getAvailableSlots = (slotId) => {
     let availableSlots = {};
 
     if (this.isLoadAlreadyCalled) {
@@ -123,12 +122,12 @@ class DfpManager {
     );
   }
 
-  load = slotId => {
+  load = (slotId) => {
     this.init();
 
     const availableSlots = this.getAvailableSlots(slotId);
   
-    this.getGoogletag().then(googleTag => {
+    this.getGoogletag().then((googleTag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
 
@@ -195,7 +194,7 @@ class DfpManager {
     return this.googleTagPromise;
   }
 
-  setCollapseEmptyDivs = shouldCollapse => {
+  setCollapseEmptyDivs = (shouldCollapse) => {
     this.collapseEmptyDivs = shouldCollapse;
   }
 
@@ -226,7 +225,7 @@ class DfpManager {
     if (this.isLoadAlreadyCalled === false) {
       this.load();
     } else {
-      this.getGoogletag().then(googleTag => {
+      this.getGoogletag().then((googleTag) => {
         const slotsToRefresh = this.getRefreshableSlots();
         const pubAds = googleTag.pubAds();
           
@@ -237,7 +236,7 @@ class DfpManager {
     }
   };
 
-  registerSlot = values => {
+  registerSlot = (values) => {
     const {
       dfpNetworkId,
       adUnit,
