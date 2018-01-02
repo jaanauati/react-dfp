@@ -66,7 +66,7 @@ export class AdSlot extends React.Component {
   getSlotId = () => this.props.slotId || this.state.slotId;
 
   generateSlotId = () => `adSlot-${dynamicAdCount++}`;
-  
+
   doRegisterSlot = () => {
     DFPManager.registerSlot({
       ...mapContextToAdSlotProps(this.context),
@@ -84,10 +84,10 @@ export class AdSlot extends React.Component {
 
   registerSlot = () => {
     if (this.state.slotId === null) {
-      this.setState({ 
-        slotId: this.generateSlotId(), 
+      this.setState({
+        slotId: this.generateSlotId(),
       });
-    } 
+    }
 
     this.doRegisterSlot();
   }
@@ -96,7 +96,7 @@ export class AdSlot extends React.Component {
     DFPManager.unregisterSlot({
       ...mapContextToAdSlotProps(this.context),
       ...this.props,
-      ...this.state, 
+      ...this.state,
     });
 
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
@@ -110,7 +110,7 @@ export class AdSlot extends React.Component {
 
   slotShouldRefresh = () => {
     if (this.props.shouldRefresh !== undefined) {
-      return this.props.shouldRefresh({ 
+      return this.props.shouldRefresh({
         ...mapContextToAdSlotProps(this.context),
         ...this.props,
         slotId: this.getSlotId(),

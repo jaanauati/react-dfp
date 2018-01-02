@@ -12,7 +12,7 @@ export const loadGPTScript = () => new Promise((resolve, reject) => {
   window.googletag.cmd.push(() => resolve(window.googletag));
 
   const [firstHead] = document.getElementsByTagName('head');
-  
+
   if (firstHead) {
     firstHead.appendChild(script);
   }
@@ -35,4 +35,4 @@ export const mapContextToAdSlotProps = (context, mappings = contextMapping, newP
   };
 
   return Object.keys(context).reduce(contextReducer, newProps);
-}; 
+};
