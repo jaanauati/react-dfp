@@ -86,10 +86,10 @@ export class AdSlot extends React.Component {
     if (this.state.slotId === null) {
       this.setState({
         slotId: this.generateSlotId(),
-      });
+      }, this.doRegisterSlot);
+    } else {
+      this.doRegisterSlot();
     }
-
-    this.doRegisterSlot();
   }
 
   unregisterSlot = () => {
