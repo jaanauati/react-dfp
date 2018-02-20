@@ -31,6 +31,7 @@ export class AdSlot extends React.Component {
     dfpAdUnit: PropTypes.string,
     dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
     dfpTargetingArguments: PropTypes.object,
+    newSlotCallback: PropTypes.func,
   };
 
   static defaultProps = {
@@ -51,6 +52,10 @@ export class AdSlot extends React.Component {
   }
 
   componentDidMount() {
+    // register this ad-unit in the <DFPSlotProvider>, when available.
+    if (this.context !== undefined && this.context.newSlotCallback !== undefined) {
+      this.context.newSlotCallback();
+    }
     this.registerSlot();
   }
 
