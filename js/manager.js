@@ -160,26 +160,28 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           } else {
             gptSlot = googletag.defineSlot(adUnit, slot.sizes, currentSlotId);
           }
-          slot.gptSlot = gptSlot;
-          const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
-          if (slotTargetingArguments !== null) {
-            Object.keys(slotTargetingArguments).forEach((varName) => {
-              slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
-            });
-          }
-          const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
-          if (slotAdSenseAttributes !== null) {
-            Object.keys(slotAdSenseAttributes).forEach((varName) => {
-              slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
-            });
-          }
-          slot.gptSlot.addService(googletag.pubads());
-          if (slot.sizeMapping) {
-            let smbuilder = googletag.sizeMapping();
-            slot.sizeMapping.forEach((mapping) => {
-              smbuilder = smbuilder.addSize(mapping.viewport, mapping.sizes);
-            });
-            slot.gptSlot.defineSizeMapping(smbuilder.build());
+          if (gptSlot !== null) {
+            slot.gptSlot = gptSlot;
+            const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
+            if (slotTargetingArguments !== null) {
+              Object.keys(slotTargetingArguments).forEach((varName) => {
+                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+              });
+            }
+            const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+            if (slotAdSenseAttributes !== null) {
+              Object.keys(slotAdSenseAttributes).forEach((varName) => {
+                slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
+              });
+            }
+            slot.gptSlot.addService(googletag.pubads());
+            if (slot.sizeMapping) {
+              let smbuilder = googletag.sizeMapping();
+              slot.sizeMapping.forEach((mapping) => {
+                smbuilder = smbuilder.addSize(mapping.viewport, mapping.sizes);
+              });
+              slot.gptSlot.defineSizeMapping(smbuilder.build());
+            }
           }
         });
       });
@@ -252,9 +254,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         loading: false,
       };
       this.emit('slotRegistered', { slotId });
-    }
-    if (loadAlreadyCalled === true) {
-      this.load(slotId);
+      if (loadAlreadyCalled === true) {
+        this.load(slotId);
+      }
     }
   },
 
