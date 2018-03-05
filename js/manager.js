@@ -2,6 +2,8 @@ import { EventEmitter } from 'events';
 import * as Utils from './utils';
 
 let loadAlreadyCalled = false;
+let loadInProgress = false;
+let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
@@ -17,7 +19,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   setAdSenseAttribute(key, value) {
     this.setAdSenseAttributes({ [key]: value });
   },
-
 
   getAdSenseAttributes() {
     return { ...globalAdSenseAttributes };
@@ -113,6 +114,17 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   load(slotId) {
+    if (loadInProgress === true || loadPromise !== null) {
+      loadPromise = loadPromise.then(
+        () => this.doLoad(slotId),
+      );
+    } else {
+      loadPromise = this.doLoad(slotId);
+    }
+  },
+
+  doLoad(slotId) {
+    loadInProgress = true;
     this.init();
     let availableSlots = {};
 
@@ -126,15 +138,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
 
     availableSlots = Object.keys(availableSlots)
-      .filter(id => !availableSlots[id].loading)
+      .filter(id => !availableSlots[id].loading && !availableSlots[id].gptSlot)
       .reduce(
-      (result, id) => Object.assign(
-        result, {
-          [id]: Object.assign(availableSlots[id], { loading: true }),
-        },
-      ), {},
-    );
-    this.getGoogletag().then((googletag) => {
+        (result, id) => Object.assign(
+          result, {
+            [id]: Object.assign(availableSlots[id], { loading: true }),
+          },
+        ), {},
+      );
+
+    return this.getGoogletag().then((googletag) => {
       Object.keys(availableSlots).forEach((currentSlotId) => {
         availableSlots[currentSlotId].loading = false;
 
@@ -147,26 +160,28 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           } else {
             gptSlot = googletag.defineSlot(adUnit, slot.sizes, currentSlotId);
           }
-          slot.gptSlot = gptSlot;
-          const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
-          if (slotTargetingArguments !== null) {
-            Object.keys(slotTargetingArguments).forEach((varName) => {
-              slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
-            });
-          }
-          const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
-          if (slotAdSenseAttributes !== null) {
-            Object.keys(slotAdSenseAttributes).forEach((varName) => {
-              slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
-            });
-          }
-          slot.gptSlot.addService(googletag.pubads());
-          if (slot.sizeMapping) {
-            let smbuilder = googletag.sizeMapping();
-            slot.sizeMapping.forEach((mapping) => {
-              smbuilder = smbuilder.addSize(mapping.viewport, mapping.sizes);
-            });
-            slot.gptSlot.defineSizeMapping(smbuilder.build());
+          if (gptSlot !== null) {
+            slot.gptSlot = gptSlot;
+            const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
+            if (slotTargetingArguments !== null) {
+              Object.keys(slotTargetingArguments).forEach((varName) => {
+                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+              });
+            }
+            const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+            if (slotAdSenseAttributes !== null) {
+              Object.keys(slotAdSenseAttributes).forEach((varName) => {
+                slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
+              });
+            }
+            slot.gptSlot.addService(googletag.pubads());
+            if (slot.sizeMapping) {
+              let smbuilder = googletag.sizeMapping();
+              slot.sizeMapping.forEach((mapping) => {
+                smbuilder = smbuilder.addSize(mapping.viewport, mapping.sizes);
+              });
+              slot.gptSlot.defineSizeMapping(smbuilder.build());
+            }
           }
         });
       });
@@ -182,9 +197,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         Object.keys(availableSlots).forEach((theSlotId) => {
           googletag.display(theSlotId);
         });
+        loadAlreadyCalled = true;
+        loadInProgress = false;
       });
     });
-    loadAlreadyCalled = true;
   },
 
   getRefreshableSlots() {
@@ -237,9 +253,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         slotShouldRefresh,
         loading: false,
       };
-    }
-    if (loadAlreadyCalled === true) {
-      this.load(slotId);
+      this.emit('slotRegistered', { slotId });
+      if (loadAlreadyCalled === true) {
+        this.load(slotId);
+      }
     }
   },
 
