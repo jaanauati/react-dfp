@@ -277,11 +277,11 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   attachSlotIsViewable(cb) {
-    this.on('impressionViewable', cb);
+    this.on('slotRenderEnded', cb);
   },
 
   detachSlotIsViewable(cb) {
-    this.removeListener('impressionViewable', cb);
+    this.removeListener('slotRenderEnded', cb);
   },
 
 });
