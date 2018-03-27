@@ -21,7 +21,7 @@ export class AdSlot extends React.Component {
     adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
-    onSlotViewable: PropTypes.func,
+    onSlotIsViewable: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
     objectId: PropTypes.string,
