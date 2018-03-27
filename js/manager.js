@@ -87,7 +87,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             const slotId = event.slot.getSlotElementId();
             this.emit('slotRenderEnded', { slotId, event });
           });
-          pubadsService.addEventListener('impressionViewable', (event) => {
+          pubadsService.addEventListener('slotRenderEnded', (event) => {
             const slotId = event.slot.getSlotElementId();
             this.emit('impressionViewable', { slotId, event });
           });
