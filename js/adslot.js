@@ -146,7 +146,7 @@ export class AdSlot extends React.Component {
     if (eventData.slotId === this.getSlotId()) {
       if (this.props.onSlotIsViewable !== undefined) {
         console.log("Setting up viewable call");
-        this.props.onSlotIsViewable(eventData);
+        this.props.onSlotRender(eventData);
       }
     }
   }
