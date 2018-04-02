@@ -27,8 +27,8 @@ npm install --save-dev react-dfp
 ```javascript
 import { DFPManager } from 'react-dfp';
 ...
-/* If you are using ``` <DFPSlotsProvider> ``` the following call won't be required,  
- * unless you has set the property ``` autoLoad={false} ```.
+/* If you are using <DFPSlotsProvider> the following call won't be required,  
+ * unless you have set the property autoLoad={false}.
  */
 DFPManager.load();
 ...
