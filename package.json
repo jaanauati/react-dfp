@@ -1,22 +1,22 @@
 {
-  "name": "react-dfp-extended",
-  "version": "0.7.1",
-  "homepage": "https://github.com/jeffersonlicet/react-dfp/",
+  "name": "react-dfp",
+  "version": "0.7.0",
+  "homepage": "https://github.com/jaanauati/react-dfp/",
   "author": {
     "name": "Jonatan Alexis Anauati",
     "email": "barakawins@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeffersonlicet/react-dfp.git"
+    "url": "https://github.com/jaanauati/react-dfp.git"
   },
   "scripts": {
     "dist": "./node_modules/.bin/grunt dist",
     "test": "./node_modules/.bin/grunt test"
   },
   "bugs": {
-    "mail": "jeffersonlicet@gmail.com",
-    "url": "https://github.com/jeffersonlicet/react-dfp/issues/"
+    "mail": "barakawins@gmail.com",
+    "url": "https://github.com/jaanauati/react-dfp/issues/"
   },
   "keywords": [
     "react",
