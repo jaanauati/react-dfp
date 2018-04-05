@@ -47,7 +47,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         googletag.cmd.push(() => {
           const pubadsService = googletag.pubads();
           Object.keys(globalTargetingArguments).forEach((varName) => {
-            pubadsService.setTargeting(varName, globalTargetingArguments[varName]);
+            if (pubadsService) {
+              pubadsService.setTargeting(varName, globalTargetingArguments[varName]);
+            }
           });
         });
       });
@@ -87,10 +89,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             const slotId = event.slot.getSlotElementId();
             this.emit('slotRenderEnded', { slotId, event });
           });
+          pubadsService.addEventListener('impressionViewable', (event) => {
+            const slotId = event.slot.getSlotElementId();
+            this.emit('impressionViewable', { slotId, event });
+          });
           const targetingArguments = this.getTargetingArguments();
           // set global targetting arguments
           Object.keys(targetingArguments).forEach((varName) => {
-            pubadsService.setTargeting(varName, targetingArguments[varName]);
+            if (pubadsService) {
+              pubadsService.setTargeting(varName, targetingArguments[varName]);
+            }
           });
           // set global adSense attributes
           const adSenseAttributes = this.getAdSenseAttributes();
@@ -165,7 +173,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
             if (slotTargetingArguments !== null) {
               Object.keys(slotTargetingArguments).forEach((varName) => {
-                slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+                if (slot && slot.gptSlot) {
+                  slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+                }
               });
             }
             const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
@@ -274,6 +284,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   detachSlotRenderEnded(cb) {
     this.removeListener('slotRenderEnded', cb);
+  },
+
+  attachSlotIsViewable(cb) {
+    this.on('impressionViewable', cb);
+  },
+
+  detachSlotIsViewable(cb) {
+    this.removeListener('impressionViewable', cb);
   },
 
 });
