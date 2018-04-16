@@ -16,7 +16,7 @@
   "dependencies": {
     "next": "latest",
     "react": "^16.2.0",
-    "react-dfp": "^0.4.2",
+    "react-dfp": "latest",
     "react-dom": "^16.2.0",
     "react-syntax-highlighter": "^5.8.0"
   },
