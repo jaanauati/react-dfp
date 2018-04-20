@@ -55,7 +55,7 @@ export default class DFPSlotsProvider extends React.Component {
   componentDidMount() {
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
-    if (!this.loadAdsIfPossible()) {
+    if (this.props.autoLoad && !this.loadAdsIfPossible()) {
       DFPManager.on('slotRegistered', this.loadAdsIfPossible);
     }
   }
