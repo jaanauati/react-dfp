@@ -240,16 +240,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   registerSlot({
-        dfpNetworkId,
-        adUnit,
-        sizes,
-        renderOutOfThePage,
-        sizeMapping,
-        adSenseAttributes,
-        targetingArguments,
-        slotId,
-        slotShouldRefresh,
-    }) {
+    dfpNetworkId,
+    adUnit,
+    sizes,
+    renderOutOfThePage,
+    sizeMapping,
+    adSenseAttributes,
+    targetingArguments,
+    slotId,
+    slotShouldRefresh,
+  }) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
       registeredSlots[slotId] = {
         slotId,

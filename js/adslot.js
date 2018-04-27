@@ -5,7 +5,6 @@ import DFPManager from './manager';
 let dynamicAdCount = 0;
 
 export class AdSlot extends React.Component {
-
   static propTypes = {
     dfpNetworkId: PropTypes.string,
     adUnit: PropTypes.string,

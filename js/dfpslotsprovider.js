@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import DFPManager from './manager';
 
 export default class DFPSlotsProvider extends React.Component {
-
   static propTypes = {
     children: PropTypes.oneOfType([
       PropTypes.element,
