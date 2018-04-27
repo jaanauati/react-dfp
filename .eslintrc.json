@@ -1,6 +1,7 @@
 {
   "extends": "airbnb",
   "plugins": [
+    "babel",
     "react"
   ],
   "globals": {
@@ -15,9 +16,7 @@
   },
   "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+    "ecmaVersion": 6
   },
   "rules": {
     "react/jsx-filename-extension": 0,

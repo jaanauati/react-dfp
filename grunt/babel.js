@@ -9,8 +9,8 @@ module.exports = {
     }],
     options: {
       sourceMap: false,
-      presets: ['babel-preset-es2015', 'react'],
-      plugins: ['transform-class-properties'],
+      presets: ['@babel/preset-env'],
+      plugins: [],
     },
   },
 };
