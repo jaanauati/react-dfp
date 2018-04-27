@@ -49,10 +49,6 @@
     "babel-loader": "^8.0.0-beta.2",
     "babel-preset-airbnb": "^2.2.3",
     "brfs": "^1.6.1",
-    "browser-sync": "^2.23.7",
-    "browserify": "^14.5.0",
-    "browserify-istanbul": "^2.0.0",
-    "browserify-shim": "^3.8.0",
     "chai": "^3.5.0",
     "escope": "^3.3.0",
     "eslint": "^4.19.1",
@@ -79,7 +75,6 @@
     "react-dom": "^16.3.2",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.14.0",
-    "watchify": "^3.11.0",
     "webpack": "^4.6.0"
   },
   "engines": {
