@@ -1,4 +1,9 @@
 function doloadGPTScript(resolve, reject) {
+  if (window.googletag && googletag.apiReady) {
+    resolve(window.googletag);
+    return;
+  }
+
   window.googletag = window.googletag || {};
   window.googletag.cmd = window.googletag.cmd || [];
 
