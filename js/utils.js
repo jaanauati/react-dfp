@@ -1,5 +1,5 @@
 function doloadGPTScript(resolve, reject) {
-  if (window.googletag && googletag.apiReady) {
+  if (window.googletag && window.googletag.apiReady) {
     resolve(window.googletag);
     return;
   }
