@@ -60,7 +60,7 @@
     "estraverse": "^4.2.0",
     "jasmine-core": "^2.99.1",
     "jsdom": "^11.11.0",
-    "karma": "^1.6.0",
+    "karma": "^3.1.1",
     "karma-chai": "^0.1.0",
     "karma-jasmine": "^1.1.2",
     "karma-jsdom-launcher": "^6.1.3",
