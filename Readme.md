@@ -117,7 +117,7 @@ DFPManager.load();
 | adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes to apply to the current ad slot (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
 | targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to this box (you can use for custom targeting) |
 | onSlotRender       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the adSlot is rendered. The first argument passes the gpt event data (googletag.events.SlotRenderEndedEvent). |
- onSlotIsViewable       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the impresion becomes viewable. The first argument passes the gpt event data (googletag.events.ImpressionViewableEvent). |
+| onSlotIsViewable       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the impresion becomes viewable. The first argument passes the gpt event data (googletag.events.ImpressionViewableEvent). |
 | shouldRefresh      | fcn. (optional) (should return a boolean)| ``` function() { /* never refresh this ad */ return false; } ``` | Return a boolean that tells the dfp manager whether the ad slot can be refreshed or not. |
 | slotId          | string. (optional) | ``` "homepage-leadboard" ``` | Controls the id of the dom element in which the dom is displayed. If this field is not provided a random name is created. |
 
