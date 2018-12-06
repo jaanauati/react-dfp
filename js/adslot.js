@@ -85,16 +85,16 @@ export class AdSlot extends React.Component {
   mapContextToAdSlotProps() {
     const context = this.context;
     const mappedProps = {};
-    if (context.dfpNetworkId !== undefined) {
+    if (typeof context.dfpNetworkId !== 'undefined') {
       mappedProps.dfpNetworkId = context.dfpNetworkId;
     }
-    if (context.dfpAdUnit !== undefined) {
+    if (typeof context.dfpAdUnit !== 'undefined') {
       mappedProps.adUnit = context.dfpAdUnit;
     }
-    if (context.dfpSizeMapping !== undefined) {
+    if (typeof context.dfpSizeMapping !== 'undefined') {
       mappedProps.sizeMapping = context.dfpSizeMapping;
     }
-    if (context.dfpTargetingArguments !== undefined) {
+    if (typeof context.dfpTargetingArguments !== 'undefined') {
       mappedProps.targetingArguments = context.dfpTargetingArguments;
     }
     return mappedProps;
@@ -135,7 +135,7 @@ export class AdSlot extends React.Component {
 
   slotRenderEnded(eventData) {
     if (eventData.slotId === this.getSlotId()) {
-      if (this.props.onSlotRender !== undefined) {
+      if (this.props.onSlotRender !== 'undefined') {
         this.props.onSlotRender(eventData);
       }
     }
@@ -143,7 +143,7 @@ export class AdSlot extends React.Component {
 
   slotIsViewable(eventData) {
     if (eventData.slotId === this.getSlotId()) {
-      if (this.props.onSlotIsViewable !== undefined) {
+      if (typeof this.props.onSlotIsViewable !== 'undefined') {
         this.props.onSlotIsViewable(eventData);
       }
     }
@@ -151,7 +151,7 @@ export class AdSlot extends React.Component {
 
   slotShouldRefresh() {
     let r = true;
-    if (this.props.shouldRefresh !== undefined) {
+    if (typeof this.props.shouldRefresh !== 'undefined') {
       r = this.props.shouldRefresh({ ...this.mapContextToAdSlotProps(),
         ...this.props,
         slotId: this.getSlotId() });

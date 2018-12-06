@@ -63,7 +63,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   getSlotProperty(slotId, propName) {
     const slot = this.getRegisteredSlots()[slotId];
     let ret = null;
-    if (slot !== undefined) {
+    if (typeof slot !== 'undefined') {
       ret = slot[propName] || ret;
     }
     return ret;
@@ -138,7 +138,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
     if (loadAlreadyCalled === true) {
       const slot = registeredSlots[slotId];
-      if (slot !== undefined) {
+      if (typeof slot !== 'undefined') {
         availableSlots[slotId] = slot;
       }
     } else {
