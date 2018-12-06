@@ -19,7 +19,8 @@ Thumbs.db
 *.rar
 *.tar
 *.zip
-*.tgz # npm pack files
+# npm pack files
+*.tgz
 
 # Ignore all log files
 *.log
