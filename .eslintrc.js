@@ -17,10 +17,11 @@ module.exports = {
     beforeEach: true,
     afterEach: true,
     window: true,
-    document: true
+    document: true,
     console: false,
     document: false,
     exports: false,
+    module: true,
     fetch: false,
     global: false,
     jest: false

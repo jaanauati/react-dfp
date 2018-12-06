@@ -9,6 +9,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "next",
+    "eslint": "npx eslint .",
     "build": "next build",
     "start": "next start"
   },
