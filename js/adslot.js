@@ -54,7 +54,7 @@ export class AdSlot extends React.Component {
 
   componentDidMount() {
     // register this ad-unit in the <DFPSlotProvider>, when available.
-    if (this.context !== undefined && this.context.newSlotCallback !== undefined) {
+    if (typeof this.context !== 'undefined' && typeof this.context.newSlotCallback !== 'undefined') {
       this.context.newSlotCallback();
     }
     this.registerSlot();
