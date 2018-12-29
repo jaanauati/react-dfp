@@ -98,8 +98,9 @@ DFPManager.load();
 
 | Property           | Type          | Example     | Description |
 | ------------------ | ------------- | ----------- | -------     |
-| autoLoad           | bool (default true) |  ``` { false } ```      | Tell to the provider if it should load the ads when the slots are mounted. |
+| autoLoad           | boolean (default true) |  ``` { false } ```      | Tell to the provider if it should load the ads when the slots are mounted. |
 | dfpNetworkId       | string  |  ``` "1122" ```      | DFP Account id. |
+| singleRequest      | boolean (default true) | ```<DFPSlotsProvider singleRequest=false> ... </DFPSlotsProvider>``` | Enables or disables the gpt's singleRequest feature. |
 | adUnit             | string  |  ``` "homepage" ```   | The adunit you want to target the boxes (children / contained boxes). |
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } ``` | Set the size mappings to be applied to the nested ad slots. |
 | adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes that will be applied globaly (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |

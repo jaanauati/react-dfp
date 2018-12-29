@@ -5,12 +5,21 @@ let loadAlreadyCalled = false;
 let loadInProgress = false;
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
+let singleRequestEnabled = true;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 const globalAdSenseAttributes = {};
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
+
+  singleRequestIsEnabled() {
+    return singleRequestEnabled;
+  },
+
+  configureSingleRequest(value) {
+    singleRequestEnabled = !!value;
+  },
 
   getAdSenseAttribute(key) {
     return globalAdSenseAttributes[key];
@@ -197,7 +206,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       });
 
       googletag.cmd.push(() => {
-        googletag.pubads().enableSingleRequest();
+        if (this.singleRequestIsEnabled()) {
+          googletag.pubads().enableSingleRequest();
+        }
 
         if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
           googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
