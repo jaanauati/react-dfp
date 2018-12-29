@@ -1,0 +1,25 @@
+{
+  "name": "react-dfp-isomorphic-01",
+  "config": {
+    "dfp_id": "notset",
+    "adunit_1": "adunit/1",
+    "adunit_2": "adunit/2",
+    "adunit_3": "adunit/3"
+  },
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "next": "latest",
+    "react": "^16.2.0",
+    "react-dfp": "latest",
+    "react-dom": "^16.2.0",
+    "react-syntax-highlighter": "^5.8.0"
+  },
+  "license": "ISC",
+  "devDependencies": {}
+}

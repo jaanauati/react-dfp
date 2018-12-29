@@ -5,7 +5,6 @@ import DFPManager from './manager';
 let dynamicAdCount = 0;
 
 export class AdSlot extends React.Component {
-
   static propTypes = {
     dfpNetworkId: PropTypes.string,
     adUnit: PropTypes.string,
@@ -18,8 +17,10 @@ export class AdSlot extends React.Component {
     renderOutOfThePage: PropTypes.bool,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     fetchNow: PropTypes.bool,
+    adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
+    onSlotIsViewable: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
     objectId: PropTypes.string,
@@ -30,6 +31,7 @@ export class AdSlot extends React.Component {
     dfpAdUnit: PropTypes.string,
     dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
     dfpTargetingArguments: PropTypes.object,
+    newSlotCallback: PropTypes.func,
   };
 
   static defaultProps = {
@@ -38,17 +40,23 @@ export class AdSlot extends React.Component {
 
   constructor(props) {
     super(props);
+    this.doRegisterSlot = this.doRegisterSlot.bind(this);
     this.generateSlotId = this.generateSlotId.bind(this);
     this.getSlotId = this.getSlotId.bind(this);
     this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
     this.slotRenderEnded = this.slotRenderEnded.bind(this);
+    this.slotIsViewable = this.slotIsViewable.bind(this);
     this.state = {
-      slotId: this.props.slotId || this.generateSlotId(),
+      slotId: this.props.slotId || null,
     };
   }
 
   componentDidMount() {
+    // register this ad-unit in the <DFPSlotProvider>, when available.
+    if (this.context !== undefined && this.context.newSlotCallback !== undefined) {
+      this.context.newSlotCallback();
+    }
     this.registerSlot();
   }
 
@@ -92,16 +100,28 @@ export class AdSlot extends React.Component {
     return mappedProps;
   }
 
-  registerSlot() {
+  doRegisterSlot() {
     DFPManager.registerSlot({
       ...this.mapContextToAdSlotProps(),
       ...this.props,
       ...this.state,
-      slotShouldRefresh: this.slotShouldRefresh });
+      slotShouldRefresh: this.slotShouldRefresh,
+    });
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
     }
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
+    DFPManager.attachSlotIsViewable(this.slotIsViewable);
+  }
+
+  registerSlot() {
+    if (this.state.slotId === null) {
+      this.setState({
+        slotId: this.generateSlotId(),
+      }, this.doRegisterSlot);
+    } else {
+      this.doRegisterSlot();
+    }
   }
 
   unregisterSlot() {
@@ -110,12 +130,21 @@ export class AdSlot extends React.Component {
       ...this.props,
       ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
+    DFPManager.detachSlotIsViewable(this.slotIsViewable);
   }
 
   slotRenderEnded(eventData) {
     if (eventData.slotId === this.getSlotId()) {
       if (this.props.onSlotRender !== undefined) {
         this.props.onSlotRender(eventData);
+      }
+    }
+  }
+
+  slotIsViewable(eventData) {
+    if (eventData.slotId === this.getSlotId()) {
+      if (this.props.onSlotIsViewable !== undefined) {
+        this.props.onSlotIsViewable(eventData);
       }
     }
   }
@@ -131,8 +160,15 @@ export class AdSlot extends React.Component {
   }
 
   render() {
+    const { slotId } = this.state;
+    const props = { className: 'adBox' };
+    if (slotId !== null) {
+      props.id = slotId;
+    }
     return (
-      <div className="adunitContainer"> <div id={this.state.slotId} className="adBox" /> </div>
+      <div className="adunitContainer">
+        <div {...props} />
+      </div>
     );
   }
 }

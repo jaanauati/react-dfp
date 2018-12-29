@@ -2,6 +2,39 @@ import { expect } from 'chai';
 import { DFPManager } from '../lib';
 
 describe('DFPManager', () => {
+
+  describe('Single Request', () => {
+    it('Gets singleRequest enabled by default', function registersAdSlot() {
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+    it('Can disable singleRequest', function registersAdSlot() {
+      DFPManager.configureSingleRequest(false);
+      expect(DFPManager.singleRequestIsEnabled()).equal(false);
+    });
+    it('Can enable singleRequest', function registersAdSlot() {
+      DFPManager.configureSingleRequest(true);
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+  });
+
+  describe('AdSense attributes', () => {
+    beforeEach(function beforeEach() {
+      this.argsList1 = {
+        page_url: 'www.mysite.com',
+        adsense_url_color: '#000000',
+      };
+      this.argsList2 = { adsense_ad_format: '250x250_as' };
+      DFPManager.setAdSenseAttributes(this.argsList1);
+      DFPManager.setAdSenseAttribute('adsense_ad_format', '250x250_as');
+    });
+
+    it('Properly tracks global AdSense attributes', function registersAdSlot() {
+      expect(DFPManager.getAdSenseAttributes()).to.contain.keys(
+        { ...this.argsList1, ...this.argsList2 },
+      );
+    });
+  });
+
   describe('Targeting arguments', () => {
     beforeEach(function beforeEach() {
       this.argsList1 = { k: 'yeah' };
@@ -12,7 +45,7 @@ describe('DFPManager', () => {
 
     it('Registers global targeting arguments', function registersAdSlot() {
       expect(DFPManager.getTargetingArguments()).to.contain.keys(
-        { ...this.argsList1, ...this.argsList2 }
+        { ...this.argsList1, ...this.argsList2 },
       );
     });
   });
@@ -24,6 +57,10 @@ describe('DFPManager', () => {
         adUnit: 'foo/bar/baz',
         slotId: 'testElement',
         sizes: [[728, 90]],
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#000000',
+        },
         slotShouldRefresh: () => true,
       };
       DFPManager.registerSlot(this.slotProps);
@@ -35,6 +72,8 @@ describe('DFPManager', () => {
         .keys([this.slotProps.slotId]);
       expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
         .to.contain.all.keys(this.slotProps);
+      expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
+        .to.deep.include(this.slotProps);
     });
 
     afterEach(function afterEach() {

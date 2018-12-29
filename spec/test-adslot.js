@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -82,6 +81,52 @@ describe('AdSlot', () => {
         <AdSlot {...compProps} />,
       );
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
+    });
+
+    it('Registers an AdSlot with adSense attributes', () => {
+      const compProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        slotId: 'testElement4',
+        sizes: [[728, 90]],
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#000000',
+        },
+      };
+      const comp2Props = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        slotId: 'testElement4-2',
+        sizes: [[728, 90]],
+      };
+
+      ReactTestUtils.renderIntoDocument(
+        <AdSlot {...compProps} />,
+      );
+      ReactTestUtils.renderIntoDocument(
+        <AdSlot {...comp2Props} />,
+      );
+      expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
+        .to.deep.equal(compProps.adSenseAttributes);
+      // make sure there are not side effects
+      expect(DFPManager.getSlotAdSenseAttributes(comp2Props.slotId))
+        .to.equal(null);
+    });
+
+    it('Registers an AdSlot without any adSense attribute', () => {
+      const compProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        slotId: 'testElement4',
+        sizes: [[728, 90]],
+      };
+
+      ReactTestUtils.renderIntoDocument(
+        <AdSlot {...compProps} />,
+      );
+      expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
+        .to.equal(null);
     });
 
     it('Registers an AdSlot with custom targeting arguments', () => {
