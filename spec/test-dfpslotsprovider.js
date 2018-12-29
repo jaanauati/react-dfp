@@ -57,6 +57,89 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
     });
 
+    it('Gets singleRequest enabled by default', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+
+    it('Can disable singleRequest', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        singleRequest: false,
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.singleRequestIsEnabled()).equal(false);
+    });
+
+    it('Can enable singleRequest', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        singleRequest: true,
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+
+    it('Disables singleRequest', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        singleRequest: false,
+      };
+
+      const compProps = {
+        slotId: 'testElement1',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.singleRequestIsEnabled()).equal(false);
+    });
+
     it('Registers a refreshable AdSlot', () => {
       const providerProps = {
         dfpNetworkId: '1000',

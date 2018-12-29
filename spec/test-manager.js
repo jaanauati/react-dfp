@@ -3,6 +3,20 @@ import { DFPManager } from '../lib';
 
 describe('DFPManager', () => {
 
+  describe('Single Request', () => {
+    it('Gets singleRequest enabled by default', function registersAdSlot() {
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+    it('Can disable singleRequest', function registersAdSlot() {
+      DFPManager.configureSingleRequest(false);
+      expect(DFPManager.singleRequestIsEnabled()).equal(false);
+    });
+    it('Can enable singleRequest', function registersAdSlot() {
+      DFPManager.configureSingleRequest(true);
+      expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+  });
+
   describe('AdSense attributes', () => {
     beforeEach(function beforeEach() {
       this.argsList1 = {

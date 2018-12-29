@@ -10,6 +10,7 @@ export default class DFPSlotsProvider extends React.Component {
     ]).isRequired,
     autoLoad: PropTypes.bool,
     dfpNetworkId: PropTypes.string.isRequired,
+    singleRequest: PropTypes.bool,
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     adSenseAttributes: PropTypes.object,
@@ -31,6 +32,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   static defaultProps = {
     autoLoad: true,
+    singleRequest: true,
     collapseEmptyDivs: null,
   };
 
@@ -52,6 +54,7 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   componentDidMount() {
+    DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
     if (this.props.autoLoad && !this.loadAdsIfPossible()) {
