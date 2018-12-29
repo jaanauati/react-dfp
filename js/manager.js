@@ -250,6 +250,29 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
+  destroySlots(slotsToDestroy) {
+    if (managerAlreadyInitialized === true) {
+      loadAlreadyCalled = false;
+      this.getGoogletag().then((googletag) => {
+        if (slotsToDestroy !== undefined) {
+          googletag.destroySlots(
+            Object.keys(slotsToDestroy).map(slotId => slotsToDestroy[slotId].gptSlot),
+          );
+        } else {
+          googletag.destroySlots();
+        }
+      });
+    }
+  },
+
+  setNewAdUnit(slots, newAdUnit) {
+    if (managerAlreadyInitialized === true) {
+      Object.keys(slots).forEach((currentSlotId) => {
+        registeredSlots[currentSlotId].adUnit = newAdUnit;
+      });
+    }
+  },
+
   registerSlot({
     dfpNetworkId,
     adUnit,
