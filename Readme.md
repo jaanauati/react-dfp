@@ -129,6 +129,8 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
+| configureSingleRequest | ```fcn(boolean)``` | ```DFPManager.configureSingleRequest( false )``` | Controls the strategy to use for the network requests. This method accepts a boolean that tells wether to enable or disable the singleRequest mode. |
+| singleRequestEnabled | ```fcn() => bool``` | ``` DFPManager.singleRequestEnabled(); ``` | Returns true when the singleRequest mode is enabled, false otherwise. |
 | setAdSenseAttributes | ``` fcn(object)``` | ``` DFPManager.setAdSenseAttributes({ "page_url": "www.site.com", "adsense_link_color": "#000000"}); ``` | Use this method to set AdSense attributes. |
 | setAdSenseAttribute | ``` fcn(key, value)``` | ``` DFPManager.setAdSenseAttributes("page_url", "www.site.com"); ``` | Use this method to set AdSense attributes. |
 | getAdSenseAttributes | ```fcn() => object``` | ``` DFPManager.getAdSenseAttributes(); ``` | This method returns an object with the global adSense attributes. |
