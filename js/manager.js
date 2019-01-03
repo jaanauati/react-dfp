@@ -6,6 +6,7 @@ let loadInProgress = false;
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 let singleRequestEnabled = true;
+let servePersonalizedAds = true;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
@@ -23,6 +24,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   getAdSenseAttribute(key) {
     return globalAdSenseAttributes[key];
+  },
+
+  configurePersonalizedAds(value) {
+    servePersonalizedAds = value;
+  },
+
+  personalizedAdsEnabled() {
+    return servePersonalizedAds;
   },
 
   setAdSenseAttribute(key, value) {
@@ -102,6 +111,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             const slotId = event.slot.getSlotElementId();
             this.emit('impressionViewable', { slotId, event });
           });
+          pubadsService.setRequestNonPersonalizedAds(
+            this.personalizedAdsEnabled() ? 0 : 1,
+          );
           const targetingArguments = this.getTargetingArguments();
           // set global targetting arguments
           Object.keys(targetingArguments).forEach((varName) => {
@@ -242,7 +254,11 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.getGoogletag().then((googletag) => {
         const slotsToRefresh = this.getRefreshableSlots();
         googletag.cmd.push(() => {
-          googletag.pubads().refresh(
+          const pubadsService = googletag.pubads();
+          pubadsService.setRequestNonPersonalizedAds(
+            this.personalizedAdsEnabled() ? 0 : 1,
+          );
+          pubadsService.refresh(
             Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot),
           );
         });

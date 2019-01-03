@@ -3,6 +3,20 @@ import { DFPManager } from '../lib';
 
 describe('DFPManager', () => {
 
+  describe('GDPR', () => {
+    it('Fetches personalized ads by default', function registersAdSlot() {
+      expect(DFPManager.personalizedAdsEnabled()).equal(true);
+    });
+    it('Can disable personalized ads', function registersAdSlot() {
+      DFPManager.configurePersonalizedAds(false);
+      expect(DFPManager.personalizedAdsEnabled()).equal(false);
+    });
+    it('Can enable personalized ads', function registersAdSlot() {
+      DFPManager.configurePersonalizedAds(true);
+      expect(DFPManager.personalizedAdsEnabled()).equal(true);
+    });
+  });
+
   describe('Single Request', () => {
     it('Gets singleRequest enabled by default', function registersAdSlot() {
       expect(DFPManager.singleRequestIsEnabled()).equal(true);
