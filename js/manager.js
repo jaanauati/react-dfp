@@ -250,6 +250,22 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
+  destroyGPTSlots(...slotsToDestroy) {
+    const slots = slotsToDestroy.map(slotId => registeredSlots[slotId].gptSlot);
+    return this.getGoogletag()
+      .then((googletag) => {
+        googletag.cmd.push(() => {
+          if (managerAlreadyInitialized === true) {
+            if (slotsToDestroy.length > 0) {
+              googletag.destroySlots(slots);
+            } else {
+              googletag.destroySlots();
+            }
+          }
+        });
+      });
+  },
+
   registerSlot({
     dfpNetworkId,
     adUnit,
@@ -282,6 +298,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   unregisterSlot({ slotId }) {
+    this.destroyGPTSlots(slotId);
     delete registeredSlots[slotId];
   },
 

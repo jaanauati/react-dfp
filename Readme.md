@@ -143,6 +143,7 @@ DFPManager.load();
 | Property           | Type          | Example     | Description |
 | ------------------ | ------------- | ----------- | -------     |
 | init               | ```fcn() => Promise ```| ```DFPManager.init(); ```| Initializes the dfp manager (fetches the gpt scripts from network). Returns a promise that resolves when the gpt api is ready for usage. |
+| unregisterSlot | ```fcn(slotId)``` | ```DFPManager.unregisterSlot('hp-001')``` | Unregisters the given slot. This method also calls DFPManager.destroyGPTSlots(...).  |
 | attachSlotRenderEnded  | ``` fcn( fcn({slotId, event}) ) ``` | ``` DFPManager.attachSlotRenderEnded((id, event) => {console.log(event.size); }) ``` | Attaches a callback that will be called when an ad slot is rendered (or refreshed). slotId is the id of slot. event is the gpt event data. |
 | detachSlotRenderEnded | ``` fcn(callback) ``` | ``` DFPManager.detachSlotRenderEnded(myCallback) ``` | Detaches the callback. |
 | getRegisteredSlots | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getRegisteredSlots()) ``` | Returns an object whose attributes are the registered slots. Example: ``` { slotId: { data }, .... }```|
@@ -150,6 +151,7 @@ DFPManager.load();
 | getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the targeting arguments (configured through ```DFPManager.setTargetingArguments()```) |
 | getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |  
 | getSlotAdSenseAttributes | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotAdSenseAttributes('slot-five')['the-key']); ``` | Returns an object that contains all the adSense attributes were previously set to the given slot (slotId). |
+| destroyGPTSlots| ```fcn(...slotId) => Promise``` | ```DFPManager.destroyGPTSlots('hp-001', 'hp-002')``` | Identifies the gpt adSlots linked to the provided ids and subsequently calls googletag.destroysSlots(...). Returns a promise that resolves when the slots are destroyed.|
 
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.

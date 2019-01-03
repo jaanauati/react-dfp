@@ -16,7 +16,7 @@
     "test": "karma start karma.conf.js 2> /dev/null",
     "clean": "rm ./lib/*.js",
     "eslint": "eslint js 2> /dev/null",
-    "dist": "npm run clean && npm run eslint && npm run build && npm run test"
+    "dist": "npm run eslint && npm run clean && npm run build && npm run test"
   },
   "bugs": {
     "mail": "barakawins@gmail.com",
