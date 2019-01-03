@@ -112,7 +112,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             this.emit('impressionViewable', { slotId, event });
           });
           pubadsService.setRequestNonPersonalizedAds(
-            this.servePersonalizedAds() ? 0 : 1,
+            this.personalizedAdsEnabled() ? 0 : 1,
           );
           const targetingArguments = this.getTargetingArguments();
           // set global targetting arguments
@@ -256,7 +256,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         googletag.cmd.push(() => {
           const pubadsService = googletag.pubads();
           pubadsService.setRequestNonPersonalizedAds(
-            this.servePersonalizedAds() ? 0 : 1,
+            this.personalizedAdsEnabled() ? 0 : 1,
           );
           pubadsService.refresh(
             Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot),
