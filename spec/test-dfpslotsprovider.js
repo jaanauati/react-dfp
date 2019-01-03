@@ -8,6 +8,47 @@ import sinon from 'sinon';
 import { DFPSlotsProvider, AdSlot, DFPManager } from '../lib';
 
 describe('DFPSlotsProvider', () => {
+  describe('GDPR', () => {
+    it('Fetches personalized ads by default', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...otherProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.personalizedAdsEnabled()).to.equal(true);
+    });
+
+    it('Can disable personalized ads', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider personalizedAds={false} {...otherProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.personalizedAdsEnabled()).to.equal(false);
+    });
+
+    it('Can enable personalized ads', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider personalizedAds {...otherProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.personalizedAdsEnabled()).to.equal(true);
+    });
+  });
+
   describe('Component markup', () => {
     let component;
     beforeEach(() => {

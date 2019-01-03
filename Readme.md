@@ -100,7 +100,8 @@ DFPManager.load();
 | ------------------ | ------------- | ----------- | -------     |
 | autoLoad           | boolean (default true) |  ``` { false } ```      | Tell to the provider if it should load the ads when the slots are mounted. |
 | dfpNetworkId       | string  |  ``` "1122" ```      | DFP Account id. |
-| singleRequest      | boolean (default true) | ```<DFPSlotsProvider singleRequest=false> ... </DFPSlotsProvider>``` | Enables or disables the gpt's singleRequest feature. |
+| personalizedAds | boolean (default true) | ```<DFPSlotsProvider personalizedAds={false}> ... </DFPSlotsProvider>``` | Configure whether your page should receive personalized ads or not (see https://support.google.com/admanager/answer/7678538?hl=en). |
+| singleRequest      | boolean (default true) | ```<DFPSlotsProvider singleRequest={false}> ... </DFPSlotsProvider>``` | Enables or disables the gpt's singleRequest feature. |
 | adUnit             | string  |  ``` "homepage" ```   | The adunit you want to target the boxes (children / contained boxes). |
 | sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } ``` | Set the size mappings to be applied to the nested ad slots. |
 | adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes that will be applied globaly (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
@@ -130,6 +131,7 @@ DFPManager.load();
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
 | refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
 | configureSingleRequest | ```fcn(boolean)``` | ```DFPManager.configureSingleRequest( false )``` | Controls the strategy to use for the network requests. This method accepts a boolean that tells wether to enable or disable the singleRequest mode. |
+| configurePersonalizedAds | ```fcn(boolean)``` | ```DFPManager.configurePersonalizedAds( false )``` | Configure the strategy to serve ads. true: serve personalized ads, false: configure dfp to not serve personalized ads (see https://support.google.com/admanager/answer/7678538?hl=en). |
 | singleRequestEnabled | ```fcn() => bool``` | ``` DFPManager.singleRequestEnabled(); ``` | Returns true when the singleRequest mode is enabled, false otherwise. |
 | setAdSenseAttributes | ``` fcn(object)``` | ``` DFPManager.setAdSenseAttributes({ "page_url": "www.site.com", "adsense_link_color": "#000000"}); ``` | Use this method to set AdSense attributes. |
 | setAdSenseAttribute | ``` fcn(key, value)``` | ``` DFPManager.setAdSenseAttributes("page_url", "www.site.com"); ``` | Use this method to set AdSense attributes. |
