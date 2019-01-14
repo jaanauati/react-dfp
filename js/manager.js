@@ -247,19 +247,27 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }, slots);
   },
 
-  refresh() {
+  refresh(...slots) {
+
+    const slotsToRefresh = (slots) => {
+      const refreshableSlots = this.getRefreshableSlots();
+      if (slots.length === 0) {
+        return Object.keys(refreshableSlots).map(slotId => refreshableSlots[slotId].gptSlot);
+      }
+      return slots.map(slotId => refreshableSlots[slotId].gptSlot);
+    }
+
     if (loadAlreadyCalled === false) {
       this.load();
     } else {
       this.getGoogletag().then((googletag) => {
-        const slotsToRefresh = this.getRefreshableSlots();
         googletag.cmd.push(() => {
           const pubadsService = googletag.pubads();
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
           );
           pubadsService.refresh(
-            Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot),
+            slotsToRefresh(slots)
           );
         });
       });
