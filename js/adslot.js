@@ -16,6 +16,7 @@ export class AdSlot extends React.Component {
     ),
     renderOutOfThePage: PropTypes.bool,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
+    sizeMappingRefresh: PropTypes.bool,
     fetchNow: PropTypes.bool,
     adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
@@ -36,6 +37,7 @@ export class AdSlot extends React.Component {
 
   static defaultProps = {
     fetchNow: false,
+    sizeMappingRefresh: true,
   };
 
   constructor(props) {
@@ -53,10 +55,28 @@ export class AdSlot extends React.Component {
   }
 
   componentDidMount() {
+    
     // register this ad-unit in the <DFPSlotProvider>, when available.
     if (this.context !== undefined && this.context.newSlotCallback !== undefined) {
       this.context.newSlotCallback();
     }
+
+    if (
+      this.props.sizeMappingRefresh &&
+      this.props.sizeMapping &&
+      window
+    ) {
+      const mqls = this.props.sizeMapping.map(({ viewport }) => {
+        return window.matchMedia(`(min-width: ${viewport[0]}px) and (min-width: ${viewport[1]}px)`);
+      });
+
+      for (let i = 0; i < mqls.length; i++) {
+        mqls[i].addListener(() => {
+          DFPManager.refresh([this.state.slotId])
+        });
+      }
+    }
+
     this.registerSlot();
   }
 
