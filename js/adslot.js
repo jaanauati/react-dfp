@@ -16,7 +16,6 @@ export class AdSlot extends React.Component {
     ),
     renderOutOfThePage: PropTypes.bool,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
-    sizeMappingRefresh: PropTypes.bool,
     fetchNow: PropTypes.bool,
     adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
@@ -37,7 +36,6 @@ export class AdSlot extends React.Component {
 
   static defaultProps = {
     fetchNow: false,
-    sizeMappingRefresh: true,
   };
 
   constructor(props) {

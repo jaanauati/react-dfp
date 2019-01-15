@@ -129,7 +129,7 @@ DFPManager.load();
 | Property           | Type          | Example     | Description |
 | ------------------ | ------------- | ----------- | -------     |
 | load               | ```fcn([slotId]) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can specify an individual slot. |
-| refresh            | ``` fcn() ``` | ```DFPManager.refresh(); ``` | Refreshes the ad slots available in the page. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed. |
+| refresh            | ``` fcn([slotId]) ``` | ```DFPManager.refresh(); ``` | Refreshes all ad slots available in the page. Pass array of slotIds to only refresh specific slots. This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed.|
 | configureSingleRequest | ```fcn(boolean)``` | ```DFPManager.configureSingleRequest( false )``` | Controls the strategy to use for the network requests. This method accepts a boolean that tells wether to enable or disable the singleRequest mode. |
 | configurePersonalizedAds | ```fcn(boolean)``` | ```DFPManager.configurePersonalizedAds( false )``` | Configure the strategy to serve ads. true: serve personalized ads, false: configure dfp to not serve personalized ads (see https://support.google.com/admanager/answer/7678538?hl=en). |
 | singleRequestEnabled | ```fcn() => bool``` | ``` DFPManager.singleRequestEnabled(); ``` | Returns true when the singleRequest mode is enabled, false otherwise. |
