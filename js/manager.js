@@ -236,30 +236,41 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     });
   },
 
-  getRefreshableSlots() {
-    const slotsToRefresh = Object.keys(registeredSlots).map(k => registeredSlots[k]);
+  getRefreshableSlots(...slotsArray) {
     const slots = {};
-    return slotsToRefresh.reduce((last, slot) => {
-      if (slot.slotShouldRefresh() === true) {
-        slots[slot.slotId] = slot;
+    if (slotsArray.length === 0) {
+      const slotsToRefresh = Object.keys(registeredSlots)
+        .map(k => registeredSlots[k]);
+      return slotsToRefresh.reduce((last, slot) => {
+        if (slot.slotShouldRefresh() === true) {
+          slots[slot.slotId] = slot;
+        }
+        return slots;
+      }, slots);
+    }
+    return slotsArray.reduce((last, slotId) => {
+      const slot = registeredSlots[slotId];
+      if (typeof slot !== 'undefined') {
+        slots[slotId] = slot;
       }
       return slots;
     }, slots);
   },
 
-  refresh() {
+  refresh(...slots) {
     if (loadAlreadyCalled === false) {
       this.load();
     } else {
       this.getGoogletag().then((googletag) => {
-        const slotsToRefresh = this.getRefreshableSlots();
         googletag.cmd.push(() => {
           const pubadsService = googletag.pubads();
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
           );
           pubadsService.refresh(
-            Object.keys(slotsToRefresh).map(slotId => slotsToRefresh[slotId].gptSlot),
+            Object.keys(
+              this.getRefreshableSlots(...slots),
+            ).map(slotId => registeredSlots[slotId].gptSlot),
           );
         });
       });
