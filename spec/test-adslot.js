@@ -83,6 +83,30 @@ describe('AdSlot', () => {
       expect(Object.keys(DFPManager.getRefreshableSlots()).length).to.equal(0);
     });
 
+    it('Refreshes arbitrary ads', () => {
+      const compProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        sizes: [[728, 90]],
+      };
+
+      ReactTestUtils.renderIntoDocument(
+        <div>
+          <AdSlot slotId="refreshable-1" {...compProps} />
+          <AdSlot slotId="refreshable-2" {...compProps} shouldRefresh={() => false} />
+          <AdSlot slotId="non-refreshable" {...compProps} />
+        </div>,
+      );
+
+      expect(DFPManager.getRefreshableSlots()).to.contain.all.keys(
+        ['refreshable-1', 'non-refreshable'],
+      );
+      expect(
+        DFPManager.getRefreshableSlots(
+          'refreshable-1', 'refreshable-2', 'foo', 'bar',
+        ),
+      ).to.contain.all.keys(['refreshable-1', 'refreshable-2']);
+    });
     it('Registers an AdSlot with adSense attributes', () => {
       const compProps = {
         dfpNetworkId: '1000',

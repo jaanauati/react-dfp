@@ -236,25 +236,28 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     });
   },
 
-  getRefreshableSlots() {
-    const slotsToRefresh = Object.keys(registeredSlots).map(k => registeredSlots[k]);
+  getRefreshableSlots(...slotsArray) {
     const slots = {};
-    return slotsToRefresh.reduce((last, slot) => {
-      if (slot.slotShouldRefresh() === true) {
-        slots[slot.slotId] = slot;
+    if (slotsArray.length === 0) {
+      const slotsToRefresh = Object.keys(registeredSlots)
+        .map(k => registeredSlots[k]);
+      return slotsToRefresh.reduce((last, slot) => {
+        if (slot.slotShouldRefresh() === true) {
+          slots[slot.slotId] = slot;
+        }
+        return slots;
+      }, slots);
+    }
+    return slotsArray.reduce((last, slotId) => {
+      const slot = registeredSlots[slotId];
+      if (typeof slot !== 'undefined') {
+        slots[slotId] = slot;
       }
       return slots;
     }, slots);
   },
 
   refresh(...slots) {
-    const slotsToRefresh = (slotsArray) => {
-      if (slotsArray.length === 0) {
-        return Object.keys(registeredSlots).map(slotId => registeredSlots[slotId].gptSlot);
-      }
-      return slotsArray.map(slotId => registeredSlots[slotId].gptSlot);
-    };
-
     if (loadAlreadyCalled === false) {
       this.load();
     } else {
@@ -265,7 +268,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             this.personalizedAdsEnabled() ? 0 : 1,
           );
           pubadsService.refresh(
-            slotsToRefresh(slots),
+            Object.keys(
+              this.getRefreshableSlots(...slots),
+            ).map(slotId => registeredSlots[slotId].gptSlot),
           );
         });
       });
