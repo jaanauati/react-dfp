@@ -248,14 +248,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   refresh(...slots) {
-
-    const slotsToRefresh = (slots) => {
-      const refreshableSlots = this.getRefreshableSlots();
-      if (slots.length === 0) {
-        return Object.keys(refreshableSlots).map(slotId => refreshableSlots[slotId].gptSlot);
+    const slotsToRefresh = (slotsArray) => {
+      if (slotsArray.length === 0) {
+        return Object.keys(registeredSlots).map(slotId => registeredSlots[slotId].gptSlot);
       }
-      return slots.map(slotId => refreshableSlots[slotId].gptSlot);
-    }
+      return slotsArray.map(slotId => registeredSlots[slotId].gptSlot);
+    };
 
     if (loadAlreadyCalled === false) {
       this.load();
@@ -267,7 +265,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             this.personalizedAdsEnabled() ? 0 : 1,
           );
           pubadsService.refresh(
-            slotsToRefresh(slots)
+            slotsToRefresh(slots),
           );
         });
       });
