@@ -1,6 +1,6 @@
 # React DFP  [![Build Status](https://travis-ci.org/jaanauati/react-dfp.svg?branch=master)](https://travis-ci.org/jaanauati/react-dfp) [![](https://img.shields.io/npm/dm/react-dfp.svg?label=DL)]()
 
-Gpt/dfp components that you can easily use in your isomorphic react apps. This package is inspired in the awesome library [jquery.dfp](https://github.com/coop182/jquery.dfp.js), and aims to provide its same ease of usage but, of course, taking into consideration the react concepts & lifecycle features.
+A React implementation of the google [DFP](https://developers.google.com/doubleclick-gpt/reference "GPT Reference") api. This package is inspired in the awesome library [jquery.dfp](https://github.com/coop182/jquery.dfp.js), and aims to provide its same ease of usage but, of course, taking into consideration the react concepts & lifecycle features.
 
 
 ## Install:
