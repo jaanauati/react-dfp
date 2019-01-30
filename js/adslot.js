@@ -23,7 +23,6 @@ export class AdSlot extends React.Component {
     onSlotIsViewable: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
-    objectId: PropTypes.string,
   };
 
   static contextTypes = {
@@ -58,16 +57,6 @@ export class AdSlot extends React.Component {
       this.context.newSlotCallback();
     }
     this.registerSlot();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (Object.prototype.hasOwnProperty.call(nextProps, 'objectId')) {
-      const state = this.state;
-      const slotId = this.generateSlotId();
-      this.unregisterSlot();
-      this.setState({ ...state, slotId });
-      this.registerSlot();
-    }
   }
 
   componentWillUnmount() {
