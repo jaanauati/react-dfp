@@ -1,1 +1,5 @@
 language: node_js
+script:
+  - nvm use
+  - npm run eslint
+  - npm run dist
