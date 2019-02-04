@@ -12,6 +12,9 @@ module.exports = function karmaConfig(config) {
     },
     client: {
       captureConsole: true,
+      jasmine: {
+        random: false,
+      },
     },
     webpack: {
       module: {

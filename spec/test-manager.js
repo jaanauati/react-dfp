@@ -1,8 +1,8 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { DFPManager } from '../lib';
 
 describe('DFPManager', () => {
-
   describe('GDPR', () => {
     it('Fetches personalized ads by default', function registersAdSlot() {
       expect(DFPManager.personalizedAdsEnabled()).equal(true);
@@ -65,11 +65,22 @@ describe('DFPManager', () => {
   });
 
   describe('Creation of ad slots ', () => {
-    beforeEach(function beforeEach() {
+    beforeAll(function before() {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.gptRefreshAds = sinon.stub(
+        DFPManager,
+        'gptRefreshAds',
+      ).resolves(true);
+      DFPManager.destroyGPTSlots = sinon.stub(
+        DFPManager,
+        'destroyGPTSlots',
+      ).resolves(true);
       this.slotProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
-        slotId: 'testElement',
         sizes: [[728, 90]],
         adSenseAttributes: {
           site_url: 'www.mysite.com',
@@ -77,21 +88,111 @@ describe('DFPManager', () => {
         },
         slotShouldRefresh: () => true,
       };
-      DFPManager.registerSlot(this.slotProps);
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement1' });
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement2' });
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement3' });
+      DFPManager.load();
+      DFPManager.refresh();
     });
 
-    it('Registers an adslot', function registersAdSlot() {
-      expect(Object.keys(DFPManager.getRegisteredSlots()).length).to.equal(1);
+    it('Registers ad slots', function registersAdSlot() {
+      expect(Object.keys(DFPManager.getRegisteredSlots()).length).to.equal(3);
       expect(DFPManager.getRegisteredSlots()).to.contain.all
-        .keys([this.slotProps.slotId]);
-      expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
-        .to.contain.all.keys(this.slotProps);
-      expect(DFPManager.getRegisteredSlots()[this.slotProps.slotId])
-        .to.deep.include(this.slotProps);
+        .keys(['testElement1', 'testElement2', 'testElement3']);
+      expect(DFPManager.getRegisteredSlots().testElement1)
+        .to.contain.all.keys({ ...this.slotProps, slotId: 'testElement1' });
+      expect(DFPManager.getRegisteredSlots().testElement2)
+        .to.contain.all.keys({ ...this.slotProps, slotId: 'testElement2' });
+      expect(DFPManager.getRegisteredSlots().testElement3)
+        .to.contain.all.keys({ ...this.slotProps, slotId: 'testElement3' });
+      expect(DFPManager.getRegisteredSlots().testElement1)
+        .to.deep.include({ ...this.slotProps, slotId: 'testElement1' });
+      expect(DFPManager.getRegisteredSlots().testElement2)
+        .to.deep.include({ ...this.slotProps, slotId: 'testElement2' });
+      expect(DFPManager.getRegisteredSlots().testElement3)
+        .to.deep.include({ ...this.slotProps, slotId: 'testElement3' });
     });
 
-    afterEach(function afterEach() {
-      DFPManager.unregisterSlot(this.slotProps);
+    it('Loads all the ads by default', function adsLoaded() {
+      sinon.assert.calledOnce(DFPManager.gptLoadAds);
+      sinon.assert.calledWith(
+        DFPManager.gptLoadAds,
+        ['testElement1', 'testElement2', 'testElement3'],
+      );
+    });
+
+    it('Refreshes all the ads by default', function adsLoaded() {
+      sinon.assert.calledOnce(DFPManager.gptRefreshAds);
+      sinon.assert.calledWith(
+        DFPManager.gptRefreshAds,
+        ['testElement1', 'testElement2', 'testElement3'],
+      );
+    });
+
+    afterAll(function afterEach() {
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement1' });
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement2' });
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement3' });
+      DFPManager.gptLoadAds.restore();
+      DFPManager.gptRefreshAds.restore();
+      DFPManager.destroyGPTSlots.restore();
+    });
+  });
+
+  describe('Initalization of arbitrary slots ', () => {
+    beforeAll(function before() {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.gptRefreshAds = sinon.stub(
+        DFPManager,
+        'gptRefreshAds',
+      ).resolves(true);
+      DFPManager.destroyGPTSlots = sinon.stub(
+        DFPManager,
+        'destroyGPTSlots',
+      ).resolves(true);
+      this.slotProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        sizes: [[728, 90]],
+        adSenseAttributes: {
+          site_url: 'www.mysite.com',
+          adsense_border_color: '#000000',
+        },
+        slotShouldRefresh: () => true,
+      };
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement4' }, false);
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement5' }, false);
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement6' }, false);
+      DFPManager.registerSlot({ ...this.slotProps, slotId: 'testElement7' }, false);
+      DFPManager.load('testElement4', 'testElement6', 'testElement7');
+      DFPManager.refresh('testElement4', 'testElement7');
+    });
+
+    it('Loads arbitrary ads', function adsLoaded() {
+      sinon.assert.calledOnce(DFPManager.gptLoadAds);
+      sinon.assert.calledWith(
+        DFPManager.gptLoadAds,
+        ['testElement4', 'testElement6', 'testElement7'],
+      );
+    });
+
+    it('Refreshes arbitrary ads', function adsLoaded() {
+      sinon.assert.calledOnce(DFPManager.gptRefreshAds);
+      sinon.assert.calledWith(
+        DFPManager.gptRefreshAds, ['testElement4', 'testElement7'],
+      );
+    });
+
+    afterAll(function afterEach() {
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement4' });
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement5' });
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement6' });
+      DFPManager.gptLoadAds.restore();
+      DFPManager.gptRefreshAds.restore();
+      DFPManager.destroyGPTSlots.restore();
     });
   });
 });
