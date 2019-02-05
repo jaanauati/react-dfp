@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import * as Utils from './utils';
 
-let loadAlreadyCalled = false;
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 let singleRequestEnabled = true;
@@ -142,12 +141,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   load(...slots) {
-    if (loadPromise !== null) {
+    if (loadPromise === null) {
+      loadPromise = this.doLoad(...slots);
+    } else {
       loadPromise = loadPromise.then(
         () => this.doLoad(...slots),
       );
-    } else {
-      loadPromise = this.doLoad(...slots);
     }
   },
 
@@ -168,9 +167,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     availableSlots.forEach((slotId) => {
       registeredSlots[slotId].loading = true;
     });
-    return this.gptLoadAds(availableSlots).then(() => {
-      loadAlreadyCalled = true;
-    });
+    return this.gptLoadAds(availableSlots);
   },
 
   gptLoadAds(slotsToInitialize) {
@@ -323,7 +320,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         loading: false,
       };
       this.emit('slotRegistered', { slotId });
-      if (autoLoad === true && loadAlreadyCalled === true) {
+      if (autoLoad === true && loadPromise !== null) {
         this.load(slotId);
       }
     }
