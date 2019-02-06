@@ -9,6 +9,14 @@ import { DFPSlotsProvider, AdSlot, DFPManager } from '../lib';
 
 describe('DFPSlotsProvider', () => {
   describe('GDPR', () => {
+    beforeAll(() => {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+    });
+
     it('Fetches personalized ads by default', () => {
       const otherProps = {
         dfpNetworkId: '1000',
@@ -29,7 +37,7 @@ describe('DFPSlotsProvider', () => {
       };
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider personalizedAds={false} {...otherProps}>
-          <AdSlot slotId={'testElement'} />
+          <AdSlot slotId={'testElement1'} />
         </DFPSlotsProvider>,
       );
       expect(DFPManager.personalizedAdsEnabled()).to.equal(false);
@@ -42,15 +50,29 @@ describe('DFPSlotsProvider', () => {
       };
       TestUtils.renderIntoDocument(
         <DFPSlotsProvider personalizedAds {...otherProps}>
-          <AdSlot slotId={'testElement'} />
+          <AdSlot slotId={'testElement2'} />
         </DFPSlotsProvider>,
       );
       expect(DFPManager.personalizedAdsEnabled()).to.equal(true);
+    });
+
+    afterAll(() => {
+      DFPManager.gptLoadAds.restore();
+      DFPManager.load.restore();
     });
   });
 
   describe('Component markup', () => {
     let component;
+
+    beforeAll(() => {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+    });
+
     beforeEach(() => {
       const providerProps = {
         dfpNetworkId: '1000',
@@ -59,18 +81,31 @@ describe('DFPSlotsProvider', () => {
 
       component = TestUtils.renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
-          <AdSlot slotId={'testElement'} />
+          <AdSlot slotId={'testElement3'} />
         </DFPSlotsProvider>,
       );
     });
 
     it('renders an adBox with the given elementId', () => {
       const box = TestUtils.findRenderedDOMComponentWithClass(component, 'adBox');
-      expect(box.id).to.equal('testElement');
+      expect(box.id).to.equal('testElement3');
+    });
+
+    afterAll(() => {
+      DFPManager.gptLoadAds.restore();
+      DFPManager.load.restore();
     });
   });
 
   describe('DFPManager Interaction', () => {
+    beforeAll(() => {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+    });
+
     beforeEach(() => {
       DFPManager.registerSlot = sinon.spy(DFPManager, 'registerSlot');
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
@@ -84,7 +119,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement5',
         sizes: [[728, 90]],
       };
 
@@ -96,6 +131,7 @@ describe('DFPSlotsProvider', () => {
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
     });
 
     it('Gets singleRequest enabled by default', () => {
@@ -105,7 +141,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement6',
         sizes: [[728, 90]],
       };
 
@@ -126,7 +162,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement7',
         sizes: [[728, 90]],
       };
 
@@ -147,7 +183,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement8',
         sizes: [[728, 90]],
       };
 
@@ -168,7 +204,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement9',
         sizes: [[728, 90]],
       };
 
@@ -188,7 +224,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement2',
+        slotId: 'testElement10',
         sizes: [[728, 90]],
       };
 
@@ -211,7 +247,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement3',
+        slotId: 'testElement11',
         sizes: [[728, 90]],
         shouldRefresh: () => false,
       };
@@ -234,7 +270,7 @@ describe('DFPSlotsProvider', () => {
         },
       };
       const compProps = {
-        slotId: 'testElement4',
+        slotId: 'testElement12',
         sizes: [[728, 90]],
       };
       TestUtils.renderIntoDocument(
@@ -258,7 +294,7 @@ describe('DFPSlotsProvider', () => {
         },
       };
       const compProps = {
-        slotId: 'testElement4',
+        slotId: 'testElement13',
         sizes: [[728, 90]],
         adSenseAttributes: {
           site_url: 'www.mysite.com',
@@ -267,7 +303,7 @@ describe('DFPSlotsProvider', () => {
         },
       };
       const comp2Props = {
-        slotId: 'testElement4-2',
+        slotId: 'testElement14',
         sizes: [[728, 90]],
       };
       TestUtils.renderIntoDocument(
@@ -291,7 +327,7 @@ describe('DFPSlotsProvider', () => {
         targetingArguments: { team: 'river plate', player: 'pisculichi' },
       };
       const compProps = {
-        slotId: 'testElement4',
+        slotId: 'testElement15',
         sizes: [[728, 90]],
       };
       TestUtils.renderIntoDocument(
@@ -309,7 +345,7 @@ describe('DFPSlotsProvider', () => {
         adUnit: 'foo/bar/baz',
       };
       const compProps = {
-        slotId: 'testElement5',
+        slotId: 'testElement16',
         sizes: [[728, 90]],
       };
 
@@ -328,7 +364,7 @@ describe('DFPSlotsProvider', () => {
         adUnit: 'foo/bar/baz',
       };
       const compProps = {
-        slotId: 'testElement6',
+        slotId: 'testElement17',
         sizes: [[728, 90]],
       };
 
@@ -343,8 +379,10 @@ describe('DFPSlotsProvider', () => {
       ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
 
       sinon.assert.calledOnce(DFPManager.unregisterSlot);
-      sinon.assert.calledWithMatch(DFPManager.unregisterSlot,
-                                   { slotId: compProps.slotId });
+      sinon.assert.calledWithMatch(
+        DFPManager.unregisterSlot,
+        { slotId: compProps.slotId },
+      );
     });
 
     it('collapseEmptyDivs is disabled by default', () => {
@@ -354,7 +392,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement18',
         sizes: [[728, 90]],
       };
 
@@ -376,7 +414,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const compProps = {
-        slotId: 'testElement1',
+        slotId: 'testElement19',
         sizes: [[728, 90]],
       };
 
@@ -397,6 +435,11 @@ describe('DFPSlotsProvider', () => {
       Object.keys(DFPManager.getRegisteredSlots()).forEach((slotId) => {
         DFPManager.unregisterSlot({ slotId });
       });
+    });
+
+    afterAll(() => {
+      DFPManager.gptLoadAds.restore();
+      DFPManager.load.restore();
     });
   });
 });
