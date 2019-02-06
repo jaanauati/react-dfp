@@ -254,7 +254,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   refresh(...slots) {
-    if (this.loadPromise === null) {
+    if (loadPromise === null) {
       this.load();
     } else {
       this.gptRefreshAds(
@@ -321,7 +321,15 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       };
       this.emit('slotRegistered', { slotId });
       if (autoLoad === true && loadPromise !== null) {
-        this.load(slotId);
+        loadPromise = loadPromise.catch().then(() => {
+          const slot = registeredSlots[slotId];
+          if (typeof slot !== 'undefined') {
+            const { loading, gptSlot } = slot;
+            if (loading === false && !gptSlot) {
+              this.load(slotId);
+            }
+          }
+        });
       }
     }
   },
