@@ -1,1 +1,3 @@
 examples/
+spec/
+karma.conf.js
