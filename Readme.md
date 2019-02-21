@@ -22,9 +22,10 @@ React-dfp has been designed in a very React-ish way, its main goal is to be able
 Here a quick example, notice that ads will render in your page as soon as your component is mounted, through its components (DFPSlotsProvider and AdSlot), react-dfp is making a full abstraction of the google dfp/gpt api.
 
 ```javascript
-   import React, { Component } from 'react';
-   import { DFPSlotsProvider, AdSlot } from 'react-dfp';
-   class Page extends Component {
+import React, { Component } from 'react';
+import { DFPSlotsProvider, AdSlot } from 'react-dfp';
+...
+class Page extends Component {
    render() {
      ...
      
