@@ -32,12 +32,18 @@ class Page extends Component {
      return (
        <DFPSlotsProvider dfpNetworkId={'9999'} adUnit={"foo/bar/baz"} ... >
          ...
-          <AdSlot sizes={[ [900, 90], [728, 90]]} />
+         <AdSlot adUnit={"home/leaderboard"} sizes={[ [900, 90], [728, 90]]} />
          ...
          /* you can override the props */
-        <AdSlot adUnit={"home/mobile"} sizes={[ [300, 250], [300, 600]]} />
+         <AdSlot adUnit={"home/mobile"} sizes={[ [300, 250], [300, 600]]} />
          ...
-     </DFPSlotsProvider>
+         <div>
+           ...
+           <AdSlot adUnit={"home/footer"} sizes={[ [300, 250], [300, 600]]} />
+           ...
+         </div>
+         ...
+       </DFPSlotsProvider>
      );
    }
 }
