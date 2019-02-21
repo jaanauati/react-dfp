@@ -6,157 +6,53 @@
 A React implementation of the google [DFP](https://developers.google.com/doubleclick-gpt/reference "GPT Reference") api. This package is inspired in the awesome library [jquery.dfp](https://github.com/coop182/jquery.dfp.js), and aims to provide its same ease of usage but, of course, taking into consideration the react concepts & lifecycle features.
 
 
-## Install:
+## Installation:
+
+To install just run the following command (no other dependencies are required):
 ```bash
-npm install --save-dev react-dfp
+npm install --save react-dfp
 ```
+You can find more deatails in the [React-dfp site](http://react-dfp.tk/).
 
-## Usage
 
-1) Create the adslots:
+## Getting started
+
+React-dfp has been designed in a very React-ish way, its main goal is to be able to serve DFP ads in your React application just using React components, that means that you wont have to programatically perform any initialiation call when your page loads. 
+
+Here a quick example, notice that ads will render in your page as soon as your component is mounted, through its components (DFPSlotsProvider and AdSlot), react-dfp is making a full abstraction of the google dfp/gpt api.
+
 ```javascript
+   import React, { Component } from 'react';
    import { DFPSlotsProvider, AdSlot } from 'react-dfp';
-
-   <DFPSlotsProvider dfpNetworkId={'9999'} adUnit={"foo/bar/baz"} ... >
+   class Page extends Component {
+   render() {
      ...
-      <AdSlot sizes={[ [900, 90], [728, 90]]} />
-     ...
-      /* you can override the props */
-      <AdSlot adUnit={"home/mobile"} sizes={[ [300, 250], [300, 600]]} />
-     ...
-   </DFPSlotsProvider>
-```
-2) (*Optional*) Render or refresh the ads:
-```javascript
-import { DFPManager } from 'react-dfp';
-...
-/* If you are using <DFPSlotsProvider> the following call won't be required,  
- * unless you have set the property autoLoad={false}.
- */
-DFPManager.load();
-...
-DFPManager.refresh();
-```
-
-## Examples:
-
-1) Basic:
-```javascript
-import React from 'react';
-import ReactDom from 'react-dom';
-import { DFPSlotsProvider, AdSlot } from 'react-dfp';
-
-ReactDom.render(
-  <DFPSlotsProvider dfpNetworkId='9999' targetingArguments={ {'customKw': 'test'} }
-                sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
-                                {viewport: [900, 768], sizes:[[300, 250]] }] }>
-    <div className="desktop-ads">
-      <AdSlot sizes={[[728,90], [300, 250]]} adUnit='homepage/1' />
-    </div>
-    <div className="mobile-ads">
-      <AdSlot sizes={[[320,50], [300, 50]]} adUnit='homepage/mobile' />
-    </div>
-    ...
-  </DFPSlotsProvider>,
-document.querySelectorAll(".ad-container")[0]);
-```
-
-2) (manually) Add and refresh ads.
-```javascript
-import React from 'react';
-import ReactDom from 'react-dom';
-
-import {AdSlot, DFPManager} from 'react-dfp';
-
-function loadSecondaryAd() {
-    ReactDom.render(<AdSlot sizes={[[300, 250]]}
-                         dfpNetworkId='9999'
-                         adUnit='homepage/2'
-                         />,
-                    document.querySelectorAll(".ad-container-2")[0]);
+     
+     return (
+       <DFPSlotsProvider dfpNetworkId={'9999'} adUnit={"foo/bar/baz"} ... >
+         ...
+          <AdSlot sizes={[ [900, 90], [728, 90]]} />
+         ...
+         /* you can override the props */
+        <AdSlot adUnit={"home/mobile"} sizes={[ [300, 250], [300, 600]]} />
+         ...
+     </DFPSlotsProvider>
+     );
+   }
 }
-
-ReactDom.render( <AdSlot sizes={[[728,90], [300, 250]]}
-                         dfpNetworkId='9999'
-                         adUnit='homepage/1'
-                         targetingArguments={ {'customKw': 'test'} }
-                         sizeMapping={ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]},
-                                         {viewport: [900, 768], sizes:[[300, 250]] }] }
-                         onSlotRender={loadSecondaryAd}
-                         /* never refresh this adSlot */
-                         shouldRefresh={ ()=> false }
-                         />,
-                document.querySelectorAll(".ad-container")[0]);
-DFPManager.setTargetingArguments({'key': 'oh'});
-
-// refresh ads every 15 seconds
-window.setInterval(function refreshAds() { DFPManager.refresh(); }, 15000);
-
-DFPManager.load();
 ```
 
-## Options
+## Examples
+See the [React-dfp site](http://react-dfp.tk/) for more examples (basic example, how to have refreshable ads, etc).
 
-### DFPSlotsProvider
+## Documentation
 
-| Property           | Type          | Example     | Description |
-| ------------------ | ------------- | ----------- | -------     |
-| autoLoad           | boolean (default true) |  ``` { false } ```      | Tell to the provider if it should load the ads when the slots are mounted. |
-| dfpNetworkId       | string  |  ``` "1122" ```      | DFP Account id. |
-| personalizedAds | boolean (default true) | ```<DFPSlotsProvider personalizedAds={false}> ... </DFPSlotsProvider>``` | Configure whether your page should receive personalized ads or not (see https://support.google.com/admanager/answer/7678538?hl=en). |
-| singleRequest      | boolean (default true) | ```<DFPSlotsProvider singleRequest={false}> ... </DFPSlotsProvider>``` | Enables or disables the gpt's singleRequest feature. |
-| adUnit             | string  |  ``` "homepage" ```   | The adunit you want to target the boxes (children / contained boxes). |
-| sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] } ``` | Set the size mappings to be applied to the nested ad slots. |
-| adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes that will be applied globaly (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
-| targetingArguments | object | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to set to all the ad slots (custom targeting variables) |
-| collapseEmptyDivs | boolean | ```{ false }``` | Enables collapsing of slot divs when there is no ad content to display. |
+You can find the React-dfp documentation [on the website](http://react-dfp.tk/). The site divided in many sections that describe each one the Components, properties and also the DFPManager api (in case you need to use this one manually).
 
-### AdSlot
+The website is also full of live/working examples.
 
-| Property           | Type          | Example     | Description |
-| ------------------ | ------------- | ----------- | -------     |
-| dfpNetworkId       | string (required)  |  ``` "1122" ```      | DFP Account id. |
-| adUnit             | string (required)  |  ``` "homepage" ```   | The adunit you want to target to this box. |
-| sizes              | array (required)   |  ```[ [300, 250], [300, 600], 'fluid' ] ``` | list of sizes that this box support. Sizes can be specified by either and array like [width, height] or with strings ("dfp named sizes") like 'fluid'. You can configure 1 or more sizes.|
-| sizeMapping        | array of objects.    | ```{ [ {viewport: [1024, 768], sizes:[[728, 90], [300, 250]]}, {viewport: [900, 768], sizes:[[300, 250]] }] }``` | Set the size mappings to be applied to the adSlot. |
-| adSenseAttributes | object | ``` { "site_url": "my.site.com", ... } ``` | Object with adSense attributes to apply to the current ad slot (see: https://developers.google.com/doubleclick-gpt/adsense_attributes). |
-| targetingArguments | object (optional) | ``` { "keywords": "family", "content": "test" } ``` | Object with attributes you want to add to this box (you can use for custom targeting) |
-| onSlotRender       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the adSlot is rendered. The first argument passes the gpt event data (googletag.events.SlotRenderEndedEvent). |
-| onSlotIsViewable       | fcn. (optional) | ```function(eventData) { console.log(eventData.size); } ``` | This callback is executed after the impresion becomes viewable. The first argument passes the gpt event data (googletag.events.ImpressionViewableEvent). |
-| shouldRefresh      | fcn. (optional) (should return a boolean)| ``` function() { /* never refresh this ad */ return false; } ``` | Return a boolean that tells the dfp manager whether the ad slot can be refreshed or not. |
-| slotId          | string. (optional) | ``` "homepage-leadboard" ``` | Controls the id of the dom element in which the dom is displayed. If this field is not provided a random name is created. |
+If you are also interested on it, you can find the source code of the website here: https://github.com/jaanauati/react-dfp-website.
 
-### DFPManager
-
-#### Public methods
-| Property           | Type          | Example     | Description |
-| ------------------ | ------------- | ----------- | -------     |
-| load               | ```fcn(...slotId) ```| ```DFPManager.load(); ```  | Fetches the gpt api (by calling init()) and renders the ad slots in the page. You can pass any arbitrary number of slot ids; in this case only the specified ads are initialized. When no argument are passed, all the slots are initialized. |
-| refresh            | ``` fcn(...slotId) ``` | ```DFPManager.refresh('slot-1', 'slot-2'); ``` | Refreshes the ad slots available in the page. Pass any arbitrary number of slot ids to only refresh those specific slots. If no parameters are passed all the slots are refreshed (with exception of those that prevent it via `shouldRefresh` prop,) This method will call load() if it wasn't already called. Use the method ```<AdSlot shouldRefresh={function(){}} ...>``` to get control over the slots to be refreshed.|
-| configureSingleRequest | ```fcn(boolean)``` | ```DFPManager.configureSingleRequest( false )``` | Controls the strategy to use for the network requests. This method accepts a boolean that tells wether to enable or disable the singleRequest mode. |
-| configurePersonalizedAds | ```fcn(boolean)``` | ```DFPManager.configurePersonalizedAds( false )``` | Configure the strategy to serve ads. true: serve personalized ads, false: configure dfp to not serve personalized ads (see https://support.google.com/admanager/answer/7678538?hl=en). |
-| singleRequestEnabled | ```fcn() => bool``` | ``` DFPManager.singleRequestEnabled(); ``` | Returns true when the singleRequest mode is enabled, false otherwise. |
-| setAdSenseAttributes | ``` fcn(object)``` | ``` DFPManager.setAdSenseAttributes({ "page_url": "www.site.com", "adsense_link_color": "#000000"}); ``` | Use this method to set AdSense attributes. |
-| setAdSenseAttribute | ``` fcn(key, value)``` | ``` DFPManager.setAdSenseAttributes("page_url", "www.site.com"); ``` | Use this method to set AdSense attributes. |
-| getAdSenseAttributes | ```fcn() => object``` | ``` DFPManager.getAdSenseAttributes(); ``` | This method returns an object with the global adSense attributes. |
-| getAdSenseAttribute | ```fcn(key) => value``` | ``` DFPManager.getAdSenseAttribute("page_url"); ``` | Returns the value of a custom adSense attribute. |
-| setTargetingArguments | ``` fcn(object)``` | ``` DFPManager.setTargetingArguments({ "keywords": "family", "content": "test" }); ``` | Use this function to pass custom targetting variables. |
-| getGoogletag | ```fcn() => Promise ```| ``` DFPManager.getGoogletag().then( googletag => { console.log(googletag); }); ``` | Returns a promise that resolves when the object googletag object is ready for usage (if required this fcn makes the network call to fetch the scripts). |
-| setCollapseEmptyDivs | ```fcn(boolean)``` | ```DFPManager.setCollapseEmptyDivs( true )``` | Enables collapsing of slot divs when there is no ad content to display. The method accepts one parameter that expects the following values: false: collapse after ads are fetched; true: collapse divs  before ads are fetched; null/undefined: do not collapse divs. |
-
-#### For Internal Usage Only
-| Property           | Type          | Example     | Description |
-| ------------------ | ------------- | ----------- | -------     |
-| init               | ```fcn() => Promise ```| ```DFPManager.init(); ```| Initializes the dfp manager (fetches the gpt scripts from network). Returns a promise that resolves when the gpt api is ready for usage. |
-| unregisterSlot | ```fcn(slotId)``` | ```DFPManager.unregisterSlot('hp-001')``` | Unregisters the given slot. This method also calls DFPManager.destroyGPTSlots(...).  |
-| attachSlotRenderEnded  | ``` fcn( fcn({slotId, event}) ) ``` | ``` DFPManager.attachSlotRenderEnded((id, event) => {console.log(event.size); }) ``` | Attaches a callback that will be called when an ad slot is rendered (or refreshed). slotId is the id of slot. event is the gpt event data. |
-| detachSlotRenderEnded | ``` fcn(callback) ``` | ``` DFPManager.detachSlotRenderEnded(myCallback) ``` | Detaches the callback. |
-| getRegisteredSlots | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getRegisteredSlots()) ``` | Returns an object whose attributes are the registered slots. Example: ``` { slotId: { data }, .... }```|
-| getRefreshableSlots | ``` fcn() => { slotId:{ slot }, ... } ``` | ``` console.log(DFPManager.getRegisteredSlots().length); ``` | Returns an object whose properties are slots that can be refreshed (see property ```shouldRefresh``` ). |
-| getTargetingArguments | ``` fcn() => {} ``` | ``` Object.keys(DFPManager.getTargetingArguments()) ``` | Returns an object that contains the targeting arguments (configured through ```DFPManager.setTargetingArguments()```) |
-| getSlotTargetingArguments | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotTargetingArguments('slot-five')['the-key']); ``` | Returns an object that contains the custom targeting arguments that were set for the given slot (slotId). |  
-| getSlotAdSenseAttributes | ``` fcn(slotId) => {} ``` | ``` console.log(DFPManager.getSlotAdSenseAttributes('slot-five')['the-key']); ``` | Returns an object that contains all the adSense attributes were previously set to the given slot (slotId). |
-| destroyGPTSlots| ```fcn(...slotId) => Promise``` | ```DFPManager.destroyGPTSlots('hp-001', 'hp-002')``` | Identifies the gpt adSlots linked to the provided ids and subsequently calls googletag.destroysSlots(...). Returns a promise that resolves when the slots are destroyed.|
 
 ## Wanna help?
 I certainly know that testcases need to be improved, but, as long as your syntax is clean, submit testscases and, of course, all the interfaces are kept working, all kind of contribution is welcome.
