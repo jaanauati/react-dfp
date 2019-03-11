@@ -17,6 +17,30 @@ describe('DFPManager', () => {
     });
   });
 
+  describe('Lazy Loading', () => {
+    it('Lazy load is disabled by default', function registersAdSlot() {
+      expect(DFPManager.lazyLoadIsEnabled()).equal(false);
+      expect(DFPManager.getLazyLoadConfig()).equal(null);
+    });
+    it('Can enable lazy load', function canEnableLazyLoad() {
+      DFPManager.configureLazyLoad(true);
+      expect(DFPManager.lazyLoadIsEnabled()).equal(true);
+    });
+    it('There isnt custom config by default', function noConfigByDefault() {
+      DFPManager.configureLazyLoad(true);
+      expect(DFPManager.getLazyLoadConfig()).equal(null);
+    });
+    it('Can pass any arbitrary config', function noConfigByDefault() {
+      DFPManager.configureLazyLoad({ renderMarginPercent: 1 });
+      expect(DFPManager.getLazyLoadConfig()).to.deep.equal({
+        renderMarginPercent: 1,
+      });
+    });
+    it('Can disable lazy load', function canDisableLazyLoad() {
+      DFPManager.configureLazyLoad(false);
+      expect(DFPManager.lazyLoadIsEnabled()).equal(false);
+    });
+  });
   describe('Single Request', () => {
     it('Gets singleRequest enabled by default', function registersAdSlot() {
       expect(DFPManager.singleRequestIsEnabled()).equal(true);

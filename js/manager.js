@@ -4,6 +4,8 @@ import * as Utils from './utils';
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 let singleRequestEnabled = true;
+let lazyLoadEnabled = false;
+let lazyLoadConfig = null;
 let servePersonalizedAds = true;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
@@ -18,6 +20,21 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   configureSingleRequest(value) {
     singleRequestEnabled = !!value;
+  },
+
+  configureLazyLoad(value = true) {
+    lazyLoadEnabled = !!value;
+    if (typeof value === 'object') {
+      lazyLoadConfig = { ...value };
+    }
+  },
+
+  lazyLoadIsEnabled() {
+    return lazyLoadEnabled;
+  },
+
+  getLazyLoadConfig() {
+    return lazyLoadConfig;
   },
 
   getAdSenseAttribute(key) {
@@ -214,6 +231,15 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         });
 
         googletag.cmd.push(() => {
+          if (this.lazyLoadIsEnabled()) {
+            const args = [];
+            const config = this.getLazyLoadConfig();
+            if (config !== null) {
+              args.push(config);
+            }
+            googletag.pubads().enableLazyLoad.call(args);
+          }
+
           if (this.singleRequestIsEnabled()) {
             googletag.pubads().enableSingleRequest();
           }
