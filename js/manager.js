@@ -22,11 +22,13 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     singleRequestEnabled = !!value;
   },
 
-  configureLazyLoad(value = true) {
-    lazyLoadEnabled = !!value;
-    if (typeof value === 'object') {
-      lazyLoadConfig = { ...value };
+  configureLazyLoad(enable = true, config = null) {
+    let conf = null;
+    if (config !== null && typeof config === 'object') {
+      conf = { ...config };
     }
+    lazyLoadEnabled = !!enable;
+    lazyLoadConfig = conf;
   },
 
   lazyLoadIsEnabled() {

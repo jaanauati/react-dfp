@@ -31,7 +31,7 @@ describe('DFPManager', () => {
       expect(DFPManager.getLazyLoadConfig()).equal(null);
     });
     it('Can pass any arbitrary config', function noConfigByDefault() {
-      DFPManager.configureLazyLoad({ renderMarginPercent: 1 });
+      DFPManager.configureLazyLoad(true, { renderMarginPercent: 1 });
       expect(DFPManager.getLazyLoadConfig()).to.deep.equal({
         renderMarginPercent: 1,
       });
@@ -41,6 +41,7 @@ describe('DFPManager', () => {
       expect(DFPManager.lazyLoadIsEnabled()).equal(false);
     });
   });
+
   describe('Single Request', () => {
     it('Gets singleRequest enabled by default', function registersAdSlot() {
       expect(DFPManager.singleRequestIsEnabled()).equal(true);
