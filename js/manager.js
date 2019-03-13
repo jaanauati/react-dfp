@@ -239,7 +239,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             if (config !== null) {
               args.push(config);
             }
-            googletag.pubads().enableLazyLoad();
             googletag.pubads().enableLazyLoad.call(args);
           }
           if (this.singleRequestIsEnabled()) {
@@ -248,10 +247,8 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
             googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
           }
-          googletag.enableServices();
-        });
 
-        googletag.cmd.push(() => {
+          googletag.enableServices();
           slotsToInitialize.forEach((theSlotId) => {
             googletag.display(theSlotId);
           });
