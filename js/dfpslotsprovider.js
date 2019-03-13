@@ -68,7 +68,7 @@ export default class DFPSlotsProvider extends React.Component {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.configureLazyLoad(
-      this.props.lazyLoad,
+      !!this.props.lazyLoad,
       typeof this.props.lazyLoad === 'boolean' ? null : this.props.lazyLoad,
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
