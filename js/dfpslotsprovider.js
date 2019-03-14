@@ -21,6 +21,14 @@ export default class DFPSlotsProvider extends React.Component {
       PropTypes.object,
     ]),
     adSenseAttrs: PropTypes.object,
+    lazyLoad: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        fetchMarginPercent: PropTypes.number,
+        renderMarginPercent: PropTypes.number,
+        mobileScaling: PropTypes.number,
+      }),
+    ]),
   };
 
   static childContextTypes = {
@@ -36,6 +44,7 @@ export default class DFPSlotsProvider extends React.Component {
     personalizedAds: true,
     singleRequest: true,
     collapseEmptyDivs: null,
+    lazyLoad: false,
   };
 
   constructor(props) {
@@ -58,6 +67,10 @@ export default class DFPSlotsProvider extends React.Component {
   componentDidMount() {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
+    DFPManager.configureLazyLoad(
+      !!this.props.lazyLoad,
+      typeof this.props.lazyLoad === 'boolean' ? null : this.props.lazyLoad,
+    );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
     if (this.props.autoLoad && !this.loadAdsIfPossible()) {

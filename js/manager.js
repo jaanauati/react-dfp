@@ -4,6 +4,8 @@ import * as Utils from './utils';
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 let singleRequestEnabled = true;
+let lazyLoadEnabled = false;
+let lazyLoadConfig = null;
 let servePersonalizedAds = true;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
@@ -18,6 +20,23 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   configureSingleRequest(value) {
     singleRequestEnabled = !!value;
+  },
+
+  configureLazyLoad(enable = true, config = null) {
+    let conf = null;
+    if (config !== null && typeof config === 'object') {
+      conf = { ...config };
+    }
+    lazyLoadEnabled = !!enable;
+    lazyLoadConfig = conf;
+  },
+
+  lazyLoadIsEnabled() {
+    return lazyLoadEnabled;
+  },
+
+  getLazyLoadConfig() {
+    return lazyLoadConfig;
   },
 
   getAdSenseAttribute(key) {
@@ -214,10 +233,17 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         });
 
         googletag.cmd.push(() => {
+          if (this.lazyLoadIsEnabled()) {
+            const args = [];
+            const config = this.getLazyLoadConfig();
+            if (config !== null) {
+              args.push(config);
+            }
+            googletag.pubads().enableLazyLoad.call(args);
+          }
           if (this.singleRequestIsEnabled()) {
             googletag.pubads().enableSingleRequest();
           }
-
           if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
             googletag.pubads().collapseEmptyDivs(this.collapseEmptyDivs);
           }

@@ -62,6 +62,83 @@ describe('DFPSlotsProvider', () => {
     });
   });
 
+  describe('Lazy Load', () => {
+    beforeAll(() => {
+      DFPManager.gptLoadAds = sinon.stub(
+        DFPManager,
+        'gptLoadAds',
+      ).resolves(true);
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+    });
+
+    it('Lazy load disabled by default', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...otherProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.lazyLoadIsEnabled()).to.equal(false);
+      expect(DFPManager.getLazyLoadConfig()).to.equal(null);
+    });
+
+    it('Can enable lazy load', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider lazyLoad {...otherProps}>
+          <AdSlot slotId={'testElement1'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.lazyLoadIsEnabled()).to.equal(true);
+      expect(DFPManager.getLazyLoadConfig()).to.equal(null);
+    });
+
+    it('Can pass arbitrary configs', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      const lazyLoadConfig = {
+        fetchMarginPercent: 1,
+        renderMarginPercent: 1,
+        mobileScaling: 1,
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider lazyLoad={lazyLoadConfig}  {...otherProps}>
+          <AdSlot slotId={'testElement1'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.lazyLoadIsEnabled()).to.equal(true);
+      expect(DFPManager.getLazyLoadConfig()).to.deep.equal(lazyLoadConfig);
+    });
+
+    it('Can disable lazyLoad', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        lazyLoad: false,
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider personalizedAds {...otherProps}>
+          <AdSlot slotId={'testElement2'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.lazyLoadIsEnabled()).to.equal(false);
+      expect(DFPManager.getLazyLoadConfig()).to.equal(null);
+    });
+
+    afterAll(() => {
+      DFPManager.gptLoadAds.restore();
+      DFPManager.load.restore();
+    });
+  });
+
   describe('Component markup', () => {
     let component;
 
