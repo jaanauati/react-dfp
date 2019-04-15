@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-
 import TestUtils from 'react-dom/test-utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -180,13 +179,14 @@ describe('DFPSlotsProvider', () => {
         DFPManager,
         'gptLoadAds',
       ).resolves(true);
-      DFPManager.load = sinon.spy(DFPManager, 'load');
     });
 
     beforeEach(() => {
       DFPManager.registerSlot = sinon.spy(DFPManager, 'registerSlot');
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
       DFPManager.setCollapseEmptyDivs = sinon.spy(DFPManager, 'setCollapseEmptyDivs');
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+      DFPManager.refresh = sinon.spy(DFPManager, 'refresh');
     });
 
     it('Registers an AdSlot', () => {
@@ -211,6 +211,38 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.load);
     });
 
+    it('Updates DFPSlotsProvider props', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} personalizedAds={false}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.calledOnce(DFPManager.refresh);
+    });
     it('Gets singleRequest enabled by default', () => {
       const providerProps = {
         dfpNetworkId: '1000',
@@ -512,11 +544,12 @@ describe('DFPSlotsProvider', () => {
       Object.keys(DFPManager.getRegisteredSlots()).forEach((slotId) => {
         DFPManager.unregisterSlot({ slotId });
       });
+      DFPManager.load.restore();
+      DFPManager.refresh.restore();
     });
 
     afterAll(() => {
       DFPManager.gptLoadAds.restore();
-      DFPManager.load.restore();
     });
   });
 });

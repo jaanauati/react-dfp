@@ -9,6 +9,7 @@ export default class DFPSlotsProvider extends React.Component {
       PropTypes.array,
     ]).isRequired,
     autoLoad: PropTypes.bool,
+    autoRefreshOnPropsChange: PropTypes.bool,
     dfpNetworkId: PropTypes.string.isRequired,
     personalizedAds: PropTypes.bool,
     singleRequest: PropTypes.bool,
@@ -41,6 +42,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   static defaultProps = {
     autoLoad: true,
+    autoRefreshOnPropsChange: true,
     personalizedAds: true,
     singleRequest: true,
     collapseEmptyDivs: null,
@@ -65,6 +67,20 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   componentDidMount() {
+    this.applyConfigs();
+    if (this.props.autoLoad && !this.loadAdsIfPossible()) {
+      DFPManager.on('slotRegistered', this.loadAdsIfPossible);
+    }
+  }
+
+  componentDidUpdate() {
+    this.applyConfigs();
+    if (this.props.autoRefreshOnPropsChange === true) {
+      DFPManager.refresh();
+    }
+  }
+
+  applyConfigs() {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.configureLazyLoad(
@@ -73,9 +89,6 @@ export default class DFPSlotsProvider extends React.Component {
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
-    if (this.props.autoLoad && !this.loadAdsIfPossible()) {
-      DFPManager.on('slotRegistered', this.loadAdsIfPossible);
-    }
   }
 
   // pretty strait-forward interface that children ads use to register
