@@ -9,7 +9,7 @@ export default class DFPSlotsProvider extends React.Component {
       PropTypes.array,
     ]).isRequired,
     autoLoad: PropTypes.bool,
-    autoRefreshOnPropsChange: PropTypes.bool,
+    autoRefreshOnPropsUpdate: PropTypes.bool,
     dfpNetworkId: PropTypes.string.isRequired,
     personalizedAds: PropTypes.bool,
     singleRequest: PropTypes.bool,
@@ -42,7 +42,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   static defaultProps = {
     autoLoad: true,
-    autoRefreshOnPropsChange: true,
+    autoRefreshOnPropsUpdate: true,
     personalizedAds: true,
     singleRequest: true,
     collapseEmptyDivs: null,
@@ -75,7 +75,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   componentDidUpdate() {
     this.applyConfigs();
-    if (this.props.autoRefreshOnPropsChange === true) {
+    if (this.props.autoRefreshOnPropsUpdate === true) {
       DFPManager.refresh();
     }
   }
