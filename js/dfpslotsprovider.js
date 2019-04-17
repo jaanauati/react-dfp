@@ -73,9 +73,18 @@ export default class DFPSlotsProvider extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return (
+      this.props.dfpNetworkId !== nextProps.dfpNetworkId ||
+      this.props.personalizedAds !== nextProps.personalizedAds ||
+      this.props.singleRequest !== nextProps.singleRequest ||
+      this.props.adUnit !== nextProps.adUnit
+    );
+  }
+
   componentDidUpdate() {
     this.applyConfigs();
-    if (this.props.autoRefreshOnPropsUpdate === true) {
+    if (this.props.autoLoad && this.props.autoRefreshOnPropsUpdate) {
       DFPManager.refresh();
     }
   }
