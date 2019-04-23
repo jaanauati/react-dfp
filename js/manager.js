@@ -327,13 +327,24 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     });
   },
 
+  reload(...slots) {
+    return this.destroyGPTSlots(...slots).then(() => this.load());
+  },
+
   destroyGPTSlots(...slotsToDestroy) {
-    const slots = slotsToDestroy.map(slotId => registeredSlots[slotId].gptSlot);
     return this.getGoogletag()
       .then((googletag) => {
         googletag.cmd.push(() => {
           if (managerAlreadyInitialized === true) {
             if (slotsToDestroy.length > 0) {
+              const slots = [];
+              // eslint-disable-next-line guard-for-in,no-restricted-syntax
+              for (const idx in slotsToDestroy) {
+                const slotId = slotsToDestroy[idx];
+                const slot = registeredSlots[slotId];
+                slots.push(slot.gptSlot);
+                delete slot.gptSlot;
+              }
               googletag.destroySlots(slots);
             } else {
               googletag.destroySlots();

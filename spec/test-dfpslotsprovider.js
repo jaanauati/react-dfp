@@ -186,7 +186,7 @@ describe('DFPSlotsProvider', () => {
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
       DFPManager.setCollapseEmptyDivs = sinon.spy(DFPManager, 'setCollapseEmptyDivs');
       DFPManager.load = sinon.spy(DFPManager, 'load');
-      DFPManager.refresh = sinon.spy(DFPManager, 'refresh');
+      DFPManager.reload = sinon.spy(DFPManager, 'reload');
     });
 
     it('Registers an AdSlot', () => {
@@ -209,10 +209,10 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
-      sinon.assert.notCalled(DFPManager.refresh);
+      sinon.assert.notCalled(DFPManager.reload);
     });
 
-    it('Auto-refreshes ads when updating DFPSlotsProvider props', () => {
+    it('Auto-reloads ads when updating DFPSlotsProvider props', () => {
       const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
@@ -242,7 +242,7 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
-      sinon.assert.calledOnce(DFPManager.refresh);
+      sinon.assert.calledOnce(DFPManager.reload);
     });
 
     it('Can dissable auto-refresh', () => {
@@ -259,7 +259,7 @@ describe('DFPSlotsProvider', () => {
 
       const container = document.createElement('div');
       ReactDOM.render(
-        <DFPSlotsProvider {...providerProps} autoRefreshOnPropsUpdate={false}>
+        <DFPSlotsProvider {...providerProps} autoReload={false}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
@@ -268,7 +268,7 @@ describe('DFPSlotsProvider', () => {
       ReactDOM.render(
         <DFPSlotsProvider
           {...providerProps} 
-          autoRefreshOnPropsUpdate={false}
+          autoReload={false}
           personalizedAds={false}
         >
           <AdSlot {...compProps} />
@@ -279,7 +279,7 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
-      sinon.assert.notCalled(DFPManager.refresh);
+      sinon.assert.notCalled(DFPManager.reload);
     });
     it('Gets singleRequest enabled by default', () => {
       const providerProps = {
@@ -583,7 +583,7 @@ describe('DFPSlotsProvider', () => {
         DFPManager.unregisterSlot({ slotId });
       });
       DFPManager.load.restore();
-      DFPManager.refresh.restore();
+      DFPManager.reload.restore();
     });
 
     afterAll(() => {
