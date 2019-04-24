@@ -12,7 +12,7 @@ To install just run the following command (no other dependencies are required):
 ```bash
 npm install --save react-dfp
 ```
-You can find more deatails in the [React-dfp site](http://react-dfp.tk/).
+You can find more deatails in the [React-dfp site](http://react-dfp.ml/).
 
 
 ## Getting started
@@ -50,11 +50,11 @@ class Page extends Component {
 ```
 
 ## Examples
-See the [React-dfp site](http://react-dfp.tk/) for more examples (basic example, how to have refreshable ads, etc).
+See the [React-dfp site](http://react-dfp.ml/) for more examples (basic example, how to have refreshable ads, etc).
 
 ## Documentation
 
-You can find the React-dfp documentation [on the website](http://react-dfp.tk/). The site divided in many sections that describe each one the Components, properties and also the DFPManager api (in case you need to use this one manually).
+You can find the React-dfp documentation [on the website](http://react-dfp.ml/). The site divided in many sections that describe each one the Components, properties and also the DFPManager api (in case you need to use this one manually).
 
 The website is also full of live/working examples.
 
