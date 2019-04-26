@@ -21,6 +21,7 @@ export class AdSlot extends React.Component {
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
     onSlotIsViewable: PropTypes.func,
+    onSlotVisibilityChanged: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
   };
@@ -46,6 +47,7 @@ export class AdSlot extends React.Component {
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
     this.slotRenderEnded = this.slotRenderEnded.bind(this);
     this.slotIsViewable = this.slotIsViewable.bind(this);
+    this.slotVisibilityChanged = this.slotVisibilityChanged.bind(this);
     this.state = {
       slotId: this.props.slotId || null,
     };
@@ -101,6 +103,7 @@ export class AdSlot extends React.Component {
     }
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
     DFPManager.attachSlotIsViewable(this.slotIsViewable);
+    DFPManager.attachSlotVisibilityChanged(this.slotVisibilityChanged);
   }
 
   registerSlot() {
@@ -120,6 +123,7 @@ export class AdSlot extends React.Component {
       ...this.state });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
     DFPManager.detachSlotIsViewable(this.slotIsViewable);
+    DFPManager.detachSlotVisibilityChanged(this.slotVisibilityChanged);
   }
 
   slotRenderEnded(eventData) {
@@ -134,6 +138,14 @@ export class AdSlot extends React.Component {
     if (eventData.slotId === this.getSlotId()) {
       if (this.props.onSlotIsViewable !== undefined) {
         this.props.onSlotIsViewable(eventData);
+      }
+    }
+  }
+
+  slotVisibilityChanged(eventData) {
+    if (eventData.slotId === this.getSlotId()) {
+      if (this.props.onSlotVisibilityChanged !== undefined) {
+        this.props.onSlotVisibilityChanged(eventData);
       }
     }
   }

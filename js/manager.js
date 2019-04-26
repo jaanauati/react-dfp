@@ -128,6 +128,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             const slotId = event.slot.getSlotElementId();
             this.emit('impressionViewable', { slotId, event });
           });
+          pubadsService.addEventListener('slotVisibilityChanged', (event) => {
+            const slotId = event.slot.getSlotElementId();
+            this.emit('slotVisibilityChanged', { slotId, event });
+          });
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
           );
@@ -375,6 +379,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   detachSlotRenderEnded(cb) {
     this.removeListener('slotRenderEnded', cb);
+  },
+
+  attachSlotVisibilityChanged(cb) {
+    this.on('slotVisibilityChanged', cb);
+  },
+
+  detachSlotVisibilityChanged(cb) {
+    this.removeListener('slotVisibilityChanged', cb);
   },
 
   attachSlotIsViewable(cb) {
