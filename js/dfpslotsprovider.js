@@ -9,7 +9,20 @@ export default class DFPSlotsProvider extends React.Component {
       PropTypes.array,
     ]).isRequired,
     autoLoad: PropTypes.bool,
-    autoReload: PropTypes.bool,
+    autoReload: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.shape({
+        dfpNetworkId: PropTypes.bool,
+        personalizedAds: PropTypes.bool,
+        singleRequest: PropTypes.bool,
+        adUnit: PropTypes.bool,
+        sizeMapping: PropTypes.bool,
+        adSenseAttributes: PropTypes.bool,
+        targetingArguments: PropTypes.bool,
+        collapseEmptyDivs: PropTypes.bool,
+        lazyLoad: PropTypes.bool,
+      }),
+    ]),
     dfpNetworkId: PropTypes.string.isRequired,
     personalizedAds: PropTypes.bool,
     singleRequest: PropTypes.bool,
@@ -42,7 +55,17 @@ export default class DFPSlotsProvider extends React.Component {
 
   static defaultProps = {
     autoLoad: true,
-    autoReload: true,
+    autoReload: {
+      dfpNetworkId: true,
+      personalizedAds: true,
+      singleRequest: false,
+      adUnit: false,
+      sizeMapping: false,
+      adSenseAttributes: false,
+      targetingArguments: false,
+      collapseEmptyDivs: false,
+      lazyLoad: false,
+    },
     personalizedAds: true,
     singleRequest: true,
     collapseEmptyDivs: null,
@@ -75,17 +98,26 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return (
-      this.props.dfpNetworkId !== nextProps.dfpNetworkId ||
-      this.props.personalizedAds !== nextProps.personalizedAds ||
-      this.props.singleRequest !== nextProps.singleRequest ||
-      this.props.adUnit !== nextProps.adUnit
-    );
+    const reloadConfig = nextProps.autoReload || this.props.autoReload;
+    if (typeof reloadConfig === 'object') {
+      const attrs = Object.keys(reloadConfig);
+      // eslint-disable-next-line guard-for-in, no-restricted-syntax
+      for (const i in attrs) {
+        const propName = attrs[i];
+        // eslint-disable-next-line
+        if (reloadConfig[propName] === true && this.props[propName] !== nextProps[propName]) {
+          return true;
+        }
+      }
+    } else {
+      return reloadConfig;
+    }
+    return false;
   }
 
   componentDidUpdate() {
     this.applyConfigs();
-    if (this.props.autoLoad && this.props.autoReload) {
+    if (this.props.autoReload) {
       DFPManager.reload();
     }
   }
