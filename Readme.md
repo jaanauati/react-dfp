@@ -17,7 +17,7 @@ You can find more deatails in the [React-dfp site](http://react-dfp.ml/).
 
 ## Getting started
 
-React-dfp has been designed in a very React-ish way, its main goal is to be able to serve DFP ads in your React application just using React components, that means that you wont have to programatically perform any initialiation call when your page loads. 
+React-dfp has been designed in a very React-ish way, its main goal is to be able to serve DFP ads in your React application just using React components, that means that you wont have to programatically perform any initialization call when your page loads. 
 
 Here a quick example, notice that ads will render in your page as soon as your component is mounted, through its components (DFPSlotsProvider and AdSlot), react-dfp is making a full abstraction of the google dfp/gpt api.
 
