@@ -77,6 +77,8 @@ export default class DFPSlotsProvider extends React.Component {
     this.loadAdsIfPossible = this.loadAdsIfPossible.bind(this);
     this.newSlotCallback = this.newSlotCallback.bind(this);
     this.applyConfigs = this.applyConfigs.bind(this);
+    this.shouldReloadConfig = this.shouldReloadConfig.bind(this);
+    this.loadAlreadyCalled = false;
     this.totalSlots = 0;
   }
 
@@ -98,27 +100,22 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const reloadConfig = nextProps.autoReload || this.props.autoReload;
-    if (typeof reloadConfig === 'object') {
-      const attrs = Object.keys(reloadConfig);
-      // eslint-disable-next-line guard-for-in, no-restricted-syntax
-      for (const i in attrs) {
-        const propName = attrs[i];
-        // eslint-disable-next-line
-        if (reloadConfig[propName] === true && this.props[propName] !== nextProps[propName]) {
-          return true;
-        }
-      }
-    } else {
-      return reloadConfig;
+    if (nextProps.autoLoad && !this.props.autoLoad) {
+      return true;
     }
-    return false;
+    return this.shouldReloadConfig(nextProps);
   }
 
   componentDidUpdate() {
     this.applyConfigs();
-    if (this.props.autoReload) {
-      DFPManager.reload();
+    if (this.props.autoLoad) {
+      if (this.loadAlreadyCalled) {
+        if (this.props.autoReload) {
+          DFPManager.reload();
+        }
+      } else if (!this.loadAdsIfPossible()) {
+        DFPManager.on('slotRegistered', this.loadAdsIfPossible);
+      }
     }
   }
 
@@ -149,8 +146,30 @@ export default class DFPSlotsProvider extends React.Component {
       DFPManager.load();
       r = true;
     }
+    this.loadAlreadyCalled = true;
     return r;
   }
+
+  shouldReloadConfig(nextProps) {
+    const reloadConfig = nextProps.autoReload || this.props.autoReload;
+    if (this.props.autoLoad || nextProps.autoLoad) {
+      if (typeof reloadConfig === 'object') {
+        const attrs = Object.keys(reloadConfig);
+        // eslint-disable-next-line guard-for-in, no-restricted-syntax
+        for (const i in attrs) {
+          const propName = attrs[i];
+          // eslint-disable-next-line
+          if (reloadConfig[propName] === true && this.props[propName] !== nextProps[propName]) {
+            return true;
+          }
+        }
+      } else {
+        return Boolean(reloadConfig);
+      }
+    }
+    return false;
+  }
+
 
   render() {
     return <div> {this.props.children} </div>;
