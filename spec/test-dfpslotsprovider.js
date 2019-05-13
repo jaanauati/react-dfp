@@ -212,7 +212,7 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.notCalled(DFPManager.reload);
     });
 
-    it('Auto-reloads ads when the prop dfpNetworkId is updated', () => {
+    it('Does not reload ads when the prop dfpNetworkId is updated', () => {
       const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
@@ -242,13 +242,46 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
-      sinon.assert.calledOnce(DFPManager.reload);
+      sinon.assert.notCalled(DFPManager.reload);
     });
 
-    it('Auto-reloads ads when the prop personalizedAds is updated', () => {
+    it('Does not reload ads when the prop personalizedAds is updated', () => {
       const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} personalizedAds={false}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
+    });
+
+    it('Reloads ads when any of the configured props is updated', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        autoReload: { personalizedAds: true },
       };
 
       const compProps = {
@@ -273,7 +306,6 @@ describe('DFPSlotsProvider', () => {
       );
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
-      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
       sinon.assert.calledOnce(DFPManager.reload);
     });
@@ -341,7 +373,7 @@ describe('DFPSlotsProvider', () => {
 
       const container = document.createElement('div');
       ReactDOM.render(
-        <DFPSlotsProvider {...providerProps} autoReload={false}>
+        <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
@@ -350,7 +382,6 @@ describe('DFPSlotsProvider', () => {
       ReactDOM.render(
         <DFPSlotsProvider
           {...providerProps} 
-          autoReload={false}
           personalizedAds={false}
         >
           <AdSlot {...compProps} />

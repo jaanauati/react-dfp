@@ -135,18 +135,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
           );
-          // const targetingArguments = this.getTargetingArguments();
-          // // set global targetting arguments
-          // Object.keys(targetingArguments).forEach((varName) => {
-          //   if (pubadsService) {
-          //     pubadsService.setTargeting(varName, targetingArguments[varName]);
-          //   }
-          // });
-          // // set global adSense attributes
-          // const adSenseAttributes = this.getAdSenseAttributes();
-          // Object.keys(adSenseAttributes).forEach((key) => {
-          //   pubadsService.set(key, adSenseAttributes[key]);
-          // });
         });
       });
     }
