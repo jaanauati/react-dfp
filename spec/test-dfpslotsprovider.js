@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-
 import TestUtils from 'react-dom/test-utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -180,13 +179,14 @@ describe('DFPSlotsProvider', () => {
         DFPManager,
         'gptLoadAds',
       ).resolves(true);
-      DFPManager.load = sinon.spy(DFPManager, 'load');
     });
 
     beforeEach(() => {
       DFPManager.registerSlot = sinon.spy(DFPManager, 'registerSlot');
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
       DFPManager.setCollapseEmptyDivs = sinon.spy(DFPManager, 'setCollapseEmptyDivs');
+      DFPManager.load = sinon.spy(DFPManager, 'load');
+      DFPManager.reload = sinon.spy(DFPManager, 'reload');
     });
 
     it('Registers an AdSlot', () => {
@@ -209,8 +209,191 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
       sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
     });
 
+    it('Does not reload ads when the prop dfpNetworkId is updated', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} dfpNetworkId="2000">
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
+    });
+
+    it('Does not reload ads when the prop personalizedAds is updated', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} personalizedAds={false}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
+    });
+
+    it('Reloads ads when any of the configured props is updated', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        autoReload: { personalizedAds: true },
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} personalizedAds={false}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.calledOnce(DFPManager.reload);
+    });
+
+    it('Ads are not reloaded when any of these props is updated: '
+      + 'singleRequest, adUnit, sizeMapping, adSenseAttributes, '
+      + 'targetingArguments, collapseEmptyDivs, adSenseAttrs, lazyLoad.'
+      , () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        singleRequest: false,
+        lazyLoad: false,
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+      const newProps = {
+        singleRequest: true,
+        adUnit: 'a/b',
+        sizeMapping: [
+          { viewport: [1024, 768], sizes: [[728, 90], [300, 250]] },
+          { viewport: [900, 768], sizes: [[300, 250]] },
+        ],
+        adSenseAttributes: { site_url: 'example.com' },
+        targetingArguments: { customKw: 'basic example' },
+        collapseEmptyDivs: true,
+        lazyLoad: true,
+      };
+
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} {...newProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
+    });
+
+    it('Can dissable auto-refresh', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement5',
+        sizes: [[728, 90]],
+      };
+
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      ReactDOM.render(
+        <DFPSlotsProvider
+          {...providerProps} 
+          personalizedAds={false}
+        >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.registerSlot);
+      sinon.assert.calledWithMatch(DFPManager.registerSlot, { ...providerProps, ...compProps });
+      sinon.assert.calledOnce(DFPManager.load);
+      sinon.assert.notCalled(DFPManager.reload);
+    });
     it('Gets singleRequest enabled by default', () => {
       const providerProps = {
         dfpNetworkId: '1000',
@@ -512,11 +695,12 @@ describe('DFPSlotsProvider', () => {
       Object.keys(DFPManager.getRegisteredSlots()).forEach((slotId) => {
         DFPManager.unregisterSlot({ slotId });
       });
+      DFPManager.load.restore();
+      DFPManager.reload.restore();
     });
 
     afterAll(() => {
       DFPManager.gptLoadAds.restore();
-      DFPManager.load.restore();
     });
   });
 });

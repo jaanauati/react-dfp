@@ -17,6 +17,7 @@ module.exports = function karmaConfig(config) {
       },
     },
     webpack: {
+      mode: 'development',
       module: {
         rules: [{
           test: /\.js$/,
@@ -29,6 +30,9 @@ module.exports = function karmaConfig(config) {
           },
         }],
       },
+    },
+    webpackMiddleware: {
+      stats: 'errors-only',
     },
     reporters: ['mocha'],
     port: 9877,
