@@ -173,7 +173,7 @@ describe('DFPSlotsProvider', () => {
     });
   });
 
-  describe('DFPManager Interaction', () => {
+  describe('DFPManager Api calls', () => {
     beforeAll(() => {
       DFPManager.gptLoadAds = sinon.stub(
         DFPManager,

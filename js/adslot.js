@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DFPManager from './manager';
+import { Context } from './dfpslotsprovider';
 
 let dynamicAdCount = 0;
 
@@ -26,14 +27,6 @@ export class AdSlot extends React.Component {
     slotId: PropTypes.string,
   };
 
-  static contextTypes = {
-    dfpNetworkId: PropTypes.string,
-    dfpAdUnit: PropTypes.string,
-    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
-    dfpTargetingArguments: PropTypes.object,
-    newSlotCallback: PropTypes.func,
-  };
-
   static defaultProps = {
     fetchNow: false,
   };
@@ -55,7 +48,7 @@ export class AdSlot extends React.Component {
 
   componentDidMount() {
     // register this ad-unit in the <DFPSlotProvider>, when available.
-    if (this.context !== undefined && this.context.newSlotCallback !== undefined) {
+    if (this.context !== undefined && this.context.newSlotCallback) {
       this.context.newSlotCallback();
     }
     this.registerSlot();
@@ -173,5 +166,19 @@ export class AdSlot extends React.Component {
     );
   }
 }
+
+if (Context === null) {
+  // React < 16.3
+  AdSlot.contextTypes = {
+    dfpNetworkId: PropTypes.string,
+    dfpAdUnit: PropTypes.string,
+    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
+    dfpTargetingArguments: PropTypes.object,
+    newSlotCallback: PropTypes.func,
+  };
+} else {
+  AdSlot.contextType = Context;
+}
+
 
 export default AdSlot;
