@@ -82,6 +82,7 @@ export default class DFPSlotsProvider extends React.Component {
     this.loadCallbackAttached = false;
     this.shouldReloadAds = false;
     this.totalSlots = 0;
+    this.contextValue = {};
     if (Context === null) {
       this.getChildContext = () => this.getContextValue();
     }
@@ -120,13 +121,37 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   getContextValue() {
-    return {
-      dfpNetworkId: this.props.dfpNetworkId,
-      dfpAdUnit: this.props.adUnit,
-      dfpSizeMapping: this.props.sizeMapping,
-      dfpTargetingArguments: this.props.targetingArguments,
-      newSlotCallback: this.newSlotCallback,
-    };
+    const {
+      props: {
+        dfpNetworkId,
+        adUnit: dfpAdUnit,
+        sizeMapping: dfpSizeMapping,
+        targetingArguments: dfpTargetingArguments,
+      },
+      contextValue: {
+        dfpNetworkId: ctxDfpNetworkId,
+        adUnit: ctxDfpAdUnit,
+        sizeMapping: ctxDfpSizeMapping,
+        targetingArguments: ctxDfpTargetingArguments,
+      },
+    } = this;
+    // performance: update context value object only when any of its
+    // props is updated.
+    if (
+      dfpNetworkId !== ctxDfpNetworkId ||
+      dfpAdUnit !== ctxDfpAdUnit ||
+      dfpSizeMapping !== ctxDfpSizeMapping ||
+      dfpTargetingArguments !== ctxDfpTargetingArguments
+    ) {
+      this.contextValue = {
+        dfpNetworkId,
+        dfpAdUnit,
+        dfpSizeMapping,
+        dfpTargetingArguments,
+        newSlotCallback: this.newSlotCallback,
+      };
+    }
+    return this.contextValue;
   }
 
   applyConfigs() {
