@@ -320,26 +320,38 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   destroyGPTSlots(...slotsToDestroy) {
-    return this.getGoogletag()
-      .then((googletag) => {
-        googletag.cmd.push(() => {
-          if (managerAlreadyInitialized === true) {
-            if (slotsToDestroy.length > 0) {
-              const slots = [];
-              // eslint-disable-next-line guard-for-in,no-restricted-syntax
-              for (const idx in slotsToDestroy) {
-                const slotId = slotsToDestroy[idx];
-                const slot = registeredSlots[slotId];
-                slots.push(slot.gptSlot);
-                delete slot.gptSlot;
+    if (slotsToDestroy.length === 0) {
+      // eslint-disable-next-line no-param-reassign
+      slotsToDestroy = Object.keys(registeredSlots);
+    }
+    return new Promise((resolve) => {
+      const slots = [];
+      // eslint-disable-next-line guard-for-in,no-restricted-syntax
+      for (const idx in slotsToDestroy) {
+        const slotId = slotsToDestroy[idx];
+        const slot = registeredSlots[slotId];
+        slots.push(slot);
+      }
+      this.getGoogletag()
+        .then((googletag) => {
+          googletag.cmd.push(() => {
+            if (managerAlreadyInitialized === true) {
+              if (slotsToDestroy.length > 0) {
+                // eslint-disable-next-line guard-for-in,no-restricted-syntax
+                for (const idx in slots) {
+                  const slot = slots[idx];
+                  slots.push(slot.gptSlot);
+                  delete slot.gptSlot;
+                }
+                googletag.destroySlots(slots);
+              } else {
+                googletag.destroySlots();
               }
-              googletag.destroySlots(slots);
-            } else {
-              googletag.destroySlots();
             }
-          }
+            resolve(slotsToDestroy);
+          });
         });
-      });
+    });
   },
 
   registerSlot({
