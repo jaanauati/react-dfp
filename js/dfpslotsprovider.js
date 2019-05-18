@@ -75,7 +75,9 @@ export default class DFPSlotsProvider extends React.Component {
     this.newSlotCallback = this.newSlotCallback.bind(this);
     this.applyConfigs = this.applyConfigs.bind(this);
     this.shouldReloadConfig = this.shouldReloadConfig.bind(this);
+    this.attachLoadCallback = this.attachLoadCallback.bind(this);
     this.loadAlreadyCalled = false;
+    this.loadCallbackAttached = false;
     this.totalSlots = 0;
   }
 
@@ -92,7 +94,7 @@ export default class DFPSlotsProvider extends React.Component {
   componentDidMount() {
     this.applyConfigs();
     if (this.props.autoLoad && !this.loadAdsIfPossible()) {
-      DFPManager.on('slotRegistered', this.loadAdsIfPossible);
+      this.attachLoadCallback();
     }
   }
 
@@ -111,7 +113,7 @@ export default class DFPSlotsProvider extends React.Component {
           DFPManager.reload();
         }
       } else if (!this.loadAdsIfPossible()) {
-        DFPManager.on('slotRegistered', this.loadAdsIfPossible);
+        this.attachLoadCallback();
       }
     }
   }
@@ -125,6 +127,15 @@ export default class DFPSlotsProvider extends React.Component {
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
+  }
+
+  attachLoadCallback() {
+    if (this.loadCallbackAttached === false) {
+      DFPManager.on('slotRegistered', this.loadAdsIfPossible);
+      this.loadCallbackAttached = true;
+      return true;
+    }
+    return false;
   }
 
   // pretty strait-forward interface that children ads use to register
@@ -141,9 +152,10 @@ export default class DFPSlotsProvider extends React.Component {
     if (Object.keys(DFPManager.getRegisteredSlots()).length >= this.totalSlots) {
       DFPManager.removeListener('slotRegistered', this.loadAdsIfPossible);
       DFPManager.load();
+      this.loadAlreadyCalled = true;
+      this.loadCallbackAttached = false;
       r = true;
     }
-    this.loadAlreadyCalled = true;
     return r;
   }
 
@@ -160,13 +172,10 @@ export default class DFPSlotsProvider extends React.Component {
             return true;
           }
         }
-      } else {
-        return Boolean(reloadConfig);
       }
     }
     return false;
   }
-
 
   render() {
     return <div> {this.props.children} </div>;
