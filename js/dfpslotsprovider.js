@@ -116,12 +116,12 @@ export default class DFPSlotsProvider extends React.Component {
       if (this.loadAlreadyCalled) {
         if (this.shouldReloadAds) {
           DFPManager.reload();
-          this.shouldReloadAds = false;
         }
       } else if (!this.loadAdsIfPossible()) {
         this.attachLoadCallback();
       }
     }
+    this.shouldReloadAds = false;
   }
 
   applyConfigs() {
