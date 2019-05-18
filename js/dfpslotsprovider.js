@@ -78,6 +78,7 @@ export default class DFPSlotsProvider extends React.Component {
     this.attachLoadCallback = this.attachLoadCallback.bind(this);
     this.loadAlreadyCalled = false;
     this.loadCallbackAttached = false;
+    this.shouldReloadAds = false;
     this.totalSlots = 0;
   }
 
@@ -99,18 +100,23 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    this.shouldReloadAds = this.shouldReloadConfig(nextProps);
+    if (nextProps.children !== this.props.children) {
+      return true;
+    }
     if (nextProps.autoLoad && !this.props.autoLoad) {
       return true;
     }
-    return this.shouldReloadConfig(nextProps);
+    return this.shouldReloadAds;
   }
 
   componentDidUpdate() {
     this.applyConfigs();
     if (this.props.autoLoad) {
       if (this.loadAlreadyCalled) {
-        if (this.props.autoReload) {
+        if (this.shouldReloadAds) {
           DFPManager.reload();
+          this.shouldReloadAds = false;
         }
       } else if (!this.loadAdsIfPossible()) {
         this.attachLoadCallback();
