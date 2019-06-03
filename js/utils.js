@@ -3,7 +3,7 @@ function doloadGPTScript(resolve, reject) {
   window.googletag.cmd = window.googletag.cmd || [];
 
   const scriptTag = document.createElement('script');
-  scriptTag.src = `${document.location.protocol}//www.googletagservices.com/tag/js/gpt.js`;
+  scriptTag.src = `${document.location.protocol}//securepubads.g.doubleclick.net/tag/js/gpt.js`;
   scriptTag.async = true;
   scriptTag.type = 'text/javascript';
   scriptTag.onerror = function scriptTagOnError(errs) {
