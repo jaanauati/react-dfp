@@ -2,6 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DFPManager from './manager';
 
+// React.createContext is undefined for React < 16.3
+export const Context = React.createContext ? React.createContext({
+  dfpNetworkId: null,
+  dfpAdUnit: null,
+  dfpSizeMapping: null,
+  dfpTargetingArguments: null,
+  newSlotCallback: null,
+}) : null;
+
 export default class DFPSlotsProvider extends React.Component {
   static propTypes = {
     children: PropTypes.oneOfType([
@@ -42,14 +51,6 @@ export default class DFPSlotsProvider extends React.Component {
     ]),
   };
 
-  static childContextTypes = {
-    dfpNetworkId: PropTypes.string,
-    dfpAdUnit: PropTypes.string,
-    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
-    dfpTargetingArguments: PropTypes.object,
-    newSlotCallback: PropTypes.func,
-  };
-
   static defaultProps = {
     autoLoad: true,
     autoReload: {
@@ -76,20 +77,15 @@ export default class DFPSlotsProvider extends React.Component {
     this.applyConfigs = this.applyConfigs.bind(this);
     this.shouldReloadConfig = this.shouldReloadConfig.bind(this);
     this.attachLoadCallback = this.attachLoadCallback.bind(this);
+    this.getContextValue = this.getContextValue.bind(this);
     this.loadAlreadyCalled = false;
     this.loadCallbackAttached = false;
     this.shouldReloadAds = false;
     this.totalSlots = 0;
-  }
-
-  getChildContext() {
-    return {
-      dfpNetworkId: this.props.dfpNetworkId,
-      dfpAdUnit: this.props.adUnit,
-      dfpSizeMapping: this.props.sizeMapping,
-      dfpTargetingArguments: this.props.targetingArguments,
-      newSlotCallback: this.newSlotCallback,
-    };
+    this.contextValue = {};
+    if (Context === null) {
+      this.getChildContext = () => this.getContextValue();
+    }
   }
 
   componentDidMount() {
@@ -124,6 +120,40 @@ export default class DFPSlotsProvider extends React.Component {
     this.shouldReloadAds = false;
   }
 
+  getContextValue() {
+    const {
+      props: {
+        dfpNetworkId,
+        adUnit: dfpAdUnit,
+        sizeMapping: dfpSizeMapping,
+        targetingArguments: dfpTargetingArguments,
+      },
+      contextValue: {
+        dfpNetworkId: ctxDfpNetworkId,
+        adUnit: ctxDfpAdUnit,
+        sizeMapping: ctxDfpSizeMapping,
+        targetingArguments: ctxDfpTargetingArguments,
+      },
+    } = this;
+    // performance: update context value object only when any of its
+    // props is updated.
+    if (
+      dfpNetworkId !== ctxDfpNetworkId ||
+      dfpAdUnit !== ctxDfpAdUnit ||
+      dfpSizeMapping !== ctxDfpSizeMapping ||
+      dfpTargetingArguments !== ctxDfpTargetingArguments
+    ) {
+      this.contextValue = {
+        dfpNetworkId,
+        dfpAdUnit,
+        dfpSizeMapping,
+        dfpTargetingArguments,
+        newSlotCallback: this.newSlotCallback,
+      };
+    }
+    return this.contextValue;
+  }
+
   applyConfigs() {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
@@ -144,7 +174,7 @@ export default class DFPSlotsProvider extends React.Component {
     return false;
   }
 
-  // pretty strait-forward interface that children ads use to register
+  // pretty strait-forward interface that children ad slots use to register
   // with their DFPSlotProvider parent node.
   newSlotCallback() {
     this.totalSlots++;
@@ -184,6 +214,25 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   render() {
-    return <div> {this.props.children} </div>;
+    const children = <div> {this.props.children} </div>;
+    if (Context === null) {
+      return children;
+    }
+    return (
+      <Context.Provider value={this.getContextValue()}>
+        {children}
+      </Context.Provider>
+    );
   }
+}
+
+if (Context === null) {
+  // React < 16.3
+  DFPSlotsProvider.childContextTypes = {
+    dfpNetworkId: PropTypes.string,
+    dfpAdUnit: PropTypes.string,
+    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
+    dfpTargetingArguments: PropTypes.object,
+    newSlotCallback: PropTypes.func,
+  };
 }
