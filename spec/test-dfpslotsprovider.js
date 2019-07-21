@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 import { expect } from 'chai';
 import sinon from 'sinon';
+import * as Utils from '../lib/utils';
 
 import { DFPSlotsProvider, AdSlot, DFPManager } from '../lib';
 
@@ -394,7 +395,64 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledOnce(DFPManager.load);
       sinon.assert.notCalled(DFPManager.reload);
     });
-    it('Gets singleRequest enabled by default', () => {
+
+    it('ShouldUpdateCorrelator defaults to Url based strategy', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement6',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(Utils.correlatorUpdateUrlStrategy);
+    });
+
+    it('ShouldUpdateCorrelator can be changed to any arbitrary strategy', () => {
+      const customStrategy = () => true;
+
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        shouldUpdateCorrelator: customStrategy,
+      };
+
+      const compProps = {
+        slotId: 'testElement6',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(customStrategy);
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider
+          {...providerProps}
+          shouldUpdateCorrelator={Utils.correlatorUpdateUrlStrategy}
+        >
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(Utils.correlatorUpdateUrlStrategy);
+    });
+
+    it('singleRequest enabled by default', () => {
       const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',

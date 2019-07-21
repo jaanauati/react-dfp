@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DFPManager from './manager';
+import { correlatorUpdateUrlStrategy } from './utils';
 
 // React.createContext is undefined for React < 16.3
 export const Context = React.createContext ? React.createContext({
@@ -49,6 +50,7 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
+    shouldUpdateCorrelator: PropTypes.func,
   };
 
   static defaultProps = {
@@ -68,6 +70,7 @@ export default class DFPSlotsProvider extends React.Component {
     singleRequest: true,
     collapseEmptyDivs: null,
     lazyLoad: false,
+    shouldUpdateCorrelator: correlatorUpdateUrlStrategy,
   };
 
   constructor(props) {
@@ -155,6 +158,7 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   applyConfigs() {
+    DFPManager.configureCorrelatorRefreshStrategy(this.props.shouldUpdateCorrelator);
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.configureLazyLoad(
