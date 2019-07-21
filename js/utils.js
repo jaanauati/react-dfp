@@ -23,9 +23,7 @@ export function loadGPTScript() {
 
 let lastUrl = null;
 export function correlatorUpdateUrlStrategy() {
-  if (lastUrl !== window.location.pathname) {
-    lastUrl = window.location.pathname;
-    return true;
-  }
-  return false;
+  const ret = lastUrl === null ? false : (lastUrl !== window.location.pathname);
+  lastUrl = window.location.pathname;
+  return ret;
 }
