@@ -20,3 +20,12 @@ export function loadGPTScript() {
     doloadGPTScript(resolve, reject);
   });
 }
+
+let lastUrl = null;
+export function correlatorUpdateUrlStrategy() {
+  if (lastUrl !== window.location.pathname) {
+    lastUrl = window.location.pathname;
+    return true;
+  }
+  return false;
+}

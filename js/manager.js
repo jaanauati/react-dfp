@@ -12,10 +12,20 @@ let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 const globalAdSenseAttributes = {};
 
+let shouldUpdateCorrelator = Utils.correlatorUpdateUrlStrategy;
+
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   singleRequestIsEnabled() {
     return singleRequestEnabled;
+  },
+
+  configureCorrelatorRefreshStrategy(func) {
+    shouldUpdateCorrelator = func;
+  },
+
+  getCorrelatorRefreshStrategyFunction() {
+    return shouldUpdateCorrelator;
   },
 
   configureSingleRequest(value) {
@@ -186,7 +196,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.getGoogletag().then((googletag) => {
         slotsToInitialize.forEach((currentSlotId) => {
           registeredSlots[currentSlotId].loading = false;
-
           googletag.cmd.push(() => {
             const slot = registeredSlots[currentSlotId];
             let gptSlot;
@@ -267,6 +276,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
         pubadsService.collapseEmptyDivs(this.collapseEmptyDivs);
       }
+      if (shouldUpdateCorrelator() === true) {
+        this.gptUpdateCorrelator();
+      }
     });
   },
 
@@ -312,6 +324,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           slots.map(slotId => registeredSlots[slotId].gptSlot),
         );
       });
+    });
+  },
+
+  gptUpdateCorrelator() {
+    return this.getGoogletag().then((googletag) => {
+      googletag.pubads().updateCorrelator();
     });
   },
 

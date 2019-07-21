@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { DFPManager } from '../lib';
+import * as Utils from '../lib/utils';
 
 describe('DFPManager', () => {
   describe('GDPR', () => {
@@ -53,6 +54,24 @@ describe('DFPManager', () => {
     it('Can enable singleRequest', function registersAdSlot() {
       DFPManager.configureSingleRequest(true);
       expect(DFPManager.singleRequestIsEnabled()).equal(true);
+    });
+  });
+
+  describe('Correlator Update Strategy', () => {
+    it('Url based strategy is enabled by default', () => {
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(Utils.correlatorUpdateUrlStrategy);
+    });
+    it('Can be replaced w a different strategy', () => {
+      const customStrategy = () => true;
+      DFPManager.configureCorrelatorRefreshStrategy(customStrategy);
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(customStrategy);
+      DFPManager.configureCorrelatorRefreshStrategy(
+        Utils.correlatorUpdateUrlStrategy,
+      );
+      expect(DFPManager.getCorrelatorRefreshStrategyFunction())
+        .equal(Utils.correlatorUpdateUrlStrategy);
     });
   });
 
