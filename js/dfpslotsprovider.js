@@ -182,7 +182,7 @@ export default class DFPSlotsProvider extends React.Component {
   // pretty strait-forward interface that children ad slots use to register
   // with their DFPSlotProvider parent node.
   newSlotCallback() {
-    return this.totalSlots++;
+    this.totalSlots++;
   }
 
   // Checks all the mounted children ads have been already registered
