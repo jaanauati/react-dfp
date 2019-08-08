@@ -26,6 +26,7 @@ export class AdSlot extends React.Component {
     onSlotVisibilityChanged: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
+    wrapperClass: PropTypes.string,
   };
 
   static defaultProps = {
@@ -43,8 +44,10 @@ export class AdSlot extends React.Component {
     this.slotRegisterCallback = this.slotRegisterCallback.bind(this);
     this.slotIsViewable = this.slotIsViewable.bind(this);
     this.slotVisibilityChanged = this.slotVisibilityChanged.bind(this);
+    this.getClasses = this.getClasses.bind(this);
     this.state = {
       slotId: this.props.slotId || null,
+      wrapperClass: this.props.wrapperClass || '',
     };
   }
 
@@ -170,14 +173,22 @@ export class AdSlot extends React.Component {
     return r;
   }
 
+  getClasses() {
+    const baseClass = 'adunitContainer';
+    const extraClasses = this.state.wrapperClass.split(' ');
+    extraClasses.push(baseClass);
+    return extraClasses;
+  }
+
   render() {
     const { slotId } = this.state;
     const props = { className: 'adBox' };
     if (slotId !== null) {
       props.id = slotId;
     }
+
     return (
-      <div className="adunitContainer">
+      <div className={this.getClasses().join(' ').trim()}>
         <div {...props} />
       </div>
     );

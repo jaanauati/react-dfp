@@ -219,7 +219,7 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   render() {
-    const children = <div> {this.props.children} </div>;
+    const children = <React.Fragment> {this.props.children} </React.Fragment>;
     if (Context === null) {
       return children;
     }
