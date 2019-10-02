@@ -26,7 +26,7 @@ export class AdSlot extends React.Component {
     onSlotVisibilityChanged: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
-    extraClasses: PropTypes.string,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
@@ -47,7 +47,7 @@ export class AdSlot extends React.Component {
     this.getClasses = this.getClasses.bind(this);
     this.state = {
       slotId: this.props.slotId || null,
-      extraClasses: this.props.extraClasses || '',
+      className: this.props.className || '',
     };
   }
 
@@ -175,7 +175,7 @@ export class AdSlot extends React.Component {
 
   getClasses() {
     const baseClass = 'adunitContainer';
-    const extraClasses = this.state.extraClasses.split(' ');
+    const extraClasses = this.state.className.split(' ');
     extraClasses.push(baseClass);
     return extraClasses;
   }
