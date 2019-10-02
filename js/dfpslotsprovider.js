@@ -223,9 +223,6 @@ export default class DFPSlotsProvider extends React.Component {
     if (Context === null) {
       return children;
     }
-    if (Context === null) {
-      return children;
-    }
     return (
       <Context.Provider value={this.getContextValue()}>
         {children}
