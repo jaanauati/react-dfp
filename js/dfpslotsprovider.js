@@ -22,6 +22,7 @@ export default class DFPSlotsProvider extends React.Component {
       dfpNetworkId: PropTypes.bool,
       personalizedAds: PropTypes.bool,
       singleRequest: PropTypes.bool,
+      disableInitialLoad: PropTypes.bool,
       adUnit: PropTypes.bool,
       sizeMapping: PropTypes.bool,
       adSenseAttributes: PropTypes.bool,
@@ -32,6 +33,7 @@ export default class DFPSlotsProvider extends React.Component {
     dfpNetworkId: PropTypes.string.isRequired,
     personalizedAds: PropTypes.bool,
     singleRequest: PropTypes.bool,
+    disableInitialLoad: PropTypes.bool,
     adUnit: PropTypes.string,
     sizeMapping: PropTypes.arrayOf(PropTypes.object),
     adSenseAttributes: PropTypes.object,
@@ -57,6 +59,7 @@ export default class DFPSlotsProvider extends React.Component {
       dfpNetworkId: false,
       personalizedAds: false,
       singleRequest: false,
+      disableInitialLoad: false,
       adUnit: false,
       sizeMapping: false,
       adSenseAttributes: false,
@@ -66,6 +69,7 @@ export default class DFPSlotsProvider extends React.Component {
     },
     personalizedAds: true,
     singleRequest: true,
+    disableInitialLoad: false,
     collapseEmptyDivs: null,
     lazyLoad: false,
   };
@@ -157,6 +161,7 @@ export default class DFPSlotsProvider extends React.Component {
   applyConfigs() {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
     DFPManager.configureSingleRequest(this.props.singleRequest);
+    DFPManager.configureDisableInitialLoad(this.props.disableInitialLoad);
     DFPManager.configureLazyLoad(
       !!this.props.lazyLoad,
       typeof this.props.lazyLoad === 'boolean' ? null : this.props.lazyLoad,

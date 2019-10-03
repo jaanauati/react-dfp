@@ -4,6 +4,7 @@ import * as Utils from './utils';
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
 let singleRequestEnabled = true;
+let disableInitialLoadEnabled = false;
 let lazyLoadEnabled = false;
 let lazyLoadConfig = null;
 let servePersonalizedAds = true;
@@ -20,6 +21,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   configureSingleRequest(value) {
     singleRequestEnabled = !!value;
+  },
+
+  disableInitialLoadIsEnabled() {
+    return disableInitialLoadEnabled;
+  },
+
+  configureDisableInitialLoad(value) {
+    disableInitialLoadEnabled = !!value;
   },
 
   configureLazyLoad(enable = true, config = null) {
@@ -226,9 +235,11 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         this.configureOptions(googletag);
         googletag.cmd.push(() => {
           googletag.enableServices();
-          slotsToInitialize.forEach((theSlotId) => {
-            googletag.display(theSlotId);
-          });
+          if (!this.disableInitialLoadIsEnabled()) {
+            slotsToInitialize.forEach((theSlotId) => {
+              googletag.display(theSlotId);
+            });
+          }
           resolve();
         });
       });
@@ -263,6 +274,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       }
       if (this.singleRequestIsEnabled()) {
         pubadsService.enableSingleRequest();
+      }
+      if (this.disableInitialLoadIsEnabled()) {
+        pubadsService.disableInitialLoad();
       }
       if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
         pubadsService.collapseEmptyDivs(this.collapseEmptyDivs);

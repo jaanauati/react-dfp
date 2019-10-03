@@ -21,10 +21,12 @@ export class AdSlot extends React.Component {
     adSenseAttributes: PropTypes.object,
     targetingArguments: PropTypes.object,
     onSlotRender: PropTypes.func,
+    onSlotRegister: PropTypes.func,
     onSlotIsViewable: PropTypes.func,
     onSlotVisibilityChanged: PropTypes.func,
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
@@ -39,10 +41,13 @@ export class AdSlot extends React.Component {
     this.mapContextToAdSlotProps = this.mapContextToAdSlotProps.bind(this);
     this.slotShouldRefresh = this.slotShouldRefresh.bind(this);
     this.slotRenderEnded = this.slotRenderEnded.bind(this);
+    this.slotRegisterCallback = this.slotRegisterCallback.bind(this);
     this.slotIsViewable = this.slotIsViewable.bind(this);
     this.slotVisibilityChanged = this.slotVisibilityChanged.bind(this);
+    this.getClasses = this.getClasses.bind(this);
     this.state = {
       slotId: this.props.slotId || null,
+      className: this.props.className || '',
     };
   }
 
@@ -97,6 +102,8 @@ export class AdSlot extends React.Component {
     DFPManager.attachSlotRenderEnded(this.slotRenderEnded);
     DFPManager.attachSlotIsViewable(this.slotIsViewable);
     DFPManager.attachSlotVisibilityChanged(this.slotVisibilityChanged);
+
+    this.slotRegisterCallback();
   }
 
   registerSlot() {
@@ -113,7 +120,8 @@ export class AdSlot extends React.Component {
     DFPManager.unregisterSlot({
       ...this.mapContextToAdSlotProps(),
       ...this.props,
-      ...this.state });
+      ...this.state
+    });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
     DFPManager.detachSlotIsViewable(this.slotIsViewable);
     DFPManager.detachSlotVisibilityChanged(this.slotVisibilityChanged);
@@ -124,6 +132,16 @@ export class AdSlot extends React.Component {
       if (this.props.onSlotRender !== undefined) {
         this.props.onSlotRender(eventData);
       }
+    }
+  }
+
+  slotRegisterCallback() {
+    if (typeof this.props.onSlotRegister === 'function') {
+      this.props.onSlotRegister({
+        slotId: this.getSlotId(),
+        sizes: this.props.sizes,
+        slotCount: dynamicAdCount
+      });
     }
   }
 
@@ -146,11 +164,20 @@ export class AdSlot extends React.Component {
   slotShouldRefresh() {
     let r = true;
     if (this.props.shouldRefresh !== undefined) {
-      r = this.props.shouldRefresh({ ...this.mapContextToAdSlotProps(),
+      r = this.props.shouldRefresh({
+        ...this.mapContextToAdSlotProps(),
         ...this.props,
-        slotId: this.getSlotId() });
+        slotId: this.getSlotId()
+      });
     }
     return r;
+  }
+
+  getClasses() {
+    const baseClass = 'adunitContainer';
+    const extraClasses = this.state.className.split(' ');
+    extraClasses.push(baseClass);
+    return extraClasses;
   }
 
   render() {
@@ -159,8 +186,9 @@ export class AdSlot extends React.Component {
     if (slotId !== null) {
       props.id = slotId;
     }
+
     return (
-      <div className="adunitContainer">
+      <div className={this.getClasses().join(' ').trim()}>
         <div {...props} />
       </div>
     );
