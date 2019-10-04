@@ -67,6 +67,13 @@ export class AdSlot extends React.Component {
     return this.props.slotId || this.state.slotId;
   }
 
+  getClasses() {
+    const baseClass = 'adunitContainer';
+    const extraClasses = this.state.className.split(' ');
+    extraClasses.push(baseClass);
+    return extraClasses;
+  }
+
   generateSlotId() {
     return `adSlot-${dynamicAdCount++}`;
   }
@@ -120,7 +127,7 @@ export class AdSlot extends React.Component {
     DFPManager.unregisterSlot({
       ...this.mapContextToAdSlotProps(),
       ...this.props,
-      ...this.state
+      ...this.state,
     });
     DFPManager.detachSlotRenderEnded(this.slotRenderEnded);
     DFPManager.detachSlotIsViewable(this.slotIsViewable);
@@ -140,7 +147,7 @@ export class AdSlot extends React.Component {
       this.props.onSlotRegister({
         slotId: this.getSlotId(),
         sizes: this.props.sizes,
-        slotCount: dynamicAdCount
+        slotCount: dynamicAdCount,
       });
     }
   }
@@ -167,17 +174,10 @@ export class AdSlot extends React.Component {
       r = this.props.shouldRefresh({
         ...this.mapContextToAdSlotProps(),
         ...this.props,
-        slotId: this.getSlotId()
+        slotId: this.getSlotId(),
       });
     }
     return r;
-  }
-
-  getClasses() {
-    const baseClass = 'adunitContainer';
-    const extraClasses = this.state.className.split(' ');
-    extraClasses.push(baseClass);
-    return extraClasses;
   }
 
   render() {
