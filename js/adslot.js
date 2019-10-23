@@ -49,7 +49,9 @@ export class AdSlot extends React.Component {
       slotId: this.props.slotId || null,
       className: this.props.className || '',
     };
-    this.adElementRef = React.createRef ? React.createRef() : null;
+    this.adElementRef = React.createRef ? React.createRef() : (element) => {
+      this.adElementRef = element;
+    };
   }
 
   componentDidMount() {
