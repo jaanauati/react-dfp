@@ -49,6 +49,7 @@ export class AdSlot extends React.Component {
       slotId: this.props.slotId || null,
       className: this.props.className || '',
     };
+    this.adElementRef = React.createRef ? React.createRef() : null;
   }
 
   componentDidMount() {
@@ -137,7 +138,12 @@ export class AdSlot extends React.Component {
   slotRenderEnded(eventData) {
     if (eventData.slotId === this.getSlotId()) {
       if (this.props.onSlotRender !== undefined) {
-        this.props.onSlotRender(eventData);
+        // now that slot has rendered we have access to the ref
+        const params = {
+          ...eventData,
+          adElementRef: this.adElementRef,
+        };
+        this.props.onSlotRender(params);
       }
     }
   }
@@ -148,6 +154,7 @@ export class AdSlot extends React.Component {
         slotId: this.getSlotId(),
         sizes: this.props.sizes,
         slotCount: dynamicAdCount,
+        adElementRef: this.adElementRef,
       });
     }
   }
@@ -189,7 +196,7 @@ export class AdSlot extends React.Component {
 
     return (
       <div className={this.getClasses().join(' ').trim()}>
-        <div {...props} />
+        <div ref={this.adElementRef} {...props} />
       </div>
     );
   }
