@@ -3,6 +3,7 @@ import * as Utils from './utils';
 
 let loadPromise = null;
 let googleGPTScriptLoadPromise = null;
+let amazonAPSScriptLoadPromise = null;
 let singleRequestEnabled = true;
 let disableInitialLoadEnabled = false;
 let lazyLoadEnabled = false;
@@ -12,6 +13,7 @@ const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 const globalAdSenseAttributes = {};
+let amazonSlots = {};
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
@@ -156,6 +158,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     return googleGPTScriptLoadPromise;
   },
 
+  getAmazonAPS(amazonConfig) {
+    return this.getGoogletag()
+      .then(() => {
+        if (amazonAPSScriptLoadPromise === null) {
+          amazonAPSScriptLoadPromise = Utils.loadAmazonScript(amazonConfig);
+        }
+        return amazonAPSScriptLoadPromise;
+      });
+  },
+
   setCollapseEmptyDivs(collapse) {
     this.collapseEmptyDivs = collapse;
   },
@@ -191,11 +203,18 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   },
 
   gptLoadAds(slotsToInitialize) {
+    const displayAds = () => {
+      if (!this.disableInitialLoadIsEnabled()) {
+        slotsToInitialize.forEach((theSlotId) => {
+          googletag.display(theSlotId);
+        });
+      }
+    };
+
     return new Promise((resolve) => {
       this.getGoogletag().then((googletag) => {
         slotsToInitialize.forEach((currentSlotId) => {
           registeredSlots[currentSlotId].loading = false;
-
           googletag.cmd.push(() => {
             const slot = registeredSlots[currentSlotId];
             let gptSlot;
@@ -235,11 +254,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         this.configureOptions(googletag);
         googletag.cmd.push(() => {
           googletag.enableServices();
-          if (!this.disableInitialLoadIsEnabled()) {
-            slotsToInitialize.forEach((theSlotId) => {
-              googletag.display(theSlotId);
-            });
-          }
+          if (!this.isAmazonSlotsEmpty()) {
+            this.getAmazonAPS()
+              .then(apstag => this.addAmazonTracking(apstag))
+              .finally(() => {
+                displayAds();
+                amazonSlots = {};
+              });
+          } else { displayAds(); }
           resolve();
         });
       });
@@ -407,6 +429,22 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     }
   },
 
+  registerAmazonSlot(slotID, sizes, adUnit) {
+    amazonSlots[slotID] = {
+      slotID,
+      sizes,
+      slotName: adUnit,
+    };
+  },
+
+  getAmazonSlots() {
+    return Object.values(amazonSlots);
+  },
+
+  isAmazonSlotsEmpty() {
+    return this.getAmazonSlots().length() === 0;
+  },
+
   unregisterSlot({ slotId }) {
     this.destroyGPTSlots(slotId);
     delete registeredSlots[slotId];
@@ -440,6 +478,22 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     this.removeListener('impressionViewable', cb);
   },
 
+  addAmazonTracking(apstag) {
+    return new Promise((resolve, reject) => {
+      apstag.fetchBids(
+        {
+          slots: this.getAmazonSlots(),
+          timeout: 2e3,
+        },
+        (bids) => {
+          if (bids.length > 0) {
+            apstag.setDisplayBids();
+            resolve();
+          } else reject();
+        },
+      );
+    });
+  },
 });
 
 export default DFPManager;

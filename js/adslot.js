@@ -27,10 +27,12 @@ export class AdSlot extends React.Component {
     shouldRefresh: PropTypes.func,
     slotId: PropTypes.string,
     className: PropTypes.string,
+    withAmazon: PropTypes.bool,
   };
 
   static defaultProps = {
     fetchNow: false,
+    withAmazon: false,
   };
 
   constructor(props) {
@@ -103,6 +105,13 @@ export class AdSlot extends React.Component {
       ...this.state,
       slotShouldRefresh: this.slotShouldRefresh,
     });
+    if (this.props.withAmazon === true) {
+      DFPManager.registerAmazonSlot(
+        this.getSlotId(),
+        this.props.sizes,
+        this.props.adUnit,
+      );
+    }
     if (this.props.fetchNow === true) {
       DFPManager.load(this.getSlotId());
     }

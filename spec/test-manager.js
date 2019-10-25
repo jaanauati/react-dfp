@@ -220,4 +220,12 @@ describe('DFPManager', () => {
       DFPManager.destroyGPTSlots.restore();
     });
   });
+
+  describe('Amazon ATM integration', () => {
+    it('Register amazon slots properly', () => {
+      DFPManager.registerAmazonSlot('testElement1', [[1, 1]], 'testSlotName');
+      DFPManager.registerAmazonSlot('testElement2', [[1, 1]], 'testSlotName');
+      expect(DFPManager.getAmazonSlots().length).to.equal(2);
+    });
+  });
 });

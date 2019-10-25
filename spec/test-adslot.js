@@ -37,6 +37,7 @@ describe('AdSlot', () => {
   describe('DFPManager Interaction', () => {
     beforeEach(() => {
       DFPManager.registerSlot = sinon.spy(DFPManager, 'registerSlot');
+      DFPManager.registerAmazonSlot = sinon.spy(DFPManager, 'registerAmazonSlot');
       DFPManager.unregisterSlot = sinon.spy(DFPManager, 'unregisterSlot');
     });
 
@@ -52,6 +53,24 @@ describe('AdSlot', () => {
 
       sinon.assert.calledOnce(DFPManager.registerSlot);
       sinon.assert.calledWithMatch(DFPManager.registerSlot, compProps);
+      sinon.assert.notCalled(DFPManager.registerAmazonSlot);
+    });
+
+    it('Register ad slot with amazon ATM', () => {
+      const compProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        slotId: 'testElement6',
+        sizes: [[728, 90]],
+        withAmazon: true,
+      };
+
+      ReactTestUtils.renderIntoDocument(<AdSlot {...compProps} />);
+
+      sinon.assert.calledOnce(DFPManager.registerAmazonSlot);
+      sinon.assert.calledWithMatch(
+        DFPManager.registerAmazonSlot, compProps.slotId, compProps.sizes, compProps.adUnit,
+      );
     });
 
     it('Registers a refreshable AdSlot', () => {
@@ -183,7 +202,6 @@ describe('AdSlot', () => {
       expect(DFPManager.getSlotTargetingArguments(compProps.slotId)).to.equal(null);
     });
 
-
     it('Unregisters an AdSlot', () => {
       const compProps = {
         dfpNetworkId: '1000',
@@ -205,6 +223,7 @@ describe('AdSlot', () => {
 
     afterEach(() => {
       DFPManager.registerSlot.restore();
+      DFPManager.registerAmazonSlot.restore();
       DFPManager.unregisterSlot.restore();
       Object.keys(DFPManager.getRegisteredSlots()).forEach((slotId) => {
         DFPManager.unregisterSlot({ slotId });
