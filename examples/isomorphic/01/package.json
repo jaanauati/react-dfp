@@ -4,7 +4,9 @@
     "dfp_id": "notset",
     "adunit_1": "adunit/1",
     "adunit_2": "adunit/2",
-    "adunit_3": "adunit/3"
+    "adunit_3": "adunit/3",
+    "amazon_pub_id": "12345",
+    "amazon_ad_service": "googletag"
   },
   "version": "0.0.1",
   "scripts": {

@@ -51,6 +51,10 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
+    amazonConfig: PropTypes.shape({
+      pubID: PropTypes.string.isRequired,
+      adServer: PropTypes.string.isRequired,
+    }),
   };
 
   static defaultProps = {
@@ -72,6 +76,7 @@ export default class DFPSlotsProvider extends React.Component {
     disableInitialLoad: false,
     collapseEmptyDivs: null,
     lazyLoad: false,
+    amazonConfig: null,
   };
 
   constructor(props) {
@@ -94,6 +99,9 @@ export default class DFPSlotsProvider extends React.Component {
 
   componentDidMount() {
     this.applyConfigs();
+    if (this.props.amazonConfig) {
+      DFPManager.getAmazonAPS(this.props.amazonConfig);
+    }
     if (this.props.autoLoad && !this.loadAdsIfPossible()) {
       this.attachLoadCallback();
     }
