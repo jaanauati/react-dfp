@@ -381,7 +381,7 @@ describe('DFPSlotsProvider', () => {
 
       ReactDOM.render(
         <DFPSlotsProvider
-          {...providerProps} 
+          {...providerProps}
           personalizedAds={false}
         >
           <AdSlot {...compProps} />
@@ -475,6 +475,68 @@ describe('DFPSlotsProvider', () => {
       );
 
       expect(DFPManager.singleRequestIsEnabled()).equal(false);
+    });
+
+    it('disableInitialLoad is not enabled by default', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+
+      const compProps = {
+        slotId: 'testElement8',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(false);
+    });
+
+    it('Can turn on disableInitialLoad', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        disableInitialLoad: true,
+      };
+
+      const compProps = {
+        slotId: 'testElement8',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(true);
+    });
+
+    it('Can turn off disableInitialLoad', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        disableInitialLoad: false,
+      };
+
+      const compProps = {
+        slotId: 'testElement8',
+        sizes: [[728, 90]],
+      };
+
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...providerProps}>
+          <AdSlot {...compProps} />
+        </DFPSlotsProvider>,
+      );
+
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(false);
     });
 
     it('Registers a refreshable AdSlot', () => {
