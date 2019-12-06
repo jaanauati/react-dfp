@@ -56,6 +56,20 @@ describe('DFPManager', () => {
     });
   });
 
+  describe('Disable Initial Load', () => {
+    it('disableInitiaLoad disabled by default', function testDisableInitialLoad1() {
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(false);
+    });
+    it('Can enable disableInitialLoad', function testDisableInitialLoad2() {
+      DFPManager.configureDisableInitialLoad(true);
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(true);
+    });
+    it('Can disable disableInitialLoad', function testDisableInitialLoad3() {
+      DFPManager.configureDisableInitialLoad(false);
+      expect(DFPManager.disableInitialLoadIsEnabled()).equal(false);
+    });
+  });
+
   describe('AdSense attributes', () => {
     beforeEach(function beforeEach() {
       this.argsList1 = {
