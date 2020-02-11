@@ -193,6 +193,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   gptLoadAds(slotsToInitialize) {
     return new Promise((resolve) => {
       this.getGoogletag().then((googletag) => {
+        this.configureInitialOptions(googletag);
         slotsToInitialize.forEach((currentSlotId) => {
           registeredSlots[currentSlotId].loading = false;
 
@@ -246,6 +247,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     });
   },
 
+  // configure those gpt parameters that need to be set before pubsads service
+  // initialization.
+  configureInitialOptions(googletag) {
+    googletag.cmd.push(() => {
+      if (this.disableInitialLoadIsEnabled()) {
+        googletag.pubads().disableInitialLoad();
+      }
+    });
+  },
+
   configureOptions(googletag) {
     googletag.cmd.push(() => {
       const pubadsService = googletag.pubads();
@@ -274,9 +285,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       }
       if (this.singleRequestIsEnabled()) {
         pubadsService.enableSingleRequest();
-      }
-      if (this.disableInitialLoadIsEnabled()) {
-        pubadsService.disableInitialLoad();
       }
       if (this.collapseEmptyDivs === true || this.collapseEmptyDivs === false) {
         pubadsService.collapseEmptyDivs(this.collapseEmptyDivs);
