@@ -16,7 +16,7 @@ or
 yarn add react-dfp
 ```
 
-You can find more details in the [React-dfp site](http://react-dfp.ml/).
+You can find more details in the [React-dfp site](http://react-dfp.tk/).
 
 ## Getting started
 
@@ -54,11 +54,11 @@ class Page extends Component {
 
 ## Examples
 
-See the [React-dfp site](http://react-dfp.ml/) for more examples (basic example, how to have refreshable ads, etc).
+See the [React-dfp site](http://react-dfp.tk/) for more examples (basic example, how to have refreshable ads, etc).
 
 ## Documentation
 
-You can find the React-dfp documentation [on the website](http://react-dfp.ml/). The site is divided into many sections that describe each one the Components, properties and also the DFPManager API (in case you need to use this one manually).
+You can find the React-dfp documentation [on the website](http://react-dfp.tk/). The site is divided into many sections that describe each one the Components, properties and also the DFPManager API (in case you need to use this one manually).
 
 The website is also full of live/working examples.
 
