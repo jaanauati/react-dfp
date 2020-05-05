@@ -152,9 +152,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   getGoogletag() {
     if (googleGPTScriptLoadPromise === null) {
       googleGPTScriptLoadPromise = Utils.loadGPTScript()
-      .catch((error) => {
-        this.emit('gptScriptLoadError', { error })
-      });
+        .catch((error) => {
+          this.emit('gptScriptLoadError', { error });
+        });
     }
     return googleGPTScriptLoadPromise;
   },

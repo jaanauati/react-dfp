@@ -51,7 +51,7 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
-    onGPTScriptLoadError: PropTypes.func
+    onGPTScriptLoadError: PropTypes.func,
   };
 
   static defaultProps = {
@@ -183,12 +183,12 @@ export default class DFPSlotsProvider extends React.Component {
   }
 
   attachGPTLoadErrorCallback() {
-    if(this.gptLoadErrorCallbackAttached === false) {
-      DFPManager.attachGPTLoadErrorCallback(function(data) {
-        if(this.props.onGPTScriptLoadError) {
-          this.props.onGPTScriptLoadError()
+    if (this.gptLoadErrorCallbackAttached === false) {
+      DFPManager.attachGPTLoadErrorCallback(function handleGPTLoadError(data) {
+        if (this.props.onGPTScriptLoadError) {
+          this.props.onGPTScriptLoadError(data);
         }
-      })
+      });
 
       this.gptLoadErrorCallbackAttached = true;
     }
