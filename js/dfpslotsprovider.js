@@ -51,6 +51,7 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
+    onGPTScriptLoadError: PropTypes.func
   };
 
   static defaultProps = {
@@ -84,6 +85,7 @@ export default class DFPSlotsProvider extends React.Component {
     this.getContextValue = this.getContextValue.bind(this);
     this.loadAlreadyCalled = false;
     this.loadCallbackAttached = false;
+    this.gptLoadErrorCallbackAttached = false;
     this.shouldReloadAds = false;
     this.totalSlots = 0;
     this.contextValue = {};
@@ -97,6 +99,8 @@ export default class DFPSlotsProvider extends React.Component {
     if (this.props.autoLoad && !this.loadAdsIfPossible()) {
       this.attachLoadCallback();
     }
+
+    this.attachGPTLoadErrorCallback();
   }
 
   shouldComponentUpdate(nextProps) {
@@ -163,7 +167,6 @@ export default class DFPSlotsProvider extends React.Component {
     DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.configureDisableInitialLoad(this.props.disableInitialLoad);
     DFPManager.configureLazyLoad(
-      !!this.props.lazyLoad,
       typeof this.props.lazyLoad === 'boolean' ? null : this.props.lazyLoad,
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
@@ -177,6 +180,18 @@ export default class DFPSlotsProvider extends React.Component {
       return true;
     }
     return false;
+  }
+
+  attachGPTLoadErrorCallback() {
+    if(this.gptLoadErrorCallbackAttached === false) {
+      DFPManager.attachGPTLoadErrorCallback(function(data) {
+        if(this.props.onGPTScriptLoadError) {
+          this.props.onGPTScriptLoadError()
+        }
+      })
+
+      this.gptLoadErrorCallbackAttached = true;
+    }
   }
 
   // pretty strait-forward interface that children ad slots use to register
