@@ -83,6 +83,7 @@ export default class DFPSlotsProvider extends React.Component {
     this.shouldReloadConfig = this.shouldReloadConfig.bind(this);
     this.attachLoadCallback = this.attachLoadCallback.bind(this);
     this.getContextValue = this.getContextValue.bind(this);
+    this.attachGPTLoadErrorCallback = this.attachGPTLoadErrorCallback.bind(this);
     this.loadAlreadyCalled = false;
     this.loadCallbackAttached = false;
     this.gptLoadErrorCallbackAttached = false;
