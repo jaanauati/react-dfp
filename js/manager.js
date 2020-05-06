@@ -151,7 +151,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   getGoogletag() {
     if (googleGPTScriptLoadPromise === null) {
-      googleGPTScriptLoadPromise = Utils.loadGPTScript();
+      googleGPTScriptLoadPromise = Utils.loadGPTScript()
+        .catch((error) => {
+          this.emit('gptScriptLoadError', { error });
+        });
     }
     return googleGPTScriptLoadPromise;
   },
@@ -422,6 +425,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   getRegisteredSlots() {
     return registeredSlots;
+  },
+
+  attachGPTLoadError(cb) {
+    this.on('gptScriptLoadError', cb);
   },
 
   attachSlotRenderEnded(cb) {
