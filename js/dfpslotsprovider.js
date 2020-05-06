@@ -185,7 +185,7 @@ export default class DFPSlotsProvider extends React.Component {
   attachGPTLoadErrorCallback() {
     if (this.gptLoadErrorCallbackAttached === false) {
       DFPManager.attachGPTLoadError(function handleGPTLoadError(data) {
-        if (this.props.onGPTScriptLoadError) {
+        if (this.props && this.props.onGPTScriptLoadError !== undefined) {
           this.props.onGPTScriptLoadError(data);
         }
       });
