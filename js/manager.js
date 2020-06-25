@@ -276,12 +276,12 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         pubadsService.set(key, adSenseAttributes[key]);
       });
       if (this.lazyLoadIsEnabled()) {
-        const args = [];
         const config = this.getLazyLoadConfig();
-        if (config !== null) {
-          args.push(config);
+        if (config) {
+          pubadsService.enableLazyLoad(config);
+        } else {
+          pubadsService.enableLazyLoad();
         }
-        pubadsService.enableLazyLoad.call(args);
       }
       if (this.singleRequestIsEnabled()) {
         pubadsService.enableSingleRequest();
