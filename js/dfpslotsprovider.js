@@ -21,6 +21,7 @@ export default class DFPSlotsProvider extends React.Component {
     autoReload: PropTypes.shape({
       dfpNetworkId: PropTypes.bool,
       personalizedAds: PropTypes.bool,
+      cookieOption: PropTypes.bool,
       singleRequest: PropTypes.bool,
       disableInitialLoad: PropTypes.bool,
       adUnit: PropTypes.bool,
@@ -32,6 +33,7 @@ export default class DFPSlotsProvider extends React.Component {
     }),
     dfpNetworkId: PropTypes.string.isRequired,
     personalizedAds: PropTypes.bool,
+    cookieOption: PropTypes.bool,
     singleRequest: PropTypes.bool,
     disableInitialLoad: PropTypes.bool,
     adUnit: PropTypes.string,
@@ -58,6 +60,7 @@ export default class DFPSlotsProvider extends React.Component {
     autoReload: {
       dfpNetworkId: false,
       personalizedAds: false,
+      cookieOption: false,
       singleRequest: false,
       disableInitialLoad: false,
       adUnit: false,
@@ -68,6 +71,7 @@ export default class DFPSlotsProvider extends React.Component {
       lazyLoad: false,
     },
     personalizedAds: true,
+    cookieOption: true,
     singleRequest: true,
     disableInitialLoad: false,
     collapseEmptyDivs: null,
@@ -160,6 +164,7 @@ export default class DFPSlotsProvider extends React.Component {
 
   applyConfigs() {
     DFPManager.configurePersonalizedAds(this.props.personalizedAds);
+    DFPManager.configureCookieOption(this.props.cookieOption);
     DFPManager.configureSingleRequest(this.props.singleRequest);
     DFPManager.configureDisableInitialLoad(this.props.disableInitialLoad);
     DFPManager.configureLazyLoad(
