@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { DFPManager } from '../lib';
 
 describe('DFPManager', () => {
-  describe('GDPR', () => {
+  describe('GDPR - personalized ads', () => {
     it('Fetches personalized ads by default', function registersAdSlot() {
       expect(DFPManager.personalizedAdsEnabled()).equal(true);
     });
@@ -14,6 +14,20 @@ describe('DFPManager', () => {
     it('Can enable personalized ads', function registersAdSlot() {
       DFPManager.configurePersonalizedAds(true);
       expect(DFPManager.personalizedAdsEnabled()).equal(true);
+    });
+  });
+
+  describe('GDPR - cookies', () => {
+    it('Sets cookies by default', function registersAdSlot() {
+      expect(DFPManager.cookiesEnabled()).equal(true);
+    });
+    it('Can disable cookies', function registersAdSlot() {
+      DFPManager.configureCookieOption(false);
+      expect(DFPManager.cookiesEnabled()).equal(false);
+    });
+    it('Can enable cookies', function registersAdSlot() {
+      DFPManager.configureCookieOption(true);
+      expect(DFPManager.cookiesEnabled()).equal(true);
     });
   });
 

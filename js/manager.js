@@ -8,6 +8,7 @@ let disableInitialLoadEnabled = false;
 let lazyLoadEnabled = false;
 let lazyLoadConfig = null;
 let servePersonalizedAds = true;
+let serveCookies = true;
 const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
@@ -56,8 +57,16 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     servePersonalizedAds = value;
   },
 
+  configureCookieOption(value) {
+    serveCookies = value;
+  },
+
   personalizedAdsEnabled() {
     return servePersonalizedAds;
+  },
+
+  cookiesEnabled() {
+    return serveCookies;
   },
 
   setAdSenseAttribute(key, value) {
@@ -143,6 +152,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           });
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
+          );
+          pubadsService.setCookieOptions(
+            this.cookiesEnabled() ? 0 : 1,
           );
         });
       });
@@ -262,6 +274,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       const pubadsService = googletag.pubads();
       pubadsService.setRequestNonPersonalizedAds(
         this.personalizedAdsEnabled() ? 0 : 1,
+      );
+      pubadsService.setCookieOptions(
+        this.cookiesEnabled() ? 0 : 1,
       );
       const targetingArguments = this.getTargetingArguments();
       // set global targetting arguments

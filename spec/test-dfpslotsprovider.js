@@ -55,6 +55,46 @@ describe('DFPSlotsProvider', () => {
       expect(DFPManager.personalizedAdsEnabled()).to.equal(true);
     });
 
+    it('Set cookies by default', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider {...otherProps}>
+          <AdSlot slotId={'testElement'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.cookiesEnabled()).to.equal(true);
+    });
+
+    it('Can disable cookies', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider cookieOption={false} {...otherProps}>
+          <AdSlot slotId={'testElement1'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.cookiesEnabled()).to.equal(false);
+    });
+
+    it('Can enable cookies', () => {
+      const otherProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+      };
+      TestUtils.renderIntoDocument(
+        <DFPSlotsProvider cookieOption {...otherProps}>
+          <AdSlot slotId={'testElement2'} />
+        </DFPSlotsProvider>,
+      );
+      expect(DFPManager.cookiesEnabled()).to.equal(true);
+    });
+
+
     afterAll(() => {
       DFPManager.gptLoadAds.restore();
       DFPManager.load.restore();
@@ -314,50 +354,50 @@ describe('DFPSlotsProvider', () => {
       + 'singleRequest, adUnit, sizeMapping, adSenseAttributes, '
       + 'targetingArguments, collapseEmptyDivs, adSenseAttrs, lazyLoad.'
       , () => {
-      const providerProps = {
-        dfpNetworkId: '1000',
-        adUnit: 'foo/bar/baz',
-        singleRequest: false,
-        lazyLoad: false,
-      };
+        const providerProps = {
+          dfpNetworkId: '1000',
+          adUnit: 'foo/bar/baz',
+          singleRequest: false,
+          lazyLoad: false,
+        };
 
-      const compProps = {
-        slotId: 'testElement5',
-        sizes: [[728, 90]],
-      };
+        const compProps = {
+          slotId: 'testElement5',
+          sizes: [[728, 90]],
+        };
 
 
-      const container = document.createElement('div');
-      ReactDOM.render(
-        <DFPSlotsProvider {...providerProps}>
-          <AdSlot {...compProps} />
-        </DFPSlotsProvider>,
-        container,
-      );
-      const newProps = {
-        singleRequest: true,
-        adUnit: 'a/b',
-        sizeMapping: [
-          { viewport: [1024, 768], sizes: [[728, 90], [300, 250]] },
-          { viewport: [900, 768], sizes: [[300, 250]] },
-        ],
-        adSenseAttributes: { site_url: 'example.com' },
-        targetingArguments: { customKw: 'basic example' },
-        collapseEmptyDivs: true,
-        lazyLoad: true,
-      };
+        const container = document.createElement('div');
+        ReactDOM.render(
+          <DFPSlotsProvider {...providerProps}>
+            <AdSlot {...compProps} />
+          </DFPSlotsProvider>,
+          container,
+        );
+        const newProps = {
+          singleRequest: true,
+          adUnit: 'a/b',
+          sizeMapping: [
+            { viewport: [1024, 768], sizes: [[728, 90], [300, 250]] },
+            { viewport: [900, 768], sizes: [[300, 250]] },
+          ],
+          adSenseAttributes: { site_url: 'example.com' },
+          targetingArguments: { customKw: 'basic example' },
+          collapseEmptyDivs: true,
+          lazyLoad: true,
+        };
 
-      ReactDOM.render(
-        <DFPSlotsProvider {...providerProps} {...newProps}>
-          <AdSlot {...compProps} />
-        </DFPSlotsProvider>,
-        container,
-      );
+        ReactDOM.render(
+          <DFPSlotsProvider {...providerProps} {...newProps}>
+            <AdSlot {...compProps} />
+          </DFPSlotsProvider>,
+          container,
+        );
 
-      sinon.assert.calledOnce(DFPManager.registerSlot);
-      sinon.assert.calledOnce(DFPManager.load);
-      sinon.assert.notCalled(DFPManager.reload);
-    });
+        sinon.assert.calledOnce(DFPManager.registerSlot);
+        sinon.assert.calledOnce(DFPManager.load);
+        sinon.assert.notCalled(DFPManager.reload);
+      });
 
     it('Can dissable auto-refresh', () => {
       const providerProps = {
