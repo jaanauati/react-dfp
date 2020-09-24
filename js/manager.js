@@ -330,11 +330,13 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     if (loadPromise === null) {
       this.load();
     } else {
-      this.gptRefreshAds(
-        Object.keys(
-          this.getRefreshableSlots(...slots),
-        ),
-      );
+      loadPromise.then(() => {
+        this.gptRefreshAds(
+          Object.keys(
+            this.getRefreshableSlots(...slots),
+          ),
+        );
+      });
     }
   },
 
