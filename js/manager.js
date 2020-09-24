@@ -248,11 +248,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
         this.configureOptions(googletag);
         googletag.cmd.push(() => {
           googletag.enableServices();
-          if (!this.disableInitialLoadIsEnabled()) {
-            slotsToInitialize.forEach((theSlotId) => {
-              googletag.display(theSlotId);
-            });
-          }
+          slotsToInitialize.forEach((theSlotId) => {
+            googletag.display(theSlotId);
+          });
           resolve();
         });
       });
