@@ -1,9 +1,14 @@
-function doloadGPTScript(resolve, reject) {
+const GPT_SRC = {
+  standard: 'securepubads.g.doubleclick.net',
+  limitedAds: 'pagead2.googlesyndication.com',
+};
+
+function doloadGPTScript(resolve, reject, limitedAds) {
   window.googletag = window.googletag || {};
   window.googletag.cmd = window.googletag.cmd || [];
 
   const scriptTag = document.createElement('script');
-  scriptTag.src = `${document.location.protocol}//securepubads.g.doubleclick.net/tag/js/gpt.js`;
+  scriptTag.src = `${document.location.protocol}//${limitedAds ? GPT_SRC.limitedAds : GPT_SRC.standard}/tag/js/gpt.js`;
   scriptTag.async = true;
   scriptTag.type = 'text/javascript';
   scriptTag.onerror = function scriptTagOnError(errs) {
@@ -15,8 +20,8 @@ function doloadGPTScript(resolve, reject) {
   document.getElementsByTagName('head')[0].appendChild(scriptTag);
 }
 
-export function loadGPTScript() {
+export function loadGPTScript(limitedAds = false) {
   return new Promise((resolve, reject) => {
-    doloadGPTScript(resolve, reject);
+    doloadGPTScript(resolve, reject, limitedAds);
   });
 }

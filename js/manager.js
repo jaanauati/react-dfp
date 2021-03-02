@@ -13,6 +13,7 @@ const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 const globalAdSenseAttributes = {};
+let limitedAds = false;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
@@ -43,6 +44,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   lazyLoadIsEnabled() {
     return lazyLoadEnabled;
+  },
+
+  limitedAdsIsEnabled() {
+    return limitedAds;
   },
 
   getLazyLoadConfig() {
@@ -163,7 +168,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   getGoogletag() {
     if (googleGPTScriptLoadPromise === null) {
-      googleGPTScriptLoadPromise = Utils.loadGPTScript();
+      googleGPTScriptLoadPromise = Utils.loadGPTScript(limitedAds);
     }
     return googleGPTScriptLoadPromise;
   },
@@ -181,6 +186,21 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       );
     }
   },
+
+  customLoad(slots, options = {}) {
+    if (options.limitedAds) {
+      limitedAds = true;
+    }
+
+    if (loadPromise === null) {
+      loadPromise = this.doLoad(...slots);
+    } else {
+      loadPromise = loadPromise.then(
+        () => this.doLoad(...slots),
+      );
+    }
+  },
+
 
   doLoad(...slots) {
     this.init();
