@@ -227,7 +227,7 @@ describe('DFPSlotsProvider', () => {
       DFPManager.setCollapseEmptyDivs = sinon.spy(DFPManager, 'setCollapseEmptyDivs');
       DFPManager.load = sinon.spy(DFPManager, 'load');
       DFPManager.reload = sinon.spy(DFPManager, 'reload');
-      DFPManager.customLoad = sinon.spy(DFPManager, 'customLoad');
+      DFPManager.configureLimitedAds = sinon.spy(DFPManager, 'configureLimitedAds');
     });
 
     it('Registers an AdSlot', () => {
@@ -791,7 +791,7 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledWith(DFPManager.setCollapseEmptyDivs, false);
     });
 
-    it('Does call customLoad with correct args if limitedAds props is true', () => {
+    it('Does configureLimitedAds if prop is provided', () => {
       const providerProps = {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
@@ -804,8 +804,8 @@ describe('DFPSlotsProvider', () => {
         container,
       );
 
-      sinon.assert.calledOnce(DFPManager.customLoad);
-      sinon.assert.calledWith(DFPManager.customLoad, [], { limitedAds: true });
+      sinon.assert.calledOnce(DFPManager.configureLimitedAds);
+      sinon.assert.calledWith(DFPManager.configureLimitedAds, true);
     });
 
     afterEach(() => {
@@ -817,7 +817,7 @@ describe('DFPSlotsProvider', () => {
       });
       DFPManager.load.restore();
       DFPManager.reload.restore();
-      DFPManager.customLoad.restore();
+      DFPManager.configureLimitedAds.restore();
     });
 
     afterAll(() => {

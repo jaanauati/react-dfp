@@ -50,6 +50,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     return limitedAds;
   },
 
+  configureLimitedAds(value) {
+    limitedAds = !!value;
+  },
+
   getLazyLoadConfig() {
     return lazyLoadConfig;
   },
@@ -186,21 +190,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       );
     }
   },
-
-  customLoad(slots, options = {}) {
-    if (options.limitedAds) {
-      limitedAds = true;
-    }
-
-    if (loadPromise === null) {
-      loadPromise = this.doLoad(...slots);
-    } else {
-      loadPromise = loadPromise.then(
-        () => this.doLoad(...slots),
-      );
-    }
-  },
-
 
   doLoad(...slots) {
     this.init();

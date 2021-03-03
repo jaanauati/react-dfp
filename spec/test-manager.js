@@ -57,8 +57,12 @@ describe('DFPManager', () => {
   });
 
   describe('Limited Ads', () => {
-    it('Limited Ads is disabled by default', function registersAdSlot() {
+    it('should have Limited Ads disabled by default', function registersAdSlot() {
       expect(DFPManager.limitedAdsIsEnabled()).equal(false);
+    });
+    it('should configure Limited Ads', function registersAdSlot() {
+      DFPManager.configureLimitedAds(true);
+      expect(DFPManager.limitedAdsIsEnabled()).equal(true);
     });
   });
 
@@ -253,52 +257,6 @@ describe('DFPManager', () => {
       DFPManager.gptLoadAds.restore();
       DFPManager.gptRefreshAds.restore();
       DFPManager.destroyGPTSlots.restore();
-    });
-  });
-
-  describe('standardLoad', () => {
-    beforeAll(function before() {
-      DFPManager.doLoad = sinon.stub(
-        DFPManager,
-        'doLoad',
-      ).resolves(true);
-      DFPManager.load('testElement3', 'testElement5');
-    });
-
-    it('should call doLoad with the correct args', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.doLoad);
-      sinon.assert.calledWith(
-        DFPManager.doLoad, 'testElement3', 'testElement5',
-      );
-      expect(DFPManager.limitedAdsIsEnabled()).equal(false);
-    });
-
-
-    afterAll(function afterEach() {
-      DFPManager.doLoad.restore();
-    });
-  });
-
-  describe('customLoad', () => {
-    beforeAll(function before() {
-      DFPManager.doLoad = sinon.stub(
-        DFPManager,
-        'doLoad',
-      ).resolves(true);
-      DFPManager.customLoad(['testElement4', 'testElement7'], { limitedAds: true });
-    });
-
-    it('should call doLoad with the correct args', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.doLoad);
-      sinon.assert.calledWith(
-        DFPManager.doLoad, 'testElement4', 'testElement7',
-      );
-      expect(DFPManager.limitedAdsIsEnabled()).equal(true);
-    });
-
-
-    afterAll(function afterEach() {
-      DFPManager.doLoad.restore();
     });
   });
 });

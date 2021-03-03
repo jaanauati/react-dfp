@@ -200,10 +200,9 @@ export default class DFPSlotsProvider extends React.Component {
     if (Object.keys(DFPManager.getRegisteredSlots()).length >= this.totalSlots) {
       DFPManager.removeListener('slotRegistered', this.loadAdsIfPossible);
       if (this.props.limitedAds) {
-        DFPManager.customLoad([], { limitedAds: true });
-      } else {
-        DFPManager.load();
+        DFPManager.configureLimitedAds(true);
       }
+      DFPManager.load();
       this.loadAlreadyCalled = true;
       this.loadCallbackAttached = false;
       r = true;
