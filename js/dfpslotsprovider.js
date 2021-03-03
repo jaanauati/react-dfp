@@ -53,6 +53,7 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
+    limitedAds: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -76,6 +77,7 @@ export default class DFPSlotsProvider extends React.Component {
     disableInitialLoad: false,
     collapseEmptyDivs: null,
     lazyLoad: false,
+    limitedAds: false,
   };
 
   constructor(props) {
@@ -197,7 +199,11 @@ export default class DFPSlotsProvider extends React.Component {
     let r = false;
     if (Object.keys(DFPManager.getRegisteredSlots()).length >= this.totalSlots) {
       DFPManager.removeListener('slotRegistered', this.loadAdsIfPossible);
-      DFPManager.load();
+      if (this.props.limitedAds) {
+        DFPManager.customLoad([], { limitedAds: true });
+      } else {
+        DFPManager.load();
+      }
       this.loadAlreadyCalled = true;
       this.loadCallbackAttached = false;
       r = true;
