@@ -175,6 +175,7 @@ export default class DFPSlotsProvider extends React.Component {
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
+    DFPManager.configureLimitedAds(this.props.limitedAds);
   }
 
   attachLoadCallback() {
@@ -199,9 +200,6 @@ export default class DFPSlotsProvider extends React.Component {
     let r = false;
     if (Object.keys(DFPManager.getRegisteredSlots()).length >= this.totalSlots) {
       DFPManager.removeListener('slotRegistered', this.loadAdsIfPossible);
-      if (this.props.limitedAds) {
-        DFPManager.configureLimitedAds(true);
-      }
       DFPManager.load();
       this.loadAlreadyCalled = true;
       this.loadCallbackAttached = false;
