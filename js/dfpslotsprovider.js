@@ -53,6 +53,7 @@ export default class DFPSlotsProvider extends React.Component {
         mobileScaling: PropTypes.number,
       }),
     ]),
+    limitedAds: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -76,6 +77,7 @@ export default class DFPSlotsProvider extends React.Component {
     disableInitialLoad: false,
     collapseEmptyDivs: null,
     lazyLoad: false,
+    limitedAds: false,
   };
 
   constructor(props) {
@@ -173,6 +175,7 @@ export default class DFPSlotsProvider extends React.Component {
     );
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
+    DFPManager.configureLimitedAds(this.props.limitedAds);
   }
 
   attachLoadCallback() {

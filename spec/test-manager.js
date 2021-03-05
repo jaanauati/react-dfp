@@ -56,6 +56,16 @@ describe('DFPManager', () => {
     });
   });
 
+  describe('Limited Ads', () => {
+    it('should have Limited Ads disabled by default', function registersAdSlot() {
+      expect(DFPManager.limitedAdsIsEnabled()).equal(false);
+    });
+    it('should configure Limited Ads', function registersAdSlot() {
+      DFPManager.configureLimitedAds(true);
+      expect(DFPManager.limitedAdsIsEnabled()).equal(true);
+    });
+  });
+
   describe('Single Request', () => {
     it('Gets singleRequest enabled by default', function registersAdSlot() {
       expect(DFPManager.singleRequestIsEnabled()).equal(true);
@@ -243,6 +253,7 @@ describe('DFPManager', () => {
       DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement4' });
       DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement5' });
       DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement6' });
+      DFPManager.unregisterSlot({ ...this.slotProps, slotId: 'testElement7' });
       DFPManager.gptLoadAds.restore();
       DFPManager.gptRefreshAds.restore();
       DFPManager.destroyGPTSlots.restore();

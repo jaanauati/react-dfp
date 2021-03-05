@@ -13,6 +13,7 @@ const registeredSlots = {};
 let managerAlreadyInitialized = false;
 const globalTargetingArguments = {};
 const globalAdSenseAttributes = {};
+let limitedAds = false;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
@@ -43,6 +44,14 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   lazyLoadIsEnabled() {
     return lazyLoadEnabled;
+  },
+
+  limitedAdsIsEnabled() {
+    return limitedAds;
+  },
+
+  configureLimitedAds(value) {
+    limitedAds = !!value;
   },
 
   getLazyLoadConfig() {
@@ -163,7 +172,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   getGoogletag() {
     if (googleGPTScriptLoadPromise === null) {
-      googleGPTScriptLoadPromise = Utils.loadGPTScript();
+      googleGPTScriptLoadPromise = Utils.loadGPTScript(limitedAds);
     }
     return googleGPTScriptLoadPromise;
   },
