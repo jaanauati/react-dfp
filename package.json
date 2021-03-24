@@ -78,7 +78,7 @@
     "webpack": "^4.41.6"
   },
   "engines": {
-    "node": "<=6.0.0"
+    "node": ">=6.0.0"
   },
   "licenses": [
     {
