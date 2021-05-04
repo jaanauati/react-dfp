@@ -26,6 +26,6 @@ export function loadGPTScript(limitedAds = false) {
   return new Promise((resolve, reject) => {
     // TODO: Implement cancel timeout shim
     window.requestIdleCallback = getRequestIdleCallback();
-    window.requestIdleCallback(() => doloadGPTScript(resolve, reject, limitedAds), 8000);
+    window.requestIdleCallback(() => doloadGPTScript(resolve, reject, limitedAds),  { timeout: 7000 });
   });
 }
