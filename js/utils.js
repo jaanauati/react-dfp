@@ -5,7 +5,7 @@ const GPT_SRC = {
   limitedAds: 'pagead2.googlesyndication.com',
 };
 
-function doloadGPTScript(resolve, reject, limitedAds) {
+function doloadGPTScript(resolve, reject, limitedAds, timerId) {
   window.googletag = window.googletag || {};
   window.googletag.cmd = window.googletag.cmd || [];
 
@@ -20,12 +20,13 @@ function doloadGPTScript(resolve, reject, limitedAds) {
     resolve(window.googletag);
   };
   document.getElementsByTagName('head')[0].appendChild(scriptTag);
+  clearTimeout(timerId);
 }
 
 export function loadGPTScript(limitedAds = false) {
   return new Promise((resolve, reject) => {
-    // TODO: Implement cancel timeout shim
-    window.requestIdleCallback = getRequestIdleCallback();
-    window.requestIdleCallback(() => doloadGPTScript(resolve, reject, limitedAds),  { timeout: 7000 });
+    const timerId = setTimeout(() => {
+      doloadGPTScript(resolve, reject, limitedAds, timerId);
+    }, 8000);
   });
 }
