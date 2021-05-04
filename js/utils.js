@@ -1,3 +1,5 @@
+import { getRequestIdleCallback } from './idletimeout-shim';
+
 const GPT_SRC = {
   standard: 'securepubads.g.doubleclick.net',
   limitedAds: 'pagead2.googlesyndication.com',
@@ -22,6 +24,8 @@ function doloadGPTScript(resolve, reject, limitedAds) {
 
 export function loadGPTScript(limitedAds = false) {
   return new Promise((resolve, reject) => {
-    doloadGPTScript(resolve, reject, limitedAds);
+    // TODO: Implement cancel timeout shim
+    window.requestIdleCallback = getRequestIdleCallback();
+    window.requestIdleCallback(() => doloadGPTScript(resolve, reject, limitedAds), 8000);
   });
 }
