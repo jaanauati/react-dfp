@@ -16,7 +16,7 @@ or
 yarn add react-dfp
 ```
 
-You can find more details in the [React-dfp site](http://react-dfp.tk/).
+You can find more details in the [React-dfp site](https://react-dfp.surge.sh/).
 
 ## Getting started
 
