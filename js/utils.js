@@ -24,6 +24,7 @@ function doloadGPTScript(resolve, reject, limitedAds, timerId) {
 }
 
 export function loadGPTScript(limitedAds = false) {
+  console.log('YEEEEE HAAAA')
   return new Promise((resolve, reject) => {
     const timerId = setTimeout(() => {
       doloadGPTScript(resolve, reject, limitedAds, timerId);
