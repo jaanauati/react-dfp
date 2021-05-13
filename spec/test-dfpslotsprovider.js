@@ -228,6 +228,7 @@ describe('DFPSlotsProvider', () => {
       DFPManager.load = sinon.spy(DFPManager, 'load');
       DFPManager.reload = sinon.spy(DFPManager, 'reload');
       DFPManager.configureLimitedAds = sinon.spy(DFPManager, 'configureLimitedAds');
+      DFPManager.configureDeferAds = sinon.spy(DFPManager, 'configureDeferAds');
     });
 
     it('Registers an AdSlot', () => {
@@ -808,6 +809,25 @@ describe('DFPSlotsProvider', () => {
       sinon.assert.calledWith(DFPManager.configureLimitedAds, true);
     });
 
+    it('Does deferAds if prop is provided', () => {
+      const providerProps = {
+        dfpNetworkId: '1000',
+        adUnit: 'foo/bar/baz',
+        limitedAds: true,
+        deferAds: true
+      };
+
+      const container = document.createElement('div');
+      ReactDOM.render(
+        <DFPSlotsProvider {...providerProps} />,
+        container,
+      );
+
+      sinon.assert.calledOnce(DFPManager.configureDeferAds);
+      sinon.assert.calledWith(DFPManager.configureDeferAds, true);
+    });
+
+
     afterEach(() => {
       DFPManager.registerSlot.restore();
       DFPManager.unregisterSlot.restore();
@@ -818,6 +838,7 @@ describe('DFPSlotsProvider', () => {
       DFPManager.load.restore();
       DFPManager.reload.restore();
       DFPManager.configureLimitedAds.restore();
+      DFPManager.configureDeferAds.restore();
     });
 
     afterAll(() => {

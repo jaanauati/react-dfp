@@ -54,6 +54,7 @@ export default class DFPSlotsProvider extends React.Component {
       }),
     ]),
     limitedAds: PropTypes.bool,
+    deferAds: PropTypes.bool
   };
 
   static defaultProps = {
@@ -78,6 +79,7 @@ export default class DFPSlotsProvider extends React.Component {
     collapseEmptyDivs: null,
     lazyLoad: false,
     limitedAds: false,
+    deferAds: true
   };
 
   constructor(props) {
@@ -176,6 +178,7 @@ export default class DFPSlotsProvider extends React.Component {
     DFPManager.setAdSenseAttributes(this.props.adSenseAttributes);
     DFPManager.setCollapseEmptyDivs(this.props.collapseEmptyDivs);
     DFPManager.configureLimitedAds(this.props.limitedAds);
+    DFPManager.configureDeferAds(this.props.deferAds);
   }
 
   attachLoadCallback() {

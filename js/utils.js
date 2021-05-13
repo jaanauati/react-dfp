@@ -23,11 +23,15 @@ function doloadGPTScript(resolve, reject, limitedAds, timerId) {
   clearTimeout(timerId);
 }
 
-export function loadGPTScript(limitedAds = false) {
-  console.log('YEEEEE HAAAA')
-  return new Promise((resolve, reject) => {
-    const timerId = setTimeout(() => {
-      doloadGPTScript(resolve, reject, limitedAds, timerId);
-    }, 8000);
-  });
+export function loadGPTScript(limitedAds = false, deferAds = true) {
+  if (deferAds) {
+    return new Promise((resolve, reject) => {
+      const timerId = setTimeout(() => {
+        doloadGPTScript(resolve, reject, limitedAds, timerId);
+      }, 2500);
+    });
+  }
+  return new Promise ((resolve, reject) =>  {
+    doloadGPTScript(resolve, reject, limitedAds, timerId);
+  })
 }
