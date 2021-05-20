@@ -54,11 +54,11 @@ class Page extends Component {
 
 ## Examples
 
-See the [React-dfp site](http://react-dfp.tk/) for more examples (basic example, how to have refreshable ads, etc).
+See the [React-dfp site](https://react-dfp.surge.sh) for more examples (basic example, how to have refreshable ads, etc).
 
 ## Documentation
 
-You can find the React-dfp documentation [on the website](http://react-dfp.tk/). The site is divided into many sections that describe each one the Components, properties and also the DFPManager API (in case you need to use this one manually).
+You can find the React-dfp documentation [on the website](https://react-dfp.surge.sh). The site is divided into many sections that describe each one the Components, properties and also the DFPManager API (in case you need to use this one manually).
 
 The website is also full of live/working examples.
 
