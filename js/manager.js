@@ -104,6 +104,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   setTargetingArguments(data) {
     Object.assign(globalTargetingArguments, data);
+    const availableKeys = Object.keys(registeredSlots);
+    availableKeys.forEach((slotId) => {
+      registeredSlots[slotId].targetingArguments = data;
+    });
     if (managerAlreadyInitialized === true) {
       this.getGoogletag().then((googletag) => {
         googletag.cmd.push(() => {
@@ -354,9 +358,8 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.configureOptions(googletag);
       googletag.cmd.push(() => {
         const pubadsService = googletag.pubads();
-        pubadsService.refresh(
-          slots.map(slotId => registeredSlots[slotId].gptSlot),
-        );
+        const slotsToRefreshArray = slots.map(slotId => registeredSlots[slotId].slotId);
+        pubadsService.refresh(slotsToRefreshArray);
       });
     });
   },
