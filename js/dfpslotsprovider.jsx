@@ -1,61 +1,68 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import DFPManager from './manager';
 
 // React.createContext is undefined for React < 16.3
-export const Context = React.createContext ? React.createContext({
-  dfpNetworkId: null,
-  dfpAdUnit: null,
-  dfpSizeMapping: null,
-  dfpTargetingArguments: null,
-  newSlotCallback: null,
-}) : null;
+export const Context = React.createContext
+  ? React.createContext({
+      dfpNetworkId: null,
+      dfpAdUnit: null,
+      dfpSizeMapping: null,
+      dfpTargetingArguments: null,
+      newSlotCallback: null,
+      releaseSlotCallback: null,
+    })
+  : null;
 
+/**
+ * @typedef {Object} AutoReloadConfig
+ * @property {boolean} [dfpNetworkId]
+ * @property {boolean} [personalizedAds]
+ * @property {boolean} [cookieOption]
+ * @property {boolean} [singleRequest]
+ * @property {boolean} [disableInitialLoad]
+ * @property {boolean} [adUnit]
+ * @property {boolean} [sizeMapping]
+ * @property {boolean} [adSenseAttributes]
+ * @property {boolean} [targetingArguments]
+ * @property {boolean} [collapseEmptyDivs]
+ * @property {boolean} [lazyLoad]
+ */
+
+/**
+ * @typedef {Object} LazyLoadConfig
+ * @property {number} [fetchMarginPercent]
+ * @property {number} [renderMarginPercent]
+ * @property {number} [mobileScaling]
+ */
+
+/**
+ * @typedef {import('react').ReactNode} ReactNode
+ */
+
+/**
+ * @typedef {Object} DFPSlotsProviderProps
+ * @property {ReactNode} children
+ * @property {boolean} [autoLoad]
+ * @property {AutoReloadConfig} [autoReload]
+ * @property {string} dfpNetworkId
+ * @property {boolean} [personalizedAds]
+ * @property {boolean} [cookieOption]
+ * @property {boolean} [singleRequest]
+ * @property {boolean} [disableInitialLoad]
+ * @property {string} [adUnit]
+ * @property {object[]} [sizeMapping]
+ * @property {Object} [adSenseAttributes]
+ * @property {Object} [targetingArguments]
+ * @property {boolean} [collapseEmptyDivs]
+ * @property {Object} [adSenseAttrs]
+ * @property {boolean | LazyLoadConfig} [lazyLoad]
+ * @property {boolean} [limitedAds]
+ */
+
+/**
+ * @extends {React.Component<DFPSlotsProviderProps>}
+ */
 export default class DFPSlotsProvider extends React.Component {
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.array,
-    ]).isRequired,
-    autoLoad: PropTypes.bool,
-    autoReload: PropTypes.shape({
-      dfpNetworkId: PropTypes.bool,
-      personalizedAds: PropTypes.bool,
-      cookieOption: PropTypes.bool,
-      singleRequest: PropTypes.bool,
-      disableInitialLoad: PropTypes.bool,
-      adUnit: PropTypes.bool,
-      sizeMapping: PropTypes.bool,
-      adSenseAttributes: PropTypes.bool,
-      targetingArguments: PropTypes.bool,
-      collapseEmptyDivs: PropTypes.bool,
-      lazyLoad: PropTypes.bool,
-    }),
-    dfpNetworkId: PropTypes.string.isRequired,
-    personalizedAds: PropTypes.bool,
-    cookieOption: PropTypes.bool,
-    singleRequest: PropTypes.bool,
-    disableInitialLoad: PropTypes.bool,
-    adUnit: PropTypes.string,
-    sizeMapping: PropTypes.arrayOf(PropTypes.object),
-    adSenseAttributes: PropTypes.object,
-    targetingArguments: PropTypes.object,
-    collapseEmptyDivs: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.object,
-    ]),
-    adSenseAttrs: PropTypes.object,
-    lazyLoad: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.shape({
-        fetchMarginPercent: PropTypes.number,
-        renderMarginPercent: PropTypes.number,
-        mobileScaling: PropTypes.number,
-      }),
-    ]),
-    limitedAds: PropTypes.bool,
-  };
-
   static defaultProps = {
     autoLoad: true,
     autoReload: {
@@ -88,6 +95,7 @@ export default class DFPSlotsProvider extends React.Component {
     this.shouldReloadConfig = this.shouldReloadConfig.bind(this);
     this.attachLoadCallback = this.attachLoadCallback.bind(this);
     this.getContextValue = this.getContextValue.bind(this);
+    this.releaseSlotCallback = this.releaseSlotCallback.bind(this);
     this.loadAlreadyCalled = false;
     this.loadCallbackAttached = false;
     this.shouldReloadAds = false;
@@ -159,6 +167,7 @@ export default class DFPSlotsProvider extends React.Component {
         dfpSizeMapping,
         dfpTargetingArguments,
         newSlotCallback: this.newSlotCallback,
+        releaseSlotCallback: this.releaseSlotCallback,
       };
     }
     return this.contextValue;
@@ -193,12 +202,23 @@ export default class DFPSlotsProvider extends React.Component {
     this.totalSlots++;
   }
 
+  /** Pairs with {@link #newSlotCallback} when a slot unmounts (e.g. React Strict Mode). */
+  releaseSlotCallback() {
+    this.totalSlots = Math.max(0, this.totalSlots - 1);
+  }
+
   // Checks all the mounted children ads have been already registered
   // in the DFPManager before trying to call the gpt load scripts.
   // This is helpful when trying to fetch ads with a single request.
+  //
+  // Require totalSlots > 0 so we never fire load() when registeredSlots === 0
+  // and totalSlots === 0 (the old condition `>=` was true for 0 >= 0), which
+  // called enableServices() before any slot was defined and broke multi-slot
+  // pages.
   loadAdsIfPossible() {
     let r = false;
-    if (Object.keys(DFPManager.getRegisteredSlots()).length >= this.totalSlots) {
+    const registeredCount = Object.keys(DFPManager.getRegisteredSlots()).length;
+    if (this.totalSlots > 0 && registeredCount >= this.totalSlots) {
       DFPManager.removeListener('slotRegistered', this.loadAdsIfPossible);
       DFPManager.load();
       this.loadAlreadyCalled = true;
@@ -217,7 +237,10 @@ export default class DFPSlotsProvider extends React.Component {
         for (const i in attrs) {
           const propName = attrs[i];
           // eslint-disable-next-line
-          if (reloadConfig[propName] === true && this.props[propName] !== nextProps[propName]) {
+          if (
+            reloadConfig[propName] === true &&
+            this.props[propName] !== nextProps[propName]
+          ) {
             return true;
           }
         }
@@ -242,10 +265,11 @@ export default class DFPSlotsProvider extends React.Component {
 if (Context === null) {
   // React < 16.3
   DFPSlotsProvider.childContextTypes = {
-    dfpNetworkId: PropTypes.string,
-    dfpAdUnit: PropTypes.string,
-    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
-    dfpTargetingArguments: PropTypes.object,
-    newSlotCallback: PropTypes.func,
+    dfpNetworkId: () => {},
+    dfpAdUnit: () => {},
+    dfpSizeMapping: () => {},
+    dfpTargetingArguments: () => {},
+    newSlotCallback: () => {},
+    releaseSlotCallback: () => {},
   };
 }

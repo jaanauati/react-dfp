@@ -1,34 +1,47 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import DFPManager from './manager';
 import { Context } from './dfpslotsprovider';
 
 let dynamicAdCount = 0;
 
-export class AdSlot extends React.Component {
-  static propTypes = {
-    dfpNetworkId: PropTypes.string,
-    adUnit: PropTypes.string,
-    sizes: PropTypes.arrayOf(
-      PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.number),
-        PropTypes.string,
-      ]),
-    ),
-    renderOutOfThePage: PropTypes.bool,
-    sizeMapping: PropTypes.arrayOf(PropTypes.object),
-    fetchNow: PropTypes.bool,
-    adSenseAttributes: PropTypes.object,
-    targetingArguments: PropTypes.object,
-    onSlotRender: PropTypes.func,
-    onSlotRegister: PropTypes.func,
-    onSlotIsViewable: PropTypes.func,
-    onSlotVisibilityChanged: PropTypes.func,
-    shouldRefresh: PropTypes.func,
-    slotId: PropTypes.string,
-    className: PropTypes.string,
-  };
+/**
+ * @typedef {number[] | string} AdSizeItem
+ */
 
+/**
+ * @typedef {Object} SizeMappingEntry
+ * @property {[number, number]} viewport
+ * @property {Array<number[] | string>} sizes
+ */
+
+/**
+ * @typedef {Object} AdSlotProps
+ * @property {string} [dfpNetworkId]
+ * @property {string} [adUnit]
+ * @property {AdSizeItem[]} [sizes]
+ * @property {boolean} [renderOutOfThePage]
+ * @property {SizeMappingEntry[]} [sizeMapping]
+ * @property {boolean} [fetchNow]
+ * @property {Object} [adSenseAttributes]
+ * @property {Object} [targetingArguments]
+ * @property {(params: object) => void} [onSlotRender]
+ * @property {(params: object) => void} [onSlotRegister]
+ * @property {(params: object) => void} [onSlotIsViewable]
+ * @property {(params: object) => void} [onSlotVisibilityChanged]
+ * @property {(ctx: object) => boolean} [shouldRefresh]
+ * @property {string} [slotId]
+ * @property {string} [className]
+ */
+
+/**
+ * @typedef {AdSlotProps & { slotId?: string | null }} AdSlotState
+ */
+
+/**
+ * Google DFP / GPT ad slot. Must be rendered under {@link DFPSlotsProvider}.
+ * @extends {React.Component<AdSlotProps, AdSlotState>}
+ */
+export class AdSlot extends React.Component {
   static defaultProps = {
     fetchNow: false,
   };
@@ -49,20 +62,29 @@ export class AdSlot extends React.Component {
       slotId: this.props.slotId || null,
       className: this.props.className || '',
     };
-    this.adElementRef = React.createRef ? React.createRef() : (element) => {
-      this.adElementRef = element;
-    };
+    this.adElementRef = React.createRef
+      ? React.createRef()
+      : (element) => {
+          this.adElementRef = element;
+        };
+    /** Set in {@link #doRegisterSlot} when we notify the provider; cleared before {@link #releaseSlotCallback}. */
+    this._dfpNotifiedProvider = false;
   }
 
   componentDidMount() {
-    // register this ad-unit in the <DFPSlotProvider>, when available.
-    if (this.context !== undefined && this.context.newSlotCallback) {
-      this.context.newSlotCallback();
-    }
     this.registerSlot();
   }
 
   componentWillUnmount() {
+    const ctx = this.context;
+    if (
+      this._dfpNotifiedProvider &&
+      ctx !== undefined &&
+      typeof ctx.releaseSlotCallback === 'function'
+    ) {
+      ctx.releaseSlotCallback();
+      this._dfpNotifiedProvider = false;
+    }
     this.unregisterSlot();
   }
 
@@ -100,6 +122,14 @@ export class AdSlot extends React.Component {
   }
 
   doRegisterSlot() {
+    // Count this slot with the provider in the same phase as GPT registration (after slotId exists).
+    // Doing this in componentDidMount before setState caused totalSlots to get ahead of
+    // registeredSlots; React Strict Mode made that permanent so load() never ran.
+    const ctx = this.context;
+    if (ctx !== undefined && typeof ctx.newSlotCallback === 'function') {
+      ctx.newSlotCallback();
+      this._dfpNotifiedProvider = true;
+    }
     DFPManager.registerSlot({
       ...this.mapContextToAdSlotProps(),
       ...this.props,
@@ -118,9 +148,12 @@ export class AdSlot extends React.Component {
 
   registerSlot() {
     if (this.state.slotId === null) {
-      this.setState({
-        slotId: this.generateSlotId(),
-      }, this.doRegisterSlot);
+      this.setState(
+        {
+          slotId: this.generateSlotId(),
+        },
+        this.doRegisterSlot,
+      );
     } else {
       this.doRegisterSlot();
     }
@@ -204,18 +237,8 @@ export class AdSlot extends React.Component {
   }
 }
 
-if (Context === null) {
-  // React < 16.3
-  AdSlot.contextTypes = {
-    dfpNetworkId: PropTypes.string,
-    dfpAdUnit: PropTypes.string,
-    dfpSizeMapping: PropTypes.arrayOf(PropTypes.object),
-    dfpTargetingArguments: PropTypes.object,
-    newSlotCallback: PropTypes.func,
-  };
-} else {
+if (Context != null) {
   AdSlot.contextType = Context;
 }
-
 
 export default AdSlot;

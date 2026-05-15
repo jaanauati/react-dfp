@@ -16,7 +16,6 @@ const globalAdSenseAttributes = {};
 let limitedAds = false;
 
 const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
-
   singleRequestIsEnabled() {
     return singleRequestEnabled;
   },
@@ -92,11 +91,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.getGoogletag().then((googletag) => {
         googletag.cmd.push(() => {
           const pubadsService = googletag.pubads();
-          Object.keys(globalAdSenseAttributes).forEach(
-            (key) => {
-              pubadsService.set(key, globalTargetingArguments[key]);
-            },
-          );
+          Object.keys(globalAdSenseAttributes).forEach((key) => {
+            pubadsService.set(key, globalTargetingArguments[key]);
+          });
         });
       });
     }
@@ -114,7 +111,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           const pubadsService = googletag.pubads();
           Object.keys(globalTargetingArguments).forEach((varName) => {
             if (pubadsService) {
-              pubadsService.setTargeting(varName, globalTargetingArguments[varName]);
+              pubadsService.setTargeting(
+                varName,
+                globalTargetingArguments[varName],
+              );
             }
           });
         });
@@ -161,14 +161,15 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
           });
           pubadsService.addEventListener('slotVisibilityChanged', (event) => {
             const slotId = event.slot.getSlotElementId();
-            this.emit('slotVisibilityChanged', { slotId, event });
+            this.emit('slotVisibilityChanged', {
+              slotId,
+              event,
+            });
           });
           pubadsService.setRequestNonPersonalizedAds(
             this.personalizedAdsEnabled() ? 0 : 1,
           );
-          pubadsService.setCookieOptions(
-            this.cookiesEnabled() ? 0 : 1,
-          );
+          pubadsService.setCookieOptions(this.cookiesEnabled() ? 0 : 1);
         });
       });
     }
@@ -189,25 +190,23 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
     if (loadPromise === null) {
       loadPromise = this.doLoad(...slots);
     } else {
-      loadPromise = loadPromise.then(
-        () => this.doLoad(...slots),
-      );
+      loadPromise = loadPromise.then(() => this.doLoad(...slots));
     }
   },
 
   doLoad(...slots) {
     this.init();
-    let availableSlots = {};
+    let availableSlots = [];
 
     if (slots.length > 0) {
-      availableSlots = slots.filter(
-        slotId => Object.prototype.hasOwnProperty.call(registeredSlots, slotId),
+      availableSlots = slots.filter((slotId) =>
+        Object.prototype.hasOwnProperty.call(registeredSlots, slotId),
       );
     } else {
       availableSlots = Object.keys(registeredSlots);
     }
     availableSlots = availableSlots.filter(
-      id => !registeredSlots[id].loading && !registeredSlots[id].gptSlot,
+      (id) => !registeredSlots[id].loading && !registeredSlots[id].gptSlot,
     );
     availableSlots.forEach((slotId) => {
       registeredSlots[slotId].loading = true;
@@ -217,6 +216,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
 
   gptLoadAds(slotsToInitialize) {
     return new Promise((resolve) => {
+      if (!slotsToInitialize || slotsToInitialize.length === 0) {
+        resolve();
+        return;
+      }
       this.getGoogletag().then((googletag) => {
         this.configureInitialOptions(googletag);
         slotsToInitialize.forEach((currentSlotId) => {
@@ -233,15 +236,20 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
             }
             if (gptSlot !== null) {
               slot.gptSlot = gptSlot;
-              const slotTargetingArguments = this.getSlotTargetingArguments(currentSlotId);
+              const slotTargetingArguments =
+                this.getSlotTargetingArguments(currentSlotId);
               if (slotTargetingArguments !== null) {
                 Object.keys(slotTargetingArguments).forEach((varName) => {
                   if (slot && slot.gptSlot) {
-                    slot.gptSlot.setTargeting(varName, slotTargetingArguments[varName]);
+                    slot.gptSlot.setTargeting(
+                      varName,
+                      slotTargetingArguments[varName],
+                    );
                   }
                 });
               }
-              const slotAdSenseAttributes = this.getSlotAdSenseAttributes(currentSlotId);
+              const slotAdSenseAttributes =
+                this.getSlotAdSenseAttributes(currentSlotId);
               if (slotAdSenseAttributes !== null) {
                 Object.keys(slotAdSenseAttributes).forEach((varName) => {
                   slot.gptSlot.set(varName, slotAdSenseAttributes[varName]);
@@ -251,7 +259,10 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
               if (slot.sizeMapping) {
                 let smbuilder = googletag.sizeMapping();
                 slot.sizeMapping.forEach((mapping) => {
-                  smbuilder = smbuilder.addSize(mapping.viewport, mapping.sizes);
+                  smbuilder = smbuilder.addSize(
+                    mapping.viewport,
+                    mapping.sizes,
+                  );
                 });
                 slot.gptSlot.defineSizeMapping(smbuilder.build());
               }
@@ -286,9 +297,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       pubadsService.setRequestNonPersonalizedAds(
         this.personalizedAdsEnabled() ? 0 : 1,
       );
-      pubadsService.setCookieOptions(
-        this.cookiesEnabled() ? 0 : 1,
-      );
+      pubadsService.setCookieOptions(this.cookiesEnabled() ? 0 : 1);
       const targetingArguments = this.getTargetingArguments();
       // set global targetting arguments
       Object.keys(targetingArguments).forEach((varName) => {
@@ -321,8 +330,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   getRefreshableSlots(...slotsArray) {
     const slots = {};
     if (slotsArray.length === 0) {
-      const slotsToRefresh = Object.keys(registeredSlots)
-        .map(k => registeredSlots[k]);
+      const slotsToRefresh = Object.keys(registeredSlots).map(
+        (k) => registeredSlots[k],
+      );
       return slotsToRefresh.reduce((last, slot) => {
         if (slot.slotShouldRefresh() === true) {
           slots[slot.slotId] = slot;
@@ -344,11 +354,7 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.load();
     } else {
       loadPromise.then(() => {
-        this.gptRefreshAds(
-          Object.keys(
-            this.getRefreshableSlots(...slots),
-          ),
-        );
+        this.gptRefreshAds(Object.keys(this.getRefreshableSlots(...slots)));
       });
     }
   },
@@ -358,7 +364,9 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       this.configureOptions(googletag);
       googletag.cmd.push(() => {
         const pubadsService = googletag.pubads();
-        const slotsToRefreshArray = slots.map(slotId => registeredSlots[slotId].slotId);
+        const slotsToRefreshArray = slots.map(
+          (slotId) => registeredSlots[slotId].slotId,
+        );
         pubadsService.refresh(slotsToRefreshArray);
       });
     });
@@ -373,47 +381,50 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
       // eslint-disable-next-line no-param-reassign
       slotsToDestroy = Object.keys(registeredSlots);
     }
+    const registeredSlotObjects = slotsToDestroy
+      .map((slotId) => registeredSlots[slotId])
+      .filter((slot) => slot !== undefined);
     return new Promise((resolve) => {
-      const slots = [];
-      // eslint-disable-next-line guard-for-in,no-restricted-syntax
-      for (const idx in slotsToDestroy) {
-        const slotId = slotsToDestroy[idx];
-        const slot = registeredSlots[slotId];
-        slots.push(slot);
-      }
-      this.getGoogletag()
-        .then((googletag) => {
-          googletag.cmd.push(() => {
-            if (managerAlreadyInitialized === true) {
-              if (slotsToDestroy.length > 0) {
-                // eslint-disable-next-line guard-for-in,no-restricted-syntax
-                for (const idx in slots) {
-                  const slot = slots[idx];
-                  slots.push(slot.gptSlot);
+      this.getGoogletag().then((googletag) => {
+        googletag.cmd.push(() => {
+          if (managerAlreadyInitialized === true) {
+            if (registeredSlotObjects.length > 0) {
+              // Do not push gptSlot refs onto the same array we iterate (upstream bug):
+              // for...in would later treat GPT objects as registered slots and read .gptSlot.
+              const gptSlots = [];
+              for (const slot of registeredSlotObjects) {
+                if (slot.gptSlot != null) {
+                  gptSlots.push(slot.gptSlot);
                   delete slot.gptSlot;
                 }
-                googletag.destroySlots(slots);
-              } else {
-                googletag.destroySlots();
               }
+              if (gptSlots.length > 0) {
+                googletag.destroySlots(gptSlots);
+              }
+            } else {
+              googletag.destroySlots();
             }
-            resolve(slotsToDestroy);
-          });
+          }
+          resolve(slotsToDestroy);
         });
+      });
     });
   },
 
-  registerSlot({
-    slotId,
-    dfpNetworkId,
-    adUnit,
-    sizes,
-    renderOutOfThePage,
-    sizeMapping,
-    adSenseAttributes,
-    targetingArguments,
-    slotShouldRefresh,
-  }, autoLoad = true) {
+  registerSlot(
+    {
+      slotId,
+      dfpNetworkId,
+      adUnit,
+      sizes,
+      renderOutOfThePage,
+      sizeMapping,
+      adSenseAttributes,
+      targetingArguments,
+      slotShouldRefresh,
+    },
+    autoLoad = true,
+  ) {
     if (!Object.prototype.hasOwnProperty.call(registeredSlots, slotId)) {
       registeredSlots[slotId] = {
         slotId,
@@ -474,7 +485,6 @@ const DFPManager = Object.assign(new EventEmitter().setMaxListeners(0), {
   detachSlotIsViewable(cb) {
     this.removeListener('impressionViewable', cb);
   },
-
 });
 
 export default DFPManager;

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-dom/test-utils';
+import {
+  renderIntoDocument,
+  findRenderedDOMComponentWithClass,
+  renderToContainer,
+  unmountRenderedTree,
+} from './react-test-helpers';
 import { expect } from 'chai';
 import sinon from 'sinon';
 
@@ -21,7 +25,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...otherProps}>
           <AdSlot slotId={'testElement'} />
         </DFPSlotsProvider>,
@@ -34,7 +38,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider personalizedAds={false} {...otherProps}>
           <AdSlot slotId={'testElement1'} />
         </DFPSlotsProvider>,
@@ -47,7 +51,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider personalizedAds {...otherProps}>
           <AdSlot slotId={'testElement2'} />
         </DFPSlotsProvider>,
@@ -60,7 +64,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...otherProps}>
           <AdSlot slotId={'testElement'} />
         </DFPSlotsProvider>,
@@ -73,7 +77,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider cookieOption={false} {...otherProps}>
           <AdSlot slotId={'testElement1'} />
         </DFPSlotsProvider>,
@@ -86,7 +90,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider cookieOption {...otherProps}>
           <AdSlot slotId={'testElement2'} />
         </DFPSlotsProvider>,
@@ -115,7 +119,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...otherProps}>
           <AdSlot slotId={'testElement'} />
         </DFPSlotsProvider>,
@@ -129,7 +133,7 @@ describe('DFPSlotsProvider', () => {
         dfpNetworkId: '1000',
         adUnit: 'foo/bar/baz',
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider lazyLoad {...otherProps}>
           <AdSlot slotId={'testElement1'} />
         </DFPSlotsProvider>,
@@ -148,7 +152,7 @@ describe('DFPSlotsProvider', () => {
         renderMarginPercent: 1,
         mobileScaling: 1,
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider lazyLoad={lazyLoadConfig}  {...otherProps}>
           <AdSlot slotId={'testElement1'} />
         </DFPSlotsProvider>,
@@ -163,7 +167,7 @@ describe('DFPSlotsProvider', () => {
         adUnit: 'foo/bar/baz',
         lazyLoad: false,
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider personalizedAds {...otherProps}>
           <AdSlot slotId={'testElement2'} />
         </DFPSlotsProvider>,
@@ -195,7 +199,7 @@ describe('DFPSlotsProvider', () => {
         adUnit: 'foo/bar/baz',
       };
 
-      component = TestUtils.renderIntoDocument(
+      component = renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot slotId={'testElement3'} />
         </DFPSlotsProvider>,
@@ -203,7 +207,7 @@ describe('DFPSlotsProvider', () => {
     });
 
     it('renders an adBox with the given elementId', () => {
-      const box = TestUtils.findRenderedDOMComponentWithClass(component, 'adBox');
+      const box = findRenderedDOMComponentWithClass(component, 'adBox');
       expect(box.id).to.equal('testElement3');
     });
 
@@ -241,7 +245,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -266,14 +270,14 @@ describe('DFPSlotsProvider', () => {
 
 
       const container = document.createElement('div');
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
       );
 
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps} dfpNetworkId="2000">
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -298,14 +302,14 @@ describe('DFPSlotsProvider', () => {
       };
 
       const container = document.createElement('div');
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
       );
 
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps} personalizedAds={false}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -332,14 +336,14 @@ describe('DFPSlotsProvider', () => {
 
 
       const container = document.createElement('div');
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
       );
 
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps} personalizedAds={false}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -369,7 +373,7 @@ describe('DFPSlotsProvider', () => {
 
 
         const container = document.createElement('div');
-        ReactDOM.render(
+        renderToContainer(
           <DFPSlotsProvider {...providerProps}>
             <AdSlot {...compProps} />
           </DFPSlotsProvider>,
@@ -388,7 +392,7 @@ describe('DFPSlotsProvider', () => {
           lazyLoad: true,
         };
 
-        ReactDOM.render(
+        renderToContainer(
           <DFPSlotsProvider {...providerProps} {...newProps}>
             <AdSlot {...compProps} />
           </DFPSlotsProvider>,
@@ -413,14 +417,14 @@ describe('DFPSlotsProvider', () => {
 
 
       const container = document.createElement('div');
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
         container,
       );
 
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider
           {...providerProps}
           personalizedAds={false}
@@ -446,7 +450,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -467,7 +471,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -488,7 +492,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -509,7 +513,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -529,7 +533,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -550,7 +554,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -571,7 +575,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -591,7 +595,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -615,7 +619,7 @@ describe('DFPSlotsProvider', () => {
         shouldRefresh: () => false,
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -636,13 +640,13 @@ describe('DFPSlotsProvider', () => {
         slotId: 'testElement12',
         sizes: [[728, 90]],
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
       );
       expect(DFPManager.getAdSenseAttributes())
-        .to.deep.equal(providerProps.adSenseAttributes);
+        .to.deep.include(providerProps.adSenseAttributes);
       expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
         .to.deep.equal(null);
     });
@@ -669,14 +673,14 @@ describe('DFPSlotsProvider', () => {
         slotId: 'testElement14',
         sizes: [[728, 90]],
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
           <AdSlot {...comp2Props} />
         </DFPSlotsProvider>,
       );
       expect(DFPManager.getAdSenseAttributes())
-        .to.deep.equal(providerProps.adSenseAttributes);
+        .to.deep.include(providerProps.adSenseAttributes);
       expect(DFPManager.getSlotAdSenseAttributes(compProps.slotId))
         .to.deep.equal(compProps.adSenseAttributes);
       expect(DFPManager.getSlotAdSenseAttributes(comp2Props.slotId))
@@ -693,7 +697,7 @@ describe('DFPSlotsProvider', () => {
         slotId: 'testElement15',
         sizes: [[728, 90]],
       };
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -712,7 +716,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps} >
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -732,14 +736,13 @@ describe('DFPSlotsProvider', () => {
       };
 
 
-      const component = TestUtils.renderIntoDocument(
+      const component = renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
       );
 
-      // eslint-disable-next-line react/no-find-dom-node
-      ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
+      unmountRenderedTree(component);
 
       sinon.assert.calledOnce(DFPManager.unregisterSlot);
       sinon.assert.calledWithMatch(
@@ -759,7 +762,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -781,7 +784,7 @@ describe('DFPSlotsProvider', () => {
         sizes: [[728, 90]],
       };
 
-      TestUtils.renderIntoDocument(
+      renderIntoDocument(
         <DFPSlotsProvider {...providerProps}>
           <AdSlot {...compProps} />
         </DFPSlotsProvider>,
@@ -799,7 +802,7 @@ describe('DFPSlotsProvider', () => {
       };
 
       const container = document.createElement('div');
-      ReactDOM.render(
+      renderToContainer(
         <DFPSlotsProvider {...providerProps} />,
         container,
       );

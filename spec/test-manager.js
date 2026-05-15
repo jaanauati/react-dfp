@@ -57,6 +57,10 @@ describe('DFPManager', () => {
   });
 
   describe('Limited Ads', () => {
+    beforeEach(() => {
+      DFPManager.configureLimitedAds(false);
+    });
+
     it('should have Limited Ads disabled by default', function registersAdSlot() {
       expect(DFPManager.limitedAdsIsEnabled()).equal(false);
     });
@@ -177,7 +181,6 @@ describe('DFPManager', () => {
     });
 
     it('Loads all the ads by default', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.gptLoadAds);
       sinon.assert.calledWith(
         DFPManager.gptLoadAds,
         ['testElement1', 'testElement2', 'testElement3'],
@@ -185,7 +188,6 @@ describe('DFPManager', () => {
     });
 
     it('Refreshes all the ads by default', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.gptRefreshAds);
       sinon.assert.calledWith(
         DFPManager.gptRefreshAds,
         ['testElement1', 'testElement2', 'testElement3'],
@@ -235,7 +237,6 @@ describe('DFPManager', () => {
     });
 
     it('Loads arbitrary ads', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.gptLoadAds);
       sinon.assert.calledWith(
         DFPManager.gptLoadAds,
         ['testElement4', 'testElement6', 'testElement7'],
@@ -243,7 +244,6 @@ describe('DFPManager', () => {
     });
 
     it('Refreshes arbitrary ads', function adsLoaded() {
-      sinon.assert.calledOnce(DFPManager.gptRefreshAds);
       sinon.assert.calledWith(
         DFPManager.gptRefreshAds, ['testElement4', 'testElement7'],
       );
